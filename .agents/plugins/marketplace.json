@@ -8,7 +8,7 @@
       "name": "skillmeter",
       "source": {
         "source": "local",
-        "path": "./plugins/skillmeter"
+        "path": "./clients/codex/plugins/skillmeter"
       },
       "policy": {
         "installation": "AVAILABLE",

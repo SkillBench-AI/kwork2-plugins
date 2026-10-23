@@ -11,19 +11,19 @@ repos:
       - id: no-commit-to-branch
         args: [--branch, main]
 
-  # Repo-local guards mirroring the CI gate, so version/manifest mistakes are
+  # Codex client guards mirroring the CI gate, so version/manifest mistakes are
   # caught before they reach a PR. Dependency-free Node scripts (no install).
   - repo: local
     hooks:
       - id: check-plugin-version
         name: plugin version is clean SemVer
-        entry: node .github/scripts/check-version.mjs
+        entry: node clients/codex/.github/scripts/check-version.mjs
         language: system
-        files: ^plugins/skillmeter/\.codex-plugin/plugin\.json$
+        files: ^clients/codex/plugins/skillmeter/\.codex-plugin/plugin\.json$
         pass_filenames: false
       - id: validate-manifests
         name: validate marketplace & plugin manifests
-        entry: node .github/scripts/validate-manifests.mjs
+        entry: node clients/codex/.github/scripts/validate-manifests.mjs
         language: system
-        files: ^(plugins/skillmeter/\.codex-plugin/plugin\.json|\.claude-plugin/marketplace\.json|\.agents/plugins/marketplace\.json)$
+        files: ^(clients/codex/plugins/skillmeter/\.codex-plugin/plugin\.json|\.agents/plugins/marketplace\.json)$
         pass_filenames: false

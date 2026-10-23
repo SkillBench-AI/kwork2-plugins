@@ -13,6 +13,8 @@ const path = require("path");
 const { execFileSync, spawnSync } = require("child_process");
 
 const repo = path.resolve(__dirname, "..");
+// The monorepo root: the channel build and both marketplaces live there.
+const repoRoot = path.resolve(repo, "..", "..");
 const config = require("../skillmeter/scripts/lib/config");
 
 function tempDir(t) {
@@ -40,23 +42,26 @@ test("only the exact internal shape selects a channel", (t) => {
 
 test("the internal build uses dev regardless of the environment", (t) => {
   const root = tempDir(t);
+  // The build covers both clients, so the Codex manifests come along.
   for (const file of [".github/scripts/make-internal-channel.mjs", ".claude-plugin/marketplace.json",
-    "skillmeter/scripts/lib/config.js", "skillmeter/.claude-plugin/plugin.json"]) {
+    ".agents/plugins/marketplace.json", "clients/codex/plugins/skillmeter/.codex-plugin/plugin.json",
+    "clients/claude-code/skillmeter/scripts/lib/config.js", "clients/claude-code/skillmeter/.claude-plugin/plugin.json"]) {
     fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
-    fs.copyFileSync(path.join(repo, file), path.join(root, file));
+    fs.copyFileSync(path.join(repoRoot, file), path.join(root, file));
   }
   execFileSync(process.execPath, [path.join(root, ".github/scripts/make-internal-channel.mjs"), root, "--build", "7"]);
+  const client = path.join(root, "clients/claude-code");
   // The internal build is a prerelease of the next patch: after the current
   // release and before the next one.
   const [major, minor, patch] = require(path.join(repo, "skillmeter/.claude-plugin/plugin.json")).version.split(".").map(Number);
-  assert.equal(JSON.parse(fs.readFileSync(path.join(root, "skillmeter/.claude-plugin/plugin.json"), "utf8")).version,
+  assert.equal(JSON.parse(fs.readFileSync(path.join(client, "skillmeter/.claude-plugin/plugin.json"), "utf8")).version,
     `${major}.${minor}.${patch + 1}-internal.7`);
   assert.equal(JSON.parse(fs.readFileSync(path.join(root, ".claude-plugin/marketplace.json"), "utf8")).name,
     "skillbench-internal");
   const probe = "const c=require('./skillmeter/scripts/lib/config');" +
     "console.log(JSON.stringify([c.CHANNEL.env,c.getDeviceCodeUrl(),require('path').basename(c.STATE_DIR)]))";
   const run = (env) => JSON.parse(spawnSync(process.execPath, ["-e", probe], {
-    cwd: root, encoding: "utf8", env: { PATH: process.env.PATH, HOME: root, ...env },
+    cwd: client, encoding: "utf8", env: { PATH: process.env.PATH, HOME: root, ...env },
   }).stdout);
   assert.deepEqual(run({}), ["dev", "https://id.dev.skillbench.com/oauth2/device/auth", ".skillbench-dev"]);
   assert.deepEqual(run({ SKILLMETER_ENV: "prod" }), ["dev", "https://id.dev.skillbench.com/oauth2/device/auth", ".skillbench-dev"]);

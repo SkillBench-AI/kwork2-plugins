@@ -6,13 +6,18 @@ import { readFileSync, existsSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve, join } from "node:path";
 
-const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
+// This client lives at clients/codex in the SkillMeter plugins monorepo. Its own
+// files resolve against the client root; the marketplace manifest Codex reads
+// sits at the repository root, two levels further up, and the plugin path it
+// declares is relative to that root.
+const clientRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
+const repoRoot = resolve(clientRoot, "..", "..");
 
 const errors = [];
 const checks = [];
 
-function readJson(relPath) {
-  const abs = resolve(repoRoot, relPath);
+function readJson(relPath, base = clientRoot) {
+  const abs = resolve(base, relPath);
   try {
     const value = JSON.parse(readFileSync(abs, "utf8"));
     if (value === null || typeof value !== "object" || Array.isArray(value)) {
@@ -46,16 +51,17 @@ if (plugin) {
   checks.push(`plugin manifest "${plugin.name}" ok`);
 }
 
-// --- Marketplace manifests -------------------------------------------------
-// Both browsers (Codex `.agents/`, Claude `.claude-plugin/`) must stay in sync
-// and every declared local plugin must resolve to a real directory.
-const marketplaceRels = [
-  ".claude-plugin/marketplace.json",
-  ".agents/plugins/marketplace.json",
-];
+// --- Marketplace manifest --------------------------------------------------
+// Only `.agents/plugins/marketplace.json`. The root `.claude-plugin/` manifest
+// is the Claude Code plugin's, in Claude's format, and is validated by that
+// client's CI. This file must exist: Codex reads `.agents/` first and falls back
+// to `.claude-plugin/marketplace.json` only when it is absent, so losing it
+// would make Codex offer the Claude Code plugin under the same name with no
+// error. A missing file fails readJson below.
+const marketplaceRels = [".agents/plugins/marketplace.json"];
 
 for (const rel of marketplaceRels) {
-  const mp = readJson(rel);
+  const mp = readJson(rel, repoRoot);
   if (!mp) continue;
   if (!Array.isArray(mp.plugins) || mp.plugins.length === 0) {
     errors.push(`${rel}: "plugins" must be a non-empty array`);

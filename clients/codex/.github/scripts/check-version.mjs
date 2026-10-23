@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Validate MAJOR.MINOR.PATCH (no suffixes) and an optional matching v-prefixed tag.
+// Validate MAJOR.MINOR.PATCH (no suffixes) and an optional matching codex-v-prefixed tag.
 // The plugin manifest is the version source of truth. Exit 1 on failure.
 //
-// Usage: node .github/scripts/check-version.mjs [--tag v0.5.1]
+// Usage: node .github/scripts/check-version.mjs [--tag codex-v0.5.1]
 
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -60,7 +60,8 @@ if (!CLEAN_SEMVER.test(version)) {
 console.log(`✓ plugin version is clean SemVer: ${version}`);
 
 if (tag !== null) {
-  const expected = `v${version}`;
+  // Prefixed because the Claude Code plugin's v* tags share this repository.
+  const expected = `codex-v${version}`;
   if (tag !== expected) {
     fail(
       `release tag "${tag}" does not match plugin version (expected "${expected}")`

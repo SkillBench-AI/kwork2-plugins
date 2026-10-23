@@ -35,11 +35,15 @@ After merging the release PR:
 
    ```sh
    VERSION="$(node -p "require('./plugins/skillmeter/.codex-plugin/plugin.json').version")"
-   git tag -a "v${VERSION}" -m "SkillMeter ${VERSION}"
-   git push origin "v${VERSION}"
+   git tag -a "codex-v${VERSION}" -m "SkillMeter for Codex ${VERSION}"
+   git push origin "codex-v${VERSION}"
    ```
 
-3. Confirm the [release workflow](.github/workflows/release.yml) succeeds.
+   The `codex-` prefix is required: this repository also holds the Claude Code
+   plugin, whose `v*` tags overlap in version numbers. Tags up to `v0.13.0`
+   were cut in the former skillmeter-codex-marketplace repository.
+
+3. Confirm the [release workflow](../../.github/workflows/release-codex.yml) succeeds.
    It checks the tag against the manifest, validates manifests, runs tests,
    and publishes a source archive with generated release notes.
 
@@ -77,7 +81,8 @@ contain only information users need to update and use the plugin.
 
 No release step is needed for the internal channel. The `Internal channel`
 workflow rebuilds the `internal` branch after CI passes on each `next` push,
-using `.github/scripts/make-internal-channel.mjs --build <run number>`. The
+using the repository root's `.github/scripts/make-internal-channel.mjs --build <run number>`,
+which builds the Claude Code plugin's internal channel in the same commit. The
 build's version is `<next patch>-internal.<run number>`; `next` and `main`
 always keep a release version. Never commit `plugins/skillmeter/channel.json`;
 a test fails if it is present.
@@ -85,5 +90,5 @@ a test fails if it is present.
 ## Checks
 
 `npm run check` runs version validation, manifest validation and Node tests.
-[PR CI](.github/workflows/ci.yml) tests Node 22 and 24. For optional local hooks,
+[PR CI](../../.github/workflows/ci.yml) tests Node 22 and 24. For optional local hooks,
 install [pre-commit](https://pre-commit.com/) and run `pre-commit install`.
