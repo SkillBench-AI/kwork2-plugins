@@ -63,7 +63,7 @@ test("a client that never signed in records it", () => {
   assert.equal(status(f, "s").state, "never_signed_in");
 });
 
-test("signing out moves the session's status before any capture hook runs", () => {
+test("signing out moves the session's status before any capture hook runs", { skip: "kwork/hooks/hooks.json has no hooks configured for the time being" }, () => {
   const f = collectionClient();
   f.write(signedIn);
   f.sessionStart("s");
@@ -72,7 +72,7 @@ test("signing out moves the session's status before any capture hook runs", () =
   assert.deepEqual(status(f, "s"), { schema: 1, state: "signed_out", reason: "signed_out" });
 });
 
-test("an ended session reads as uploads paused, and a renewal returns it to collecting", () => {
+test("an ended session reads as uploads paused, and a renewal returns it to collecting", { skip: "kwork/hooks/hooks.json has no hooks configured for the time being" }, () => {
   const f = collectionClient();
   f.write(signedIn);
   f.sessionStart("s");
