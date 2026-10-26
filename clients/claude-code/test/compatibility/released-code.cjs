@@ -29,8 +29,7 @@ function releasedCode(t, repository, release, plugin) {
   const archive = execFileSync("git", ["archive", release.revision, "--", pinned], { cwd: top, maxBuffer: 32 * 1024 * 1024 });
   execFileSync("tar", ["-xf", "-", "-C", root], { input: archive });
   const location = path.join(root, pinned);
-  const manifest = fs.existsSync(path.join(location, ".codex-plugin/plugin.json")) ? ".codex-plugin/plugin.json" : ".claude-plugin/plugin.json";
-  if (JSON.parse(fs.readFileSync(path.join(location, manifest))).version !== release.version) throw Error("release-version-mismatch");
+  if (JSON.parse(fs.readFileSync(path.join(location, ".claude-plugin/plugin.json"))).version !== release.version) throw Error("release-version-mismatch");
   return location;
 }
 module.exports = { releasedCode };

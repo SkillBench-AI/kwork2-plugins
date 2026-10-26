@@ -70,7 +70,7 @@ test("the environment still overrides every value", () => {
 });
 
 test("an HTTPS endpoint outside skillbench.ai and skillbench.com degrades to the prod default", () => {
-  // Shared with the Codex client: credentials go only to SkillBench hosts.
+  // Credentials go only to SkillBench hosts.
   setTestEnv("SKILLMETER_ACTIVATE_URL", "https://evil.example/activate");
   setTestEnv("SKILLMETER_BROKER_URL", "https://skillbench.ai.evil.example");
 

@@ -537,6 +537,9 @@ upstream commit; refresh the pin to the merged commit.
 
 ## Codex client
 
+**Retired 2026-10-26:** the Codex client was removed from this repository and
+is no longer maintained. This section is kept as history.
+
 **Codex status:** Adopted by reference to the decisions above
 (Accepted 2026-09-11; amended 2026-09-11 for path handling, repository
 identity and file-name policy, and 2026-09-23 for colliding object keys,

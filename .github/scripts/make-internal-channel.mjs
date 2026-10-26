@@ -1,13 +1,9 @@
 #!/usr/bin/env node
-// Turn a checkout of `next` into the internal channel build: each plugin
+// Turn a checkout of `next` into the internal channel build: the plugin
 // defaults to the dev environment, its version becomes a prerelease of the
 // next patch (so it sorts after the current release and before the next
-// one), and each marketplace is renamed so its installation and plugin data
+// one), and the marketplace is renamed so its installation and plugin data
 // never collide with the stable channel's.
-//
-// One build for both clients, because both read the same `internal` branch:
-// Claude Code reads `.claude-plugin/marketplace.json`, Codex reads
-// `.agents/plugins/marketplace.json`, and each plugin lives under its client.
 // Usage: node .github/scripts/make-internal-channel.mjs [repo-root] [--build N]
 
 import { readFileSync, writeFileSync } from "node:fs";
@@ -28,14 +24,6 @@ const clients = [
     // Claude Code shows the marketplace description; it has no display name.
     rename: (marketplace) => {
       marketplace.description = `${marketplace.description} Internal channel: tracks next against the dev environment.`;
-    },
-  },
-  {
-    marketplace: ".agents/plugins/marketplace.json",
-    plugin: "clients/codex/plugins/kwork",
-    pluginManifest: ".codex-plugin/plugin.json",
-    rename: (marketplace) => {
-      marketplace.interface = { ...marketplace.interface, displayName: "SkillBench (internal)" };
     },
   },
 ];

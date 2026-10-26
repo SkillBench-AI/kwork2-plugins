@@ -205,6 +205,9 @@ tenant), which is covered by unit tests only.
 
 ## Codex client
 
+**Retired 2026-10-26:** the Codex client was removed from this repository and
+is no longer maintained. This section is kept as history.
+
 **Codex status:** Proposed; implemented in Codex 0.11.0 (#105). Adopts by reference the decisions above
 (proposed 2026-09-27; implemented in Claude 0.40.0 and 0.40.1 and verified
 end to end in dev and prod). This file is the Codex design, and it is a

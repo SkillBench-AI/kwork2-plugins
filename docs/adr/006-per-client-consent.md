@@ -82,6 +82,9 @@ existing retention limit; it is never sent under the new record.
 
 ## Codex client
 
+**Retired 2026-10-26:** the Codex client was removed from this repository and
+is no longer maintained. This section is kept as history.
+
 **Codex status:** Adopted by reference to the decisions above
 (Proposed 2026-09-28). Implemented in Codex 0.12.1 (#109). Supersedes the
 shared-record decisions of

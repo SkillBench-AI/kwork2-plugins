@@ -17,8 +17,8 @@
 
 const os = require("os");
 const path = require("path");
-// Environments, channel, OAuth client and endpoint trust are shared with the
-// Codex client (shared/lib/endpoints.js).
+// Environments, channel, OAuth client and endpoint trust come from
+// shared/lib/endpoints.js.
 const {
   ENVIRONMENTS,
   CHANNEL_FILE,

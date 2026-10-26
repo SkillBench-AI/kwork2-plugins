@@ -16,7 +16,7 @@ const expiringJwt = (expOffsetSec) =>
   makeJwt({ exp: Math.floor(Date.now() / 1000) + expOffsetSec });
 
 test("isJwtExpired default: a missing or undecodable token IS expired", () => {
-  // Shared with the Codex client: a malformed token is never sent.
+  // A malformed token is never sent.
   assert.equal(isJwtExpired(null), true);
   assert.equal(isJwtExpired(undefined), true);
   assert.equal(isJwtExpired("garbage"), true);

@@ -669,6 +669,9 @@ little.
 
 ## Codex client
 
+**Retired 2026-10-26:** the Codex client was removed from this repository and
+is no longer maintained. This section is kept as history.
+
 **Codex status:** Adopted by reference to the decisions above
 (Accepted 2026-09-25, [PR #111](https://github.com/SkillBench-AI/skillmeter-claude-code-marketplace/pull/111)).
 

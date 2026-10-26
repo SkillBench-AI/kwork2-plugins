@@ -19,10 +19,10 @@ const telemetryStore = require("./lib/telemetry-store");
 
 const SESSION_FILE = path.join(ACCOUNT_DIR, "session.json");
 
-// Locked store I/O, shared with the Codex client (shared/lib/store-file.js):
-// both clients write CRED_FILE, under the same dead-owner lock.
+// Locked store I/O (shared/lib/store-file.js): other SkillBench clients may
+// write CRED_FILE too, under the same dead-owner lock.
 const { readObject, withFileLock, mutateFile } = require("./lib/store-file");
-// The device identity in CRED_FILE, shared with the Codex client.
+// The device identity in CRED_FILE, shared with other SkillBench clients.
 const deviceIdentity = require("./lib/device-identity");
 
 // The shared store: identity plus other clients' fields.
@@ -381,7 +381,7 @@ module.exports = {
   commitRefresh,
   commitRotation,
   dropRevokedLicense,
-  // The shared renewal flow's name (license-renewal.js), as in the Codex client.
+  // The shared renewal flow's name (license-renewal.js).
   dropSession: dropRevokedLicense,
   withRecoveryCurrent,
   getDeviceId,

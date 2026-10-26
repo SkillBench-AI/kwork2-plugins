@@ -52,12 +52,12 @@ test("the auth lifecycle never writes the shared store", () => {
 });
 
 test("another client's session fields in the shared store never reach this session", () => {
-  // What the Codex plugin or the VS Code extension may write there.
-  writeJson(shared, { ...JSON.parse(fs.readFileSync(shared)), license_jwt: "codex-token", signed_out: true });
+  // What another SkillBench client, such as the VS Code extension, may write there.
+  writeJson(shared, { ...JSON.parse(fs.readFileSync(shared)), license_jwt: "other-client-token", signed_out: true });
   assert.equal(store.getLicenseToken(), "fixture-token");
   assert.equal(store.isSignedIn(), true);
   store.signOut();
-  assert.equal(JSON.parse(fs.readFileSync(shared)).license_jwt, "codex-token", "their license is theirs");
+  assert.equal(JSON.parse(fs.readFileSync(shared)).license_jwt, "other-client-token", "their license is theirs");
   writeJson(shared, { device_id: original.device_id, hash_salt: original.hash_salt, license_jwt: "vscode-token" });
   assert.equal(store.isSignedIn(), false, "their sign-in does not sign this client in");
 });

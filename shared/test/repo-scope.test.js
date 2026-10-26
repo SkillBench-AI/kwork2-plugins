@@ -221,7 +221,7 @@ test("getRemoteUrlsForRepo follows a worktree commondir", () => {
   ]);
 });
 
-// Invalid shared metadata fails closed, as in the Codex client: the worktree's
+// Invalid shared metadata fails closed: the worktree's
 // private config must never stand in for the main repository's remotes.
 for (const broken of ["missing-common-directory", "missing-config", "unreadable-commondir", "empty-commondir"]) {
   test(`getRemoteUrlsForRepo returns no remotes for a worktree with ${broken}`, () => {

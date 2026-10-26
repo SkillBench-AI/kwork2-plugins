@@ -1,8 +1,8 @@
 name: CI
 
-# One workflow for both clients, with no path filters: the internal channel
-# waits for this one workflow and publishes both plugins from the same
-# `internal` branch, so it must never publish after only one of them passed.
+# One workflow with no path filters: the internal channel waits for this one
+# workflow and publishes the plugin from the `internal` branch, so it must
+# never publish after only part of it passed.
 
 on:
   push:
@@ -82,7 +82,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      # shared/lib tested once, against the source both plugins copy,
+      # shared/lib tested once, against the source the plugin copies,
       # including the secret corpus (sanitize.test.js, fed by
       # shared/fixtures/secret-corpus.json): a Tier-1 corpus miss fails here
       # and blocks merge.
@@ -99,46 +99,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      # shared/lib is the source; each plugin carries a generated copy.
+      # shared/lib is the source; the plugin carries a generated copy.
       - name: Check shared/lib copies
         run: node scripts/sync-shared.mjs --check
 
-  codex-validate:
-    name: "Codex: validate manifests & version"
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: clients/codex
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Check plugin version is clean SemVer
-        run: node .github/scripts/check-version.mjs
-      # Also fails if `.agents/plugins/marketplace.json` is missing, without
-      # which Codex would fall back to the Claude Code marketplace.
-      - name: Validate marketplace & plugin manifests
-        run: node .github/scripts/validate-manifests.mjs
-
-  codex-test:
-    name: "Codex: test (Node ${{ matrix.node-version }})"
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: clients/codex
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [22, 24, 26]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Run unit tests
-        run: node --test

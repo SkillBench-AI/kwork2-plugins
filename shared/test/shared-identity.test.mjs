@@ -6,20 +6,17 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { test } from "node:test";
 
-// The device identity both clients share (shared/lib/device-identity.js), run
-// in child processes so each client resolves its own configuration from a
-// clean environment.
+// The device identity in ~/.skillbench/credentials.json
+// (shared/lib/device-identity.js), run in child processes so the client
+// resolves its own configuration from a clean environment.
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const CLIENTS = {
-  claude: join(repoRoot, "clients/claude-code/kwork/scripts"),
-  codex: join(repoRoot, "clients/codex/plugins/kwork/scripts"),
-};
+const scripts = join(repoRoot, "clients/claude-code/kwork/scripts");
 
-function run(client, stateDir, script) {
+function run(stateDir, script) {
   const home = mkdtempSync(join(tmpdir(), "identity-home-"));
   try {
     return execFileSync(process.execPath, ["-e", script], {
-      cwd: CLIENTS[client],
+      cwd: scripts,
       encoding: "utf8",
       env: { PATH: process.env.PATH, HOME: home, SKILLMETER_STATE_DIR: stateDir, CLAUDE_PLUGIN_DATA: join(home, "data"), PLUGIN_DATA: join(home, "data") },
     }).trim();
@@ -27,7 +24,7 @@ function run(client, stateDir, script) {
     rmSync(home, { recursive: true, force: true });
   }
 }
-const deviceId = (client, stateDir) => run(client, stateDir, "process.stdout.write(require('./credstore').getDeviceId())");
+const deviceId = (stateDir) => run(stateDir, "process.stdout.write(require('./credstore').getDeviceId())");
 
 function stateDir(t) {
   const dir = mkdtempSync(join(tmpdir(), "identity-state-"));
@@ -35,18 +32,18 @@ function stateDir(t) {
   return dir;
 }
 
-test("both clients read and write the same device identity", (t) => {
+test("the device identity is written once and read back", (t) => {
   const dir = stateDir(t);
-  const fromCodex = deviceId("codex", dir);
-  assert.match(fromCodex, /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/);
-  assert.equal(deviceId("claude", dir), fromCodex);
-  assert.equal(JSON.parse(readFileSync(join(dir, "credentials.json"), "utf8")).device_id, fromCodex);
+  const id = deviceId(dir);
+  assert.match(id, /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/);
+  assert.equal(deviceId(dir), id);
+  assert.equal(JSON.parse(readFileSync(join(dir, "credentials.json"), "utf8")).device_id, id);
 });
 
-test("a corrupt credentials.json is kept aside before either client resets it", (t) => {
+test("a corrupt credentials.json is kept aside before it is reset", (t) => {
   const dir = stateDir(t);
   writeFileSync(join(dir, "credentials.json"), "{ not json");
-  const id = deviceId("codex", dir);
+  const id = deviceId(dir);
   assert.ok(id);
   const aside = readdirSync(dir).filter((name) => name.startsWith("credentials.json.corrupt-"));
   assert.equal(aside.length, 1, "the original bytes are preserved");
@@ -59,9 +56,7 @@ test("an unreadable credentials.json is never overwritten", { skip: process.getu
   writeFileSync(file, JSON.stringify({ other_client_field: "kept" }));
   chmodSync(file, 0o000);
   t.after(() => { try { chmodSync(file, 0o600); } catch {} });
-  for (const client of ["codex", "claude"]) {
-    assert.throws(() => deviceId(client, dir), `${client} refuses to write over what it cannot read`);
-  }
+  assert.throws(() => deviceId(dir), "refuses to write over what it cannot read");
   chmodSync(file, 0o600);
   assert.deepEqual(JSON.parse(readFileSync(file, "utf8")), { other_client_field: "kept" });
   assert.equal(existsSync(`${file}.lock`), false, "no lock left behind");

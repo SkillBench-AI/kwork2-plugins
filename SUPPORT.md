@@ -6,10 +6,8 @@ For non-sensitive defects and feature requests, open an issue at:
 
 <https://github.com/SkillBench-AI/kwork2-plugins/issues>
 
-Name the client (Claude Code or Codex) and include the command that failed,
-its exit status, and sanitized error output, plus:
-
-### Kwork for Claude Code
+Include the command that failed, its exit status, and sanitized error output,
+plus:
 
 - `claude --version`;
 - the Kwork version shown by `claude plugin list --json`;
@@ -24,22 +22,6 @@ claude plugin update kwork@skillbench
 
 Restart Claude Code or run `/reload-plugins` after an update.
 
-### Kwork for Codex
-
-- `codex --version`;
-- the Kwork version shown by `codex plugin list --json`.
-
-Before filing an installation issue, run:
-
-```bash
-codex plugin marketplace upgrade skillbench
-codex plugin add kwork@skillbench
-```
-
-Restart Codex and start a new session after an update. If Kwork for Codex
-was installed from the archived `skillmeter-codex-marketplace`, move it first:
-see [Update](clients/codex/README.md#update).
-
 ## Privacy and data requests
 
 Contact `privacy@skillbench.com`. If your organization provides Kwork, it
@@ -53,7 +35,6 @@ code, customer identifiers, or telemetry payloads in a public issue.
 ## Documentation
 
 - [Claude Code plugin guide](clients/claude-code/kwork/README.md)
-- [Codex plugin guide](clients/codex/plugins/kwork/README.md)
 - [Privacy](PRIVACY.md)
 - [SkillBench Privacy Policy](https://skillbench.com/privacy/)
 - [SkillBench subprocessors](https://skillbench.com/subprocessors/)
@@ -61,14 +42,13 @@ code, customer identifiers, or telemetry payloads in a public issue.
 ## Credential store is busy
 
 A brief `credential-store-busy` error means another Kwork process may be
-writing sign-in state: a process of the same client, or of the other client,
-since both share the device identity in `~/.skillbench/credentials.json`.
-Retry after that operation finishes. Neither client evicts a live writer
-because its lock is old.
+writing sign-in state, or another SkillBench client that shares the device
+identity in `~/.skillbench/credentials.json`. Retry after that operation
+finishes. Kwork does not evict a live writer because its lock is old.
 
-If the error persists, quit all Claude Code and Codex sessions and their
-background plugin workers; an old process can retain its previous behavior
-after an update. Restart and retry. Each client keeps its own session.
+If the error persists, quit all Claude Code sessions and their background
+plugin workers; an old process can retain its previous behavior after an
+update. Restart and retry.
 
 Malformed or unknown lock records, PID reuse, and repeated interrupted cleanup
 can require support-assisted recovery. Preserve the credential and lock files

@@ -29,9 +29,7 @@ If the command fails, report the error and make no changes. If no repositories
 are returned, report that no local organization repositories were found and do
 not call `AskUserQuestion`.
 
-Report the global state and the enabled and disabled counts. The global pause
-covers Kwork for Claude Code on this machine only; Kwork for Codex
-has its own setting, so say so when the global state is paused. Repositories whose
+Report the global state and the enabled and disabled counts. Repositories whose
 `action` is `null` are blocked by the global or organization setting: list
 their `optionLabel` and `description`, but do not offer them as toggle choices.
 

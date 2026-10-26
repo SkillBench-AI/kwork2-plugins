@@ -1,8 +1,7 @@
 name: Internal channel
 
-# Rebuilds the `internal` branch from each green push to `next`. Both clients
-# install from it: Claude Code as `kwork@skillbench-internal` via
-# `.claude-plugin/`, Codex via `.agents/plugins/`.
+# Rebuilds the `internal` branch from each green push to `next`. Claude Code
+# installs from it as `kwork@skillbench-internal` via `.claude-plugin/`.
 
 on:
   workflow_run:
@@ -32,8 +31,6 @@ jobs:
           node-version: 22
       - name: Build the internal channel
         run: node .github/scripts/make-internal-channel.mjs --build ${{ github.run_number }}
-      - name: Validate Codex manifests
-        run: node clients/codex/.github/scripts/validate-manifests.mjs
       - name: Publish the internal branch
         env:
           SOURCE_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}

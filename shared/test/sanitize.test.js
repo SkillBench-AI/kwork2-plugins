@@ -177,10 +177,9 @@ test("sanitizeLine does not mutate its input", () => {
 
 // --- Shared cross-surface secret-fixture parity corpus ---------------------
 // Loads shared/fixtures/secret-corpus.json (a copy of skillbench-docs'
-// eval/secret-corpus/corpus.json, also run by the Codex client's tests) and
-// asserts every fixture is redacted. Tier-1 misses fail the build (blocks
-// merge), so Tier-1 recall can't silently diverge from the Codex / session
-// collector sanitizers. See SANITIZATION_EPIC.md Task 5.2.
+// eval/secret-corpus/corpus.json) and asserts every fixture is redacted.
+// Tier-1 misses fail the build (blocks merge), so Tier-1 recall can't silently
+// diverge from the session collector sanitizer. See SANITIZATION_EPIC.md Task 5.2.
 const SECRET_CORPUS = JSON.parse(
   fs.readFileSync(path.join(__dirname, "..", "fixtures", "secret-corpus.json"), "utf8")
 );

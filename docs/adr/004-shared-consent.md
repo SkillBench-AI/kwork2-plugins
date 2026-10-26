@@ -342,6 +342,9 @@ turn while it reads the recorded directories.
 
 ## Codex client
 
+**Retired 2026-10-26:** the Codex client was removed from this repository and
+is no longer maintained. This section is kept as history.
+
 **Codex status:** Superseded on 2026-09-28 by [ADR 006](006-per-client-consent.md#codex-client):
 Codex keeps its own consent record. The text below is kept as history.
 Previously adopted by reference. Canonical text:

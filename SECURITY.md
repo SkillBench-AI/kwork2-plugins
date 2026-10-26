@@ -2,9 +2,8 @@
 
 ## Supported version
 
-This policy covers both Kwork clients in this repository: Kwork for
-Claude Code and Kwork for Codex. Security fixes are applied to the latest
-released version of each client. Update to it before reporting an issue that
+This policy covers Kwork for Claude Code. Security fixes are applied to the
+latest released version. Update to it before reporting an issue that
 may already be resolved.
 
 ## Report a vulnerability
@@ -15,8 +14,7 @@ vulnerability.
 
 Include:
 
-- the affected client (Claude Code or Codex), its Kwork version, and the
-  Claude Code or Codex version;
+- the Kwork version and the Claude Code version;
 - the operating system;
 - a minimal reproduction using synthetic data;
 - expected and observed behavior; and

@@ -1,81 +1,53 @@
 # Kwork plugins
 
-Kwork for Claude Code and Kwork for Codex, in one repository. Each
-client has its own plugin, hooks and tests; the two marketplaces at the root
-point at them.
-
-| Client | Plugin | Marketplace (read by) | Docs |
-| --- | --- | --- | --- |
-| Claude Code | [`clients/claude-code/kwork`](clients/claude-code/kwork) | [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) (Claude Code) | [README](clients/claude-code/README.md) |
-| Codex | [`clients/codex/plugins/kwork`](clients/codex/plugins/kwork) | [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) (Codex) | [README](clients/codex/README.md) |
-
-Codex reads `.agents/plugins/marketplace.json` and falls back to
-`.claude-plugin/marketplace.json` only when it is missing, which would offer the
-Claude Code plugin to Codex. CI fails if the Codex marketplace is missing.
+Kwork for Claude Code. The plugin lives in
+[`clients/claude-code/kwork`](clients/claude-code/kwork) (see its
+[README](clients/claude-code/README.md)); the marketplace at
+[`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) points at it.
 
 ## Install
-
-Claude Code:
 
 ```sh
 claude plugin marketplace add SkillBench-AI/kwork2-plugins
 claude plugin install kwork@skillbench
 ```
 
-Codex:
-
-```sh
-codex plugin marketplace add SkillBench-AI/kwork2-plugins --ref main
-codex plugin add kwork@skillbench
-```
-
-Moving from the archived `skillmeter-codex-marketplace`: see
-[clients/codex/README.md](clients/codex/README.md#update).
-
 ## Documentation
 
-- [Architectural decisions](docs/adr/README.md): one set for both clients; each
-  ADR ends with how the Codex client implements it where that differs.
+- [Architectural decisions](docs/adr/README.md).
 - [Releasing](RELEASING.md), [Privacy](PRIVACY.md), [Security](SECURITY.md) and
-  [Support](SUPPORT.md) cover both clients.
+  [Support](SUPPORT.md).
 
 ## Shared code
 
-Code both clients must run identically lives once in [`shared/lib`](shared/lib):
-what leaves the machine (the sanitizer), sign-in and license renewal, endpoint
-trust, the device identity and store I/O for `~/.skillbench`, repository scope,
-and the status card. Each client keeps its own session, license and consent.
-See [shared/README.md](shared/README.md). Both CLIs install only the
-plugin directory, so each plugin carries a generated copy at the same path in
-its `scripts/lib`. Edit `shared/lib`, then run:
+[`shared/lib`](shared/lib) holds what leaves the machine (the sanitizer),
+sign-in and license renewal, endpoint trust, the device identity and store I/O
+for `~/.skillbench`, repository scope, and the status card. See
+[shared/README.md](shared/README.md). Claude Code installs only the plugin
+directory, so the plugin carries a generated copy at the same path in its
+`scripts/lib`. Edit `shared/lib`, then run:
 
 ```sh
 node scripts/sync-shared.mjs
 ```
 
-CI fails when a copy differs from its source. Test corpora both clients run
-live in [`shared/fixtures`](shared/fixtures).
+CI fails when a copy differs from its source. Test corpora live in
+[`shared/fixtures`](shared/fixtures).
 
 ## Branches and channels
 
 - `next`: development; pull requests target it.
-- `main`: what customers install. A release merges `next` into `main` and
-  ships both clients, so cut one only when `next` is releasable for both.
-- `internal`: rebuilt from each green `next` push for both clients by
+- `main`: what customers install. A release merges `next` into `main`.
+- `internal`: rebuilt from each green `next` push by
   [`make-internal-channel.mjs`](.github/scripts/make-internal-channel.mjs).
 
-Release tags: `v*` for Claude Code, `codex-v*` for Codex. Pushing one runs
-that client's release workflow (`release-claude-code.yml` or
-`release-codex.yml`), which validates the tag against the plugin version, runs
-the checks and publishes the GitHub Release; the Claude Code release is always
-Latest.
+Release tags are `v*`. Pushing one runs `release-claude-code.yml`, which
+validates the tag against the plugin version, runs the checks and publishes the
+GitHub Release.
 
 ## Development
-
-Run each client's checks from its directory:
 
 ```sh
 (cd shared && node --test)
 (cd clients/claude-code && node --test)
-(cd clients/codex && npm run check)
 ```

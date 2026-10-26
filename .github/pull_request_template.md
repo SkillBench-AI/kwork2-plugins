@@ -10,8 +10,8 @@
 
 ## Validation
 
-- [ ] `npm run check` passes locally (version + manifests + tests)
-- [ ] Bumped `plugins/kwork/.codex-plugin/plugin.json` `version` if this is a release-worthy change
+- [ ] Tests pass locally (`cd clients/claude-code && node --test`, `cd shared && node --test`)
+- [ ] Bumped `clients/claude-code/kwork/.claude-plugin/plugin.json` `version` if this is a release-worthy change
 - [ ] Updated docs/README if behavior or config changed
 
 ## Release notes

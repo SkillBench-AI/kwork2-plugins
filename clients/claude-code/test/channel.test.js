@@ -13,7 +13,7 @@ const path = require("path");
 const { execFileSync, spawnSync } = require("child_process");
 
 const repo = path.resolve(__dirname, "..");
-// The monorepo root: the channel build and both marketplaces live there.
+// The monorepo root: the channel build and the marketplace live there.
 const repoRoot = path.resolve(repo, "..", "..");
 const config = require("../kwork/scripts/lib/config");
 
@@ -30,9 +30,7 @@ test("main ships no channel file, so installs default to prod", () => {
 
 test("the internal build uses dev regardless of the environment", (t) => {
   const root = tempDir(t);
-  // The build covers both clients, so the Codex manifests come along.
   for (const file of [".github/scripts/make-internal-channel.mjs", ".claude-plugin/marketplace.json",
-    ".agents/plugins/marketplace.json", "clients/codex/plugins/kwork/.codex-plugin/plugin.json",
     "clients/claude-code/kwork/scripts/lib/config.js", "clients/claude-code/kwork/scripts/lib/endpoints.js",
     "clients/claude-code/kwork/.claude-plugin/plugin.json"]) {
     fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });

@@ -1,4 +1,3 @@
-# Each client keeps its own .gitignore under clients/<client>/.
 .DS_Store
 node_modules/
 dist/

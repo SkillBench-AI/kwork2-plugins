@@ -15,7 +15,7 @@ const rules = require("../lib/rules");
 const SALT = "deadbeefcafe";
 
 // --- Fixture corpus ---------------------------------------------------------
-// shared/fixtures/pii-corpus.json; the Codex client's tests run the same file.
+// shared/fixtures/pii-corpus.json.
 
 const CORPUS = JSON.parse(
   fs.readFileSync(path.join(__dirname, "..", "fixtures", "pii-corpus.json"), "utf8")

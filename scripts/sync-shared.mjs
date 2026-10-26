@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// Copy shared/lib into both plugins, or check that the copies are current.
+// Copy shared/lib into the plugin, or check that the copy is current.
 //
-// Both CLIs install only the plugin directory, so a plugin cannot require code
-// from outside it. Code both clients must run identically lives once in
-// shared/lib and is copied to the same path in each plugin's scripts/lib.
+// Claude Code installs only the plugin directory, so the plugin cannot require
+// code from outside it. Shared code lives in shared/lib and is copied to the
+// same path in the plugin's scripts/lib.
 // Edit shared/lib, never a copy; CI fails when a copy differs.
 //
 // Usage: node scripts/sync-shared.mjs [--check]
@@ -16,7 +16,6 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "shared/lib");
 const targets = [
   "clients/claude-code/kwork/scripts/lib",
-  "clients/codex/plugins/kwork/scripts/lib",
 ];
 const check = process.argv.includes("--check");
 
@@ -55,4 +54,4 @@ if (problems.length > 0) {
   for (const problem of problems) console.error(`  - ${problem}`);
   process.exit(1);
 }
-console.log(`✓ ${names.length} shared module(s) ${check ? "in sync" : "synced"} in ${targets.length} plugins`);
+console.log(`✓ ${names.length} shared module(s) ${check ? "in sync" : "synced"}`);

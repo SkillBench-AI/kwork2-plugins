@@ -473,6 +473,9 @@ clients.
 
 ## Codex client
 
+**Retired 2026-10-26:** the Codex client was removed from this repository and
+is no longer maintained. This section is kept as history.
+
 **Codex status:** Adopted by reference to the decisions above
 (Accepted 2026-09-10, amended 2026-09-16: sign-in moved to the broker).
 Decisions 1 and 5 (the refresh path and the shared session) are superseded for

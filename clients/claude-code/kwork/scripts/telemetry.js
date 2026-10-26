@@ -143,8 +143,7 @@ switch (action) {
     process.stderr.write(
       "Kwork: telemetry paused for Claude Code on this machine. " +
       "No events will be transmitted from any project until you run " +
-      "`/kwork:telemetry enable-global`. " +
-      "Kwork for Codex has its own setting and is not paused.\n"
+      "`/kwork:telemetry enable-global`.\n"
     );
     printStatus();
     break;
