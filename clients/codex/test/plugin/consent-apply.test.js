@@ -4,10 +4,10 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const { fixture } = require("../../test-support/consent-record.cjs");
-const modulePath = path.resolve(__dirname, "../../plugins/skillmeter/scripts/lib/consent-apply.js");
+const modulePath = path.resolve(__dirname, "../../plugins/kwork/scripts/lib/consent-apply.js");
 const setup = `
   const {applyRepositoryConsent} = require(${JSON.stringify(modulePath)});
-  const store = require(${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/lib/consent-store.js"))}).createConsentStore({file:policyFile,observedFile:logger.CONSENT_OBSERVED_FILE});
+  const store = require(${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/lib/consent-store.js"))}).createConsentStore({file:policyFile,observedFile:logger.CONSENT_OBSERVED_FILE});
   const key='github.com/acme/widgets';
   policy.organizations.acme.consent_version=2;
   writePolicy(policy);
@@ -88,7 +88,7 @@ test("CLI shared OFF revokes known payloads while paused without changing creden
     const revision=String(JSON.parse(fs.readFileSync(policyFile,'utf8')).revision);
     const credentials=path.join(${JSON.stringify(f.state)},'credentials.json'),before=fs.readFileSync(credentials);
     process.argv=['node','telemetry.js','consent-set','off','--repository',key,'--revision',revision];
-    require(${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/telemetry.js"))});
+    require(${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/telemetry.js"))});
     assert.equal(fs.existsSync(chunk),false);
     assert.deepEqual(fs.readFileSync(credentials),before);
     assert.equal(fs.existsSync(path.join(path.dirname(path.dirname(chunk)),'consent.json')),true);
@@ -101,7 +101,7 @@ test("CLI consent-set --help prints the choice arguments and exits successfully"
   const f=fixture(t);
   const result=f.run(`
     process.argv=['node','telemetry.js','consent-set','--help'];
-    require(${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/telemetry.js"))});
+    require(${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/telemetry.js"))});
     assert.equal(process.exitCode,undefined);
     assert.equal(fs.existsSync(policyFile),false);
   `);
@@ -114,7 +114,7 @@ for (const args of [[], ['on'], ['on','--repository','github.com/acme/widgets','
     const f=fixture(t);
     f.run(`
       process.argv=['node','telemetry.js','consent-set',...${JSON.stringify(args)}];
-      require(${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/telemetry.js"))});
+      require(${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/telemetry.js"))});
       assert.equal(process.exitCode,1);process.exitCode=0;
       assert.equal(fs.existsSync(policyFile),false);
     `);
@@ -160,7 +160,7 @@ test("CLI OFF/ON excludes disabled text and preserves another repository's queue
   fs.writeFileSync(source,'');logger.observeTranscriptConsent(source,repo);
   fs.appendFileSync(source,line('A backlog'));const aChunk=stage();assert.ok(aChunk);
   const cursor=path.join(path.dirname(path.dirname(aChunk)),'cursor.json'),cursorBytes=fs.readFileSync(cursor);
-  const cli=${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/telemetry.js"))};
+  const cli=${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/telemetry.js"))};
   const command=args=>{process.argv=['node','telemetry.js',...args];delete require.cache[cli];require(cli);assert.notEqual(process.exitCode,1);};
   command(['consent-set','off','--repository',key,'--revision','1']);
   assert.equal(fs.existsSync(aChunk),false);assert.deepEqual(fs.readFileSync(cursor),cursorBytes);
@@ -194,7 +194,7 @@ test("busy payload cleanup is reported as deferred after the choice is saved", t
     fs.appendFileSync(source,line('backlog'));const chunk=stage();
     const lock=path.join(path.dirname(path.dirname(chunk)),'lock');fs.writeFileSync(lock,'busy');
     process.argv=['node','telemetry.js','consent-set','off','--repository',key,'--revision','1'];
-    require(${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/telemetry.js"))});
+    require(${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/telemetry.js"))});
     assert.equal(JSON.parse(fs.readFileSync(policyFile)).repositories[key].enabled,false);
     assert.equal(fs.existsSync(chunk),true);
     fs.unlinkSync(lock);logger.reconcileConsentRevocations();assert.equal(fs.existsSync(chunk),false);
@@ -212,7 +212,7 @@ test("post-commit observer failure reports that consent was saved and does not r
 
 const orgSetup = `
   const {applyOrganizationConsent} = require(${JSON.stringify(modulePath)});
-  const store = require(${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/lib/consent-store.js"))}).createConsentStore({file:policyFile,observedFile:logger.CONSENT_OBSERVED_FILE});
+  const store = require(${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/lib/consent-store.js"))}).createConsentStore({file:policyFile,observedFile:logger.CONSENT_OBSERVED_FILE});
   const applyOrg=opts=>applyOrganizationConsent({store,organization:'acme',allowedOrgs:['acme'],expectedRevision:null,enabled:true,acknowledged:true,...opts});
 `;
 
@@ -240,7 +240,7 @@ test("organization ON records the acknowledgement and OFF drops it", t => fixtur
 test("CLI records organization then repository consent from no record and enables capture", t => {
   const f=fixture(t);
   const result=f.run(`
-    const cli=${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/telemetry.js"))};
+    const cli=${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/telemetry.js"))};
     const command=args=>{process.argv=['node','telemetry.js',...args];delete require.cache[cli];require(cli);assert.notEqual(process.exitCode,1);};
     assert.equal(logger.getTelemetryOptIn(repo),null);
     command(['consent-set','on','--organization','ACME','--revision','absent','--acknowledge-machine-scope']);
@@ -260,7 +260,7 @@ test("CLI rejects an organization the license does not cover", t => {
   const f=fixture(t);
   const result=f.run(`
     process.argv=['node','telemetry.js','consent-set','on','--organization','other','--revision','absent','--acknowledge-machine-scope'];
-    require(${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/telemetry.js"))});
+    require(${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/telemetry.js"))});
     assert.equal(process.exitCode,1);process.exitCode=0;
     assert.equal(fs.existsSync(policyFile),false);
   `);

@@ -1,6 +1,6 @@
 "use strict";
 
-// ADR 003 decision 6: /skillmeter:telemetry status shows the collection state
+// ADR 003 decision 6: /kwork:telemetry status shows the collection state
 // with the same state names and reasons as the SessionStart card. Each case
 // builds the state through the real writers and runs the real status command
 // and card, so a reason that drifts in one place fails here.
@@ -10,7 +10,7 @@ const assert = require("node:assert/strict");
 
 const { ORG, REPO_KEY, collectionClient, license } = require("../testing/collection-client");
 
-const SIGN_IN = "/skillmeter:signin";
+const SIGN_IN = "/kwork:signin";
 const signedIn = `signIn(${JSON.stringify(license())});`;
 
 // What the card shows for each reason, so the status line can be compared
@@ -34,10 +34,10 @@ const CASES = [
     effective: "enabled · telemetry enabled for this repository",
     shown: (f, reason) => assert.ok(f.sessionStart().includes(`${sentence(reason)}. Uploads are paused`)) },
   { state: "paused", policy: { enabled: false, orgs: { [ORG]: true }, repositories: { [REPO_KEY]: true } }, setup: signedIn,
-    reason: "paused for Claude Code on this machine", next: "/skillmeter:telemetry enable-global", effective: "disabled · telemetry globally disabled",
+    reason: "paused for Claude Code on this machine", next: "/kwork:telemetry enable-global", effective: "disabled · telemetry globally disabled",
     shown: (f, reason) => assert.ok(f.sessionStart().includes(`OFF — ${reason}`)) },
   { state: "unconfigured", policy: { orgs: { [ORG]: true } }, setup: signedIn,
-    reason: "repository telemetry choice required", next: "/skillmeter:telemetry list",
+    reason: "repository telemetry choice required", next: "/kwork:telemetry list",
     effective: "disabled · repository telemetry choice required",
     shown: (f, reason) => assert.ok(f.hookStderr().includes(`skipped (${reason})`)) },
   { state: "recording", setup: signedIn, reason: "telemetry enabled for this repository", next: undefined,
@@ -45,7 +45,7 @@ const CASES = [
 ];
 
 for (const c of CASES) {
-  test(`/skillmeter:telemetry status: ${c.state}`, () => {
+  test(`/kwork:telemetry status: ${c.state}`, () => {
     const f = collectionClient({ policy: c.policy });
     if (c.setup) f.write(c.setup);
     const { text, lines } = f.status();
@@ -64,13 +64,13 @@ for (const c of CASES) {
   });
 }
 
-test("/skillmeter:telemetry status: unconfigured names the gate's reason in words", () => {
+test("/kwork:telemetry status: unconfigured names the gate's reason in words", () => {
   const f = collectionClient({ policy: { orgs: { [ORG]: true }, repositories: { [REPO_KEY]: false } } });
   f.write(signedIn);
   const { lines } = f.status();
   assert.equal(lines.state, "unconfigured");
   assert.equal(lines.reason, "telemetry disabled for this project");
-  assert.equal(lines.next, "/skillmeter:telemetry list");
+  assert.equal(lines.next, "/kwork:telemetry list");
   assert.equal(lines.effective, "disabled · telemetry disabled for this project");
 
   // Outside any repository there is nothing to choose, so no next command.

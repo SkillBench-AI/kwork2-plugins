@@ -23,7 +23,7 @@ const {
   writeTelemetryPolicy,
 } = require("../testing/helpers");
 
-const SCRIPTS = path.resolve(__dirname, "../skillmeter/scripts");
+const SCRIPTS = path.resolve(__dirname, "../kwork/scripts");
 const ORG = "skillbench-ai";
 const REPO_KEY = `github.com/${ORG}/decoupled`;
 

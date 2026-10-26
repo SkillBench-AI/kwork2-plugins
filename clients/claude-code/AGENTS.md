@@ -24,7 +24,7 @@ concise English for readers who do not know the team's internal history.
 
 ## Implementation and validation
 
-- Runtime hooks live in `skillmeter/scripts/`; shared logic belongs in its `lib/` directory.
+- Runtime hooks live in `kwork/scripts/`; shared logic belongs in its `lib/` directory.
   Use CommonJS, two-space indentation, double quotes and semicolons. Follow
   existing snake_case hook names and conventional commit subjects.
 - Keep queues in persistent plugin data, never the install/cache directory.
@@ -35,12 +35,12 @@ concise English for readers who do not know the team's internal history.
   installation path. Do not assume skill subprocesses inherit
   `CLAUDE_PLUGIN_ROOT`.
 - Tests live in `test/` and fixtures in `testing/` at the repository root,
-  outside the shipped `skillmeter/` directory, so they never reach users.
+  outside the shipped `kwork/` directory, so they never reach users.
 - Use `testing/helpers.js` for synthetic state. It loads bootstrap
   before runtime modules and forces a temporary plugin-data root. Tests that
   do not use helpers must load bootstrap themselves. Never test against real
   credential stores or plugin data.
-- Run `node --test`. When changing hooks, inspect `skillmeter/hooks/hooks.json` and
+- Run `node --test`. When changing hooks, inspect `kwork/hooks/hooks.json` and
   exercise affected handlers with synthetic stdin and isolated state. Verify
   relevant sanitization and consent behavior; historical snapshots additionally
   exclude tool results and images.

@@ -11,8 +11,8 @@ import { test } from "node:test";
 // clean environment.
 const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const CLIENTS = {
-  claude: join(repoRoot, "clients/claude-code/skillmeter/scripts"),
-  codex: join(repoRoot, "clients/codex/plugins/skillmeter/scripts"),
+  claude: join(repoRoot, "clients/claude-code/kwork/scripts"),
+  codex: join(repoRoot, "clients/codex/plugins/kwork/scripts"),
 };
 
 function run(client, stateDir, script) {

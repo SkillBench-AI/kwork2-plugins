@@ -6,7 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const { makeTempDir, writeFile, writeTelemetryPolicy, makeJwt, runNode, writeCredentials, readSession, accountDir } = require("../testing/helpers");
 
-const scripts = path.resolve(__dirname, "../skillmeter/scripts");
+const scripts = path.resolve(__dirname, "../kwork/scripts");
 
 // Exercise real hook/refresh/queue code in separate processes: recording while
 // the license is expired, and the drain that refreshes before it sends. Only

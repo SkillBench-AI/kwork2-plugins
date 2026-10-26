@@ -5,7 +5,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs"), path = require("node:path");
 
-const plugin = path.resolve(__dirname, "..", "..", "..", "plugins", "skillmeter");
+const plugin = path.resolve(__dirname, "..", "..", "..", "plugins", "kwork");
 const skills = fs.readdirSync(path.join(plugin, "skills"))
   .map(name => path.join(plugin, "skills", name, "SKILL.md"))
   .filter(file => fs.existsSync(file));

@@ -25,14 +25,14 @@ const {
   repositoryNameFromRemote,
   safeDisplayComponent,
   applyRepositoryToggles,
-} = require("../skillmeter/scripts/lib/repository-telemetry");
+} = require("../kwork/scripts/lib/repository-telemetry");
 
 const REPOSITORY_TELEMETRY_SCRIPT = path.resolve(
   __dirname,
-  "../skillmeter/scripts/repository_telemetry.js"
+  "../kwork/scripts/repository_telemetry.js"
 );
-const TELEMETRY_SCRIPT = path.resolve(__dirname, "../skillmeter/scripts/telemetry.js");
-const HOOK_SCRIPT = path.resolve(__dirname, "../skillmeter/scripts/hook.js");
+const TELEMETRY_SCRIPT = path.resolve(__dirname, "../kwork/scripts/telemetry.js");
+const HOOK_SCRIPT = path.resolve(__dirname, "../kwork/scripts/hook.js");
 // The telemetry skill tests at the end of this file read SKILL.md as text.
 // They establish that each rule's sentence is present, that the stop-word list
 // is exactly the one given, and that a few sentences which would contradict a
@@ -40,7 +40,7 @@ const HOOK_SCRIPT = path.resolve(__dirname, "../skillmeter/scripts/hook.js");
 // beyond those checks, that a rule nobody pinned is still there, or anything
 // about what a model does with the text: the driven runs are for that.
 const TELEMETRY_SKILL = fs.readFileSync(
-  path.resolve(__dirname, "../skillmeter/skills/telemetry/SKILL.md"),
+  path.resolve(__dirname, "../kwork/skills/telemetry/SKILL.md"),
   "utf8"
 );
 
@@ -408,7 +408,7 @@ test("onboarding atomically authorizes the org and applies one choice to the dis
   const fixture = testEnvironment();
   const consentScript = path.resolve(
     __dirname,
-    "../skillmeter/scripts/org_telemetry_consent.js"
+    "../kwork/scripts/org_telemetry_consent.js"
   );
   assert.equal(
     runNode(consentScript, ["set", "skillbench-ai", "disabled"], {
@@ -497,7 +497,7 @@ test("onboarding rejects a stale displayed list without changing org consent", (
   );
   const consentScript = path.resolve(
     __dirname,
-    "../skillmeter/scripts/org_telemetry_consent.js"
+    "../kwork/scripts/org_telemetry_consent.js"
   );
   assert.equal(
     runNode(consentScript, ["set", "skillbench-ai", "disabled"], {
@@ -786,7 +786,7 @@ test("telemetry skill prints the repositories as one grouped, numbered list", ()
   );
   // The sign-in inventory's markers, so the two lists read alike.
   const banner = fs.readFileSync(
-    path.resolve(__dirname, "../skillmeter/scripts/lib/banner.js"),
+    path.resolve(__dirname, "../kwork/scripts/lib/banner.js"),
     "utf8"
   );
   assert.match(banner, /"✓ ON " : "○ OFF"/);

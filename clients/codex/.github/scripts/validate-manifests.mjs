@@ -6,7 +6,7 @@ import { readFileSync, existsSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve, join } from "node:path";
 
-// This client lives at clients/codex in the SkillMeter plugins monorepo. Its own
+// This client lives at clients/codex in the Kwork plugins monorepo. Its own
 // files resolve against the client root; the marketplace manifest Codex reads
 // sits at the repository root, two levels further up, and the plugin path it
 // declares is relative to that root.
@@ -40,7 +40,7 @@ function isDir(absPath) {
 }
 
 // --- Plugin manifest -------------------------------------------------------
-const pluginManifestRel = "plugins/skillmeter/.codex-plugin/plugin.json";
+const pluginManifestRel = "plugins/kwork/.codex-plugin/plugin.json";
 const plugin = readJson(pluginManifestRel);
 if (plugin) {
   for (const field of ["name", "version", "description"]) {

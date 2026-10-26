@@ -21,7 +21,7 @@ process.env.HOME = dataDir;
 process.env.SKILLMETER_STATE_DIR = path.join(dataDir, ".skillbench");
 const previousData = process.env.PLUGIN_DATA;
 process.env.PLUGIN_DATA = dataDir;
-const credentialModule = require.resolve("../../../plugins/skillmeter/scripts/credstore");
+const credentialModule = require.resolve("../../../plugins/kwork/scripts/credstore");
 const previousCredentials = require.cache[credentialModule];
 require.cache[credentialModule] = {
   id: credentialModule,
@@ -38,7 +38,7 @@ require.cache[credentialModule] = {
       .map(name => [name, () => assert.fail("Fixture must never change authentication")])),
   },
 };
-const logger = require("../../../plugins/skillmeter/scripts/logger");
+const logger = require("../../../plugins/kwork/scripts/logger");
 require("../../../test-support/plugin.cjs").grantConsent(process.env.SKILLMETER_STATE_DIR, "github.com/synthetic/repo");
 logger.saveTelemetryOptIn(dataDir, true);
 const realFetch = global.fetch;

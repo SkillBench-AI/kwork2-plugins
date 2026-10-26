@@ -4,7 +4,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
-const plugin = path.resolve(__dirname, "../plugins/skillmeter");
+const plugin = path.resolve(__dirname, "../plugins/kwork");
 const { writeCredentials, license, consentPolicyFileIn } = require("./plugin.cjs");
 
 function fixture(t) {

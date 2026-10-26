@@ -19,10 +19,10 @@ setTestEnv("SKILLMETER_ACTIVATE_URL", "http://127.0.0.1:9/activation/activate");
 setTestEnv("SKILLMETER_BROKER_URL", "http://127.0.0.1:9/id");
 setTestEnv("SKILLMETER_BACKEND_URL", undefined);
 
-const credstore = require("../skillmeter/scripts/credstore");
-const licenseStatus = require("../skillmeter/scripts/lib/license-status");
-const { refreshLicense, ensureFreshLicense } = require("../skillmeter/scripts/lib/license-activation");
-const { LOG_DIR, ACCOUNT_DIR } = require("../skillmeter/scripts/lib/paths");
+const credstore = require("../kwork/scripts/credstore");
+const licenseStatus = require("../kwork/scripts/lib/license-status");
+const { refreshLicense, ensureFreshLicense } = require("../kwork/scripts/lib/license-activation");
+const { LOG_DIR, ACCOUNT_DIR } = require("../kwork/scripts/lib/paths");
 
 const DEVICE_ID = "11111111-2222-4333-8444-555555555555";
 // The renewal lock (shared/lib/license-renewal.js) and the cooldown lock that
@@ -214,7 +214,7 @@ test("invalid_grant is terminal: no /activate, and the reason names what the use
   const s = licenseStatus.readLicenseStatus();
   assert.equal(s.terminal.reason, licenseStatus.TERMINAL_REASONS.REACTIVATION_REQUIRED);
   assert.equal(s.terminal.status, 400);
-  assert.match(s.terminal.message, /skillmeter:signin/);
+  assert.match(s.terminal.message, /kwork:signin/);
 });
 
 test("invalid_client (401) is terminal the same way", async () => {
@@ -233,7 +233,7 @@ test("a session without a refresh token requires sign-in, with no network call",
   assert.equal(calls.length, 0);
   const s = licenseStatus.readLicenseStatus();
   assert.equal(s.terminal.reason, licenseStatus.TERMINAL_REASONS.REACTIVATION_REQUIRED);
-  assert.match(s.terminal.message, /skillmeter:signin/);
+  assert.match(s.terminal.message, /kwork:signin/);
 });
 
 // The stored token is left alone. It is expired and unrotatable, but the

@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * The device identity every SkillMeter client on a machine shares (ADR 005):
+ * The device identity every Kwork client on a machine shares (ADR 005):
  * `device_id` and `hash_salt` in credentials.json. Each client keeps its own
  * session and license elsewhere; fields other clients own in credentials.json
  * are preserved and never read.

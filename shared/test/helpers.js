@@ -6,7 +6,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 
-function makeTempDir(prefix = "skillmeter-shared-test-") {
+function makeTempDir(prefix = "kwork-shared-test-") {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
   after(() => fs.rmSync(dir, { recursive: true, force: true }));
   return dir;

@@ -17,7 +17,7 @@ const {
 
 const BACKFILL_SCRIPT = path.resolve(
   __dirname,
-  "../skillmeter/scripts/backfill.js"
+  "../kwork/scripts/backfill.js"
 );
 const LIFECYCLE_ID = "66666666-6666-4666-8666-666666666666";
 const WRONG_LIFECYCLE_ID = "77777777-7777-4777-8777-777777777777";
@@ -42,7 +42,7 @@ function fixture() {
     claudeConfigDir,
     "plugins",
     "data",
-    "skillmeter-inline"
+    "kwork-inline"
   );
   writeJson(
     path.join(wrongData, "backfill-state.json"),
@@ -131,7 +131,7 @@ test("manual backfill expansion exposes only the opaque lifecycle scope", () => 
   const result = runNode(
     path.resolve(
       __dirname,
-      "../skillmeter/scripts/user_prompt_expansion_backfill.js"
+      "../kwork/scripts/user_prompt_expansion_backfill.js"
     ),
     [],
     {
@@ -140,7 +140,7 @@ test("manual backfill expansion exposes only the opaque lifecycle scope", () => 
         CLAUDE_PLUGIN_DATA: testFixture.targetData,
       },
       input: JSON.stringify({
-        command_name: "skillmeter:backfill",
+        command_name: "kwork:backfill",
         command_source: "plugin",
         session_id: "99999999-9999-4999-8999-999999999999",
       }),
@@ -151,7 +151,7 @@ test("manual backfill expansion exposes only the opaque lifecycle scope", () => 
   const output = JSON.parse(result.stdout);
   const context = output.hookSpecificOutput.additionalContext;
   const state = JSON.parse(
-    context.split("SkillMeter manual backfill state JSON:\n")[1]
+    context.split("Kwork manual backfill state JSON:\n")[1]
   );
   assert.equal(state.status, "signed_in");
   assert.deepEqual(state.orgs, ["skillbench-ai"]);
@@ -226,10 +226,10 @@ test("status reports backend-confirmed transcript uploads by UUID", () => {
 
 test("manual backfill skill and expansion hook are registered", () => {
   const skill = fs.readFileSync(
-    path.resolve(__dirname, "../skillmeter/skills/backfill/SKILL.md"),
+    path.resolve(__dirname, "../kwork/skills/backfill/SKILL.md"),
     "utf8"
   );
-  const hooks = readJson(path.resolve(__dirname, "../skillmeter/hooks/hooks.json"));
+  const hooks = readJson(path.resolve(__dirname, "../kwork/hooks/hooks.json"));
   assert.match(skill, /^description:[ \t]*\S/m);
   assert.match(skill, /backfill\.js"? status LIFECYCLE_ID/);
   assert.match(
@@ -239,7 +239,7 @@ test("manual backfill skill and expansion hook are registered", () => {
   assert.ok(
     hooks.hooks.UserPromptExpansion.some(
       (entry) =>
-        entry.matcher === "backfill|skillmeter:backfill" &&
+        entry.matcher === "backfill|kwork:backfill" &&
         entry.hooks[0].args.includes(
           "${CLAUDE_PLUGIN_ROOT}/scripts/user_prompt_expansion_backfill.js"
         )

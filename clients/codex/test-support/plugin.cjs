@@ -11,7 +11,7 @@ const { spawnSync } = require("node:child_process");
 // it; clearing it keeps a regression from writing into a real plugin's directory.
 delete process.env.CLAUDE_PLUGIN_DATA;
 
-const PLUGIN_ROOT = path.resolve(__dirname, "..", "plugins", "skillmeter");
+const PLUGIN_ROOT = path.resolve(__dirname, "..", "plugins", "kwork");
 const SCRIPTS = path.join(PLUGIN_ROOT, "scripts");
 const FIXTURES = path.resolve(__dirname, "..", "test", "plugin", "fixtures");
 
@@ -68,7 +68,7 @@ function writeCredentials(home, credentials, { stateDir = path.join(home, ".skil
 
 // Point HOME at a fresh directory. Call before requiring plugin modules.
 function isolateHome(credentials) {
-  const home = tempDir("skillmeter-home");
+  const home = tempDir("kwork-home");
   process.env.HOME = home;
   process.env.USERPROFILE = home;
   process.env.PLUGIN_DATA = path.join(home, "plugin-data");
@@ -84,7 +84,7 @@ function writeSettings(root, skillmeter) {
 
 // A checkout with a hand-written .git/config. `remote: null` gives a repository
 // without any remote.
-function makeRepo({ remote = "git@github.com:acme/widgets.git", telemetry, prefix = "skillmeter-repo" } = {}) {
+function makeRepo({ remote = "git@github.com:acme/widgets.git", telemetry, prefix = "kwork-repo" } = {}) {
   const root = tempDir(prefix);
   fs.mkdirSync(path.join(root, ".git"), { recursive: true });
   fs.writeFileSync(path.join(root, ".git", "config"),

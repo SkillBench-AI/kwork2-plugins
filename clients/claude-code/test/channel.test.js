@@ -15,10 +15,10 @@ const { execFileSync, spawnSync } = require("child_process");
 const repo = path.resolve(__dirname, "..");
 // The monorepo root: the channel build and both marketplaces live there.
 const repoRoot = path.resolve(repo, "..", "..");
-const config = require("../skillmeter/scripts/lib/config");
+const config = require("../kwork/scripts/lib/config");
 
 function tempDir(t) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "skillmeter-channel-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "kwork-channel-"));
   t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
   return dir;
 }
@@ -32,9 +32,9 @@ test("the internal build uses dev regardless of the environment", (t) => {
   const root = tempDir(t);
   // The build covers both clients, so the Codex manifests come along.
   for (const file of [".github/scripts/make-internal-channel.mjs", ".claude-plugin/marketplace.json",
-    ".agents/plugins/marketplace.json", "clients/codex/plugins/skillmeter/.codex-plugin/plugin.json",
-    "clients/claude-code/skillmeter/scripts/lib/config.js", "clients/claude-code/skillmeter/scripts/lib/endpoints.js",
-    "clients/claude-code/skillmeter/.claude-plugin/plugin.json"]) {
+    ".agents/plugins/marketplace.json", "clients/codex/plugins/kwork/.codex-plugin/plugin.json",
+    "clients/claude-code/kwork/scripts/lib/config.js", "clients/claude-code/kwork/scripts/lib/endpoints.js",
+    "clients/claude-code/kwork/.claude-plugin/plugin.json"]) {
     fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
     fs.copyFileSync(path.join(repoRoot, file), path.join(root, file));
   }
@@ -42,12 +42,12 @@ test("the internal build uses dev regardless of the environment", (t) => {
   const client = path.join(root, "clients/claude-code");
   // The internal build is a prerelease of the next patch: after the current
   // release and before the next one.
-  const [major, minor, patch] = require(path.join(repo, "skillmeter/.claude-plugin/plugin.json")).version.split(".").map(Number);
-  assert.equal(JSON.parse(fs.readFileSync(path.join(client, "skillmeter/.claude-plugin/plugin.json"), "utf8")).version,
+  const [major, minor, patch] = require(path.join(repo, "kwork/.claude-plugin/plugin.json")).version.split(".").map(Number);
+  assert.equal(JSON.parse(fs.readFileSync(path.join(client, "kwork/.claude-plugin/plugin.json"), "utf8")).version,
     `${major}.${minor}.${patch + 1}-internal.7`);
   assert.equal(JSON.parse(fs.readFileSync(path.join(root, ".claude-plugin/marketplace.json"), "utf8")).name,
     "skillbench-internal");
-  const probe = "const c=require('./skillmeter/scripts/lib/config');" +
+  const probe = "const c=require('./kwork/scripts/lib/config');" +
     "console.log(JSON.stringify([c.CHANNEL.env,c.getDeviceCodeUrl(),require('path').basename(c.STATE_DIR)]))";
   const run = (env) => JSON.parse(spawnSync(process.execPath, ["-e", probe], {
     cwd: client, encoding: "utf8", env: { PATH: process.env.PATH, HOME: root, ...env },
@@ -57,7 +57,7 @@ test("the internal build uses dev regardless of the environment", (t) => {
 });
 
 test("an environment variable cannot switch a stable install to dev", () => {
-  const probe = "const c=require('./skillmeter/scripts/lib/config');" +
+  const probe = "const c=require('./kwork/scripts/lib/config');" +
     "console.log(JSON.stringify([c.CHANNEL.env,c.getDeviceCodeUrl(),require('path').basename(c.STATE_DIR)]))";
   const result = spawnSync(process.execPath, ["-e", probe], {
     cwd: repo, encoding: "utf8", env: { PATH: process.env.PATH, HOME: os.tmpdir(), SKILLMETER_ENV: "dev" },

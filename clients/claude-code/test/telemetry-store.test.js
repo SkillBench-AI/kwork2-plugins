@@ -33,9 +33,9 @@ writeCredentials(STATE_DIR, {
 });
 writeTelemetryPolicy(STATE_DIR, { orgs: { "skillbench-ai": true } });
 
-const store = require("../skillmeter/scripts/lib/telemetry-store");
-const transfer = require("../skillmeter/scripts/lib/transfer");
-const { REPOSITORIES_LOG_DIR } = require("../skillmeter/scripts/lib/paths");
+const store = require("../kwork/scripts/lib/telemetry-store");
+const transfer = require("../kwork/scripts/lib/transfer");
+const { REPOSITORIES_LOG_DIR } = require("../kwork/scripts/lib/paths");
 
 // Drains send every queued chunk, not only the current test's, so a chunk left
 // by an earlier test would turn a "nothing was sent" assertion into an
@@ -139,7 +139,7 @@ test("backfill upload records detailed attempt and success diagnostics", async (
     repository_ids: ["aaaaaaaaaaaa"],
     repository_keys: [repoKey],
     upload_authorized: true,
-    tenant_fingerprint: require("../skillmeter/scripts/lib/tenant").currentTenantFingerprint(),
+    tenant_fingerprint: require("../kwork/scripts/lib/tenant").currentTenantFingerprint(),
     created_at: Date.now(),
     updated_at: Date.now(),
   });

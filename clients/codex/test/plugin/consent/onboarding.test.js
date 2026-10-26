@@ -7,7 +7,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const { PLUGIN_ROOT, tempDir, writeCredentials, license, makeRepo, consentPolicyFileIn } = require("../../../test-support/plugin.cjs");
-const { buildInventory, trustedProjectCwds, rolloutCwd } = require("../../../plugins/skillmeter/scripts/lib/repository-inventory");
+const { buildInventory, trustedProjectCwds, rolloutCwd } = require("../../../plugins/kwork/scripts/lib/repository-inventory");
 
 const ON = { enabled: true, decided_at: 1, source: "user", consent_version: 2 };
 
@@ -126,7 +126,7 @@ test("sign-in prints the organization state line after the welcome banner", t =>
     const result = run("signin.js", []);
     assert.equal(result.status, 0, result.stderr);
     assert.match(result.stdout, /signed in/);
-    const line = result.stdout.split("\n").indexOf("SkillMeter sign-in state JSON:");
+    const line = result.stdout.split("\n").indexOf("Kwork sign-in state JSON:");
     assert.notEqual(line, -1, result.stdout);
     return JSON.parse(result.stdout.split("\n")[line + 1]);
   };

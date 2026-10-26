@@ -23,8 +23,8 @@ const credentials = {
 };
 const save = (patch = {}) => writeCredentials(root, { ...credentials, ...patch });
 save();
-const logger = require("../../../plugins/skillmeter/scripts/logger");
-const queue = require("../../../plugins/skillmeter/scripts/lib/transcript-delta");
+const logger = require("../../../plugins/kwork/scripts/logger");
+const queue = require("../../../plugins/kwork/scripts/lib/transcript-delta");
 const realFetch = global.fetch;
 const endpoint = "https://collector.invalid/logs/codex";
 const repos = Object.fromEntries(["a", "b"].map(name => {
@@ -37,7 +37,7 @@ const decode = body => zlib.gunzipSync(body).toString().trim().split("\n").map(J
 const source = name => path.join(root, `${name}.jsonl`);
 
 function control(name, action) {
-  execFileSync(process.execPath, [path.resolve(__dirname, "../../../plugins/skillmeter/scripts/telemetry.js"), action], {
+  execFileSync(process.execPath, [path.resolve(__dirname, "../../../plugins/kwork/scripts/telemetry.js"), action], {
     cwd: repos[name], env: process.env, stdio: "pipe", timeout: 5000,
   });
 }
@@ -250,7 +250,7 @@ test("a hook at the disable settings-write boundary cannot inherit the revoked g
         if (error.message !== "repository-routing-busy") throw error;
         process.stdout.write("null");
       }
-    `, path.resolve(__dirname, "../../../plugins/skillmeter/scripts/logger.js"), path.resolve(__dirname, "../../../plugins/skillmeter/scripts/lib/repository-queue.js"), repos.a, source("a")],
+    `, path.resolve(__dirname, "../../../plugins/kwork/scripts/logger.js"), path.resolve(__dirname, "../../../plugins/kwork/scripts/lib/repository-queue.js"), repos.a, source("a")],
     { env: process.env, encoding: "utf8", timeout: 5000 }));
   };
   fs.writeFileSync = function(file, ...args) {
@@ -400,7 +400,7 @@ test("salvage of a rejected mixed batch never uploads held records", async () =>
 
 test("authorization is evaluated once per cwd per attempt and never during purge", () => {
   event("a"); event("b"); event("a"); const sealed = logger.sealEventLog();
-  const { createRepositoryQueue } = require("../../../plugins/skillmeter/scripts/lib/repository-queue");
+  const { createRepositoryQueue } = require("../../../plugins/kwork/scripts/lib/repository-queue");
   const calls = [];
   const routing = createRepositoryQueue(logger.LOG_DIR, () => credentials.hash_salt, cwd => { calls.push(cwd); return true; });
   routing.pruneFile(sealed);
@@ -524,7 +524,7 @@ test("quarantine purge shares the source lock and retries after it is released",
   assert.ok(release);
   try { control("a", "restrict"); assert.deepEqual(fs.readFileSync(poison), bytes); }
   finally { release(); }
-  const { createRepositoryQueue } = require("../../../plugins/skillmeter/scripts/lib/repository-queue");
+  const { createRepositoryQueue } = require("../../../plugins/kwork/scripts/lib/repository-queue");
   const routing = createRepositoryQueue(logger.LOG_DIR, () => credentials.hash_salt, () => assert.fail("purge must not authorize"));
   assert.equal(routing.purgeEvents(), true);
   assert.equal(fs.existsSync(poison), false);

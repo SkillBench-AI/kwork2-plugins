@@ -2,9 +2,9 @@
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs"), path = require("node:path"), os = require("node:os"), crypto = require("node:crypto");
-const queue = require("../../plugins/skillmeter/scripts/lib/transcript-delta");
-const health = require("../../plugins/skillmeter/scripts/lib/transcript-health");
-const { inventory } = require("../../plugins/skillmeter/scripts/transcript_inventory");
+const queue = require("../../plugins/kwork/scripts/lib/transcript-delta");
+const health = require("../../plugins/kwork/scripts/lib/transcript-health");
+const { inventory } = require("../../plugins/kwork/scripts/transcript_inventory");
 function fixture(t) {
   const data = fs.mkdtempSync(path.join(os.tmpdir(), "capture-health-"));
   t.after(() => fs.rmSync(data, { recursive: true, force: true }));

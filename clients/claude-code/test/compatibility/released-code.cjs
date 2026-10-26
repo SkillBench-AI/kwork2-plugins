@@ -10,7 +10,7 @@ function releasedCode(t, repository, release, plugin) {
   if (!/^[a-f0-9]{40}$/.test(release.revision)) throw Error("invalid-release-pin");
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "released-plugin-"));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
-  // Pinned releases predate the monorepo, where this client sat at the top of
+  // Releases up to 0.41.0 keep the plugin at `skillmeter/`. Pinned releases predate the monorepo, where this client sat at the top of
   // its own repository; later ones sit under clients/claude-code. Resolve the
   // plugin where that revision actually had it.
   // `git archive` refuses paths outside its working directory, so it runs from

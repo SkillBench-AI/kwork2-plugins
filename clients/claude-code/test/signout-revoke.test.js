@@ -10,7 +10,7 @@ const path = require("path");
 
 const { makeTempDir, makeJwt, isolatedEnv, runNode, writeCredentials, readSession, writeFile } = require("../testing/helpers");
 
-const SIGNOUT = path.resolve(__dirname, "../skillmeter/scripts/signout.js");
+const SIGNOUT = path.resolve(__dirname, "../kwork/scripts/signout.js");
 
 function fixture({ online }) {
   const root = makeTempDir("skm-signout-");

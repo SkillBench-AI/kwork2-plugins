@@ -13,7 +13,7 @@ const {
 const {
   derivePluginDataRoot,
   resolvePluginDataRoot,
-} = require("../skillmeter/scripts/lib/plugin-data-root");
+} = require("../kwork/scripts/lib/plugin-data-root");
 
 // Mirror the layout Claude Code creates:
 //   <config>/plugins/cache/<marketplace>/<plugin>/<version>
@@ -21,7 +21,7 @@ const {
 function makeHostLayout({ withDataParent = true } = {}) {
   const configRoot = makeTempDir("skm-host-");
   const pluginRoot = path.join(
-    configRoot, "plugins", "cache", "skillbench", "skillmeter", "9.9.9"
+    configRoot, "plugins", "cache", "skillbench", "kwork", "9.9.9"
   );
   fs.mkdirSync(pluginRoot, { recursive: true });
   if (withDataParent) {
@@ -31,7 +31,7 @@ function makeHostLayout({ withDataParent = true } = {}) {
     configRoot,
     pluginRoot,
     expected: path.join(
-      configRoot, "plugins", "data", "skillmeter-skillbench"
+      configRoot, "plugins", "data", "kwork-skillbench"
     ),
   };
 }
@@ -70,7 +70,7 @@ test("another plugin's data dir leaked into the env is ignored", () => {
 
 test("this plugin's own data dir in the env is still honored", () => {
   const { configRoot, pluginRoot, expected } = makeHostLayout();
-  const own = path.join(configRoot, "plugins", "data", "skillmeter-skillbench-internal");
+  const own = path.join(configRoot, "plugins", "data", "kwork-skillbench-internal");
   assert.equal(resolvePluginDataRoot(pluginRoot, { CLAUDE_PLUGIN_DATA: own }), own);
   assert.equal(resolvePluginDataRoot(pluginRoot, { CLAUDE_PLUGIN_DATA: expected }), expected);
 });
@@ -104,7 +104,7 @@ test("an unsubstituted placeholder is never treated as a path", () => {
 // and every command would prompt. Skill processes therefore rely on the
 // derivation, and their commands must keep starting with `node`.
 test("skill commands stay shaped for the Bash(node *) grant", () => {
-  const skills = path.resolve(__dirname, "..", "skillmeter", "skills");
+  const skills = path.resolve(__dirname, "..", "kwork", "skills");
   let checked = 0;
   for (const entry of fs.readdirSync(skills)) {
     const file = path.join(skills, entry, "SKILL.md");
@@ -134,11 +134,11 @@ test("skill commands stay shaped for the Bash(node *) grant", () => {
 // commands may be launched. Verify data-root derivation from the install layout.
 test("an entrypoint launched with no plugin env at all resolves its queue", () => {
   const { pluginRoot, expected } = makeHostLayout();
-  const source = path.resolve(__dirname, "..", "skillmeter", "scripts");
+  const source = path.resolve(__dirname, "..", "kwork", "scripts");
   fs.cpSync(source, path.join(pluginRoot, "scripts"), { recursive: true });
   writeFile(
     path.join(pluginRoot, ".claude-plugin", "plugin.json"),
-    JSON.stringify({ name: "skillmeter", version: "9.9.9" })
+    JSON.stringify({ name: "kwork", version: "9.9.9" })
   );
 
   // runNode re-spreads process.env, so a deleted key would come back; Node's
@@ -169,7 +169,7 @@ test("an entrypoint launched with no plugin env at all resolves its queue", () =
 
 test("an entrypoint run from a shell with another plugin's data dir resolves its own", () => {
   const { configRoot, pluginRoot, expected } = makeHostLayout();
-  const source = path.resolve(__dirname, "..", "skillmeter", "scripts");
+  const source = path.resolve(__dirname, "..", "kwork", "scripts");
   fs.cpSync(source, path.join(pluginRoot, "scripts"), { recursive: true });
   // The leaked value names the same data parent as Claude Code reports it;
   // __dirname in the child is a realpath, so compare on the real parent.

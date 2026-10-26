@@ -7,7 +7,7 @@ const os = require("node:os");
 const path = require("node:path");
 const { spawn } = require("node:child_process");
 
-const modulePath = path.resolve(__dirname, "../../plugins/skillmeter/scripts/lib/consent-store.js");
+const modulePath = path.resolve(__dirname, "../../plugins/kwork/scripts/lib/consent-store.js");
 const repo = "github.com/acme/widgets";
 const otherRepo = "github.com/acme/other";
 const policy = () => ({

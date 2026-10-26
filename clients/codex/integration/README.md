@@ -25,7 +25,7 @@ No Docker or real credentials are needed. The runner binds loopback ports only.
 From the collector checkout, build the helper using the current collector source:
 
 ```sh
-go build -o /tmp/skillbench-collector-bridge /path/to/skillmeter-plugins/clients/codex/integration/collector_bridge.go
+go build -o /tmp/skillbench-collector-bridge /path/to/kwork2-plugins/clients/codex/integration/collector_bridge.go
 ```
 
 From the plugin checkout:

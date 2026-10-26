@@ -32,7 +32,7 @@ writeJson(path.join(STATE_DIR, "credentials.json"), {
 });
 writeTelemetryPolicy(STATE_DIR, { orgs: { [ORG]: true } });
 
-const { SESSION_FILE } = require("../skillmeter/scripts/credstore");
+const { SESSION_FILE } = require("../kwork/scripts/credstore");
 function signIn(audience = "https://dev.meter.skillbench.example") {
   writeJson(SESSION_FILE, {
     license_jwt: makeJwt({
@@ -45,21 +45,21 @@ function signIn(audience = "https://dev.meter.skillbench.example") {
 }
 signIn();
 
-const backfillState = require("../skillmeter/scripts/lib/backfill-state");
-const store = require("../skillmeter/scripts/lib/telemetry-store");
-const transfer = require("../skillmeter/scripts/lib/transfer");
-const { currentTenantFingerprint } = require("../skillmeter/scripts/lib/tenant");
-const { LOG_DIR } = require("../skillmeter/scripts/lib/paths");
+const backfillState = require("../kwork/scripts/lib/backfill-state");
+const store = require("../kwork/scripts/lib/telemetry-store");
+const transfer = require("../kwork/scripts/lib/transfer");
+const { currentTenantFingerprint } = require("../kwork/scripts/lib/tenant");
+const { LOG_DIR } = require("../kwork/scripts/lib/paths");
 const {
   BACKFILL_EVENT_DIR,
   OUTCOMES,
   classifyBackfillOutcome,
   listBackfillEvents,
-} = require("../skillmeter/scripts/lib/backfill-event");
+} = require("../kwork/scripts/lib/backfill-event");
 const {
   queueUnqueuedBackfillEvent,
   settleBackfillDelivery,
-} = require("../skillmeter/scripts/lib/backfill-delivery");
+} = require("../kwork/scripts/lib/backfill-delivery");
 
 const OFFER = "11111111-2222-4333-8444-555555555555";
 const realFetch = global.fetch;

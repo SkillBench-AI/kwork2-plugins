@@ -17,11 +17,11 @@ setTestEnv("SKILLMETER_ACTIVATE_URL", "http://127.0.0.1:9/activation/activate");
 setTestEnv("SKILLMETER_BROKER_URL", "http://127.0.0.1:9/id");
 setTestEnv("SKILLMETER_BACKEND_URL", undefined);
 
-const credstore = require("../skillmeter/scripts/credstore");
-const licenseStatus = require("../skillmeter/scripts/lib/license-status");
-const { refreshLicense, ensureFreshLicense } = require("../skillmeter/scripts/lib/license-activation");
-const { LOG_DIR } = require("../skillmeter/scripts/lib/paths");
-const broker = require("../skillmeter/scripts/lib/broker");
+const credstore = require("../kwork/scripts/credstore");
+const licenseStatus = require("../kwork/scripts/lib/license-status");
+const { refreshLicense, ensureFreshLicense } = require("../kwork/scripts/lib/license-activation");
+const { LOG_DIR } = require("../kwork/scripts/lib/paths");
+const broker = require("../kwork/scripts/lib/broker");
 
 const DEVICE_ID = "11111111-2222-4333-8444-555555555555";
 const LOCK_FILE = path.join(LOG_DIR, ".license-refresh.lock");

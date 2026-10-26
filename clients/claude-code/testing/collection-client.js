@@ -1,8 +1,8 @@
 "use strict";
 
-// A SkillMeter client in temporary directories, for tests that build a
+// A Kwork client in temporary directories, for tests that build a
 // collection state through the real writers and read it back through the
-// real scripts: the SessionStart card, /skillmeter:telemetry status and the
+// real scripts: the SessionStart card, /kwork:telemetry status and the
 // collection notice. Nothing reaches the network or `~/.skillbench/`.
 
 const assert = require("node:assert/strict");
@@ -13,7 +13,7 @@ const { spawn, spawnSync } = require("child_process");
 
 const { accountDir, makeJwt, makeTempDir, writeCredentials, writeFile, writeTelemetryPolicy } = require("./helpers");
 
-const SCRIPTS = path.resolve(__dirname, "../skillmeter/scripts");
+const SCRIPTS = path.resolve(__dirname, "../kwork/scripts");
 const ORG = "acme";
 const REPO_KEY = `github.com/${ORG}/widgets`;
 const ENABLED = { orgs: { [ORG]: true }, repositories: { [REPO_KEY]: true } };
@@ -119,9 +119,9 @@ function collectionClient({ policy = ENABLED } = {}) {
         .filter(Boolean)
         .map((out) => out.systemMessage);
     },
-    // /skillmeter:telemetry <action> in the repository.
+    // /kwork:telemetry <action> in the repository.
     telemetry: (...args) => run([path.join(SCRIPTS, "telemetry.js"), ...args]),
-    // /skillmeter:telemetry status in `cwd`, as "label: value" pairs.
+    // /kwork:telemetry status in `cwd`, as "label: value" pairs.
     status: (cwd = repo) => {
       const { stdout, stderr } = run([path.join(SCRIPTS, "telemetry.js"), "status"], { cwd });
       assert.equal(stdout, "", "status reports on stderr, as the skill reads it");

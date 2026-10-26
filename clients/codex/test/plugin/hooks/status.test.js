@@ -8,7 +8,7 @@ const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const roots = [];
 after(() => roots.forEach(root => fs.rmSync(root, { recursive: true, force: true })));
-const plugin = path.resolve(__dirname, "../../../plugins/skillmeter");
+const plugin = path.resolve(__dirname, "../../../plugins/kwork");
 const { license, writeCredentials, sessionFileIn, grantConsent } = require("../../../test-support/plugin.cjs");
 
 // `consent` writes acknowledged organization and repository ON to Codex's
@@ -130,7 +130,7 @@ test("signed-out state does not use a leftover token to report delivery readines
 
 test("missing credentials require sign-in", () => {
   const text = status({ credentials: { device_id: null, hash_salt: null, license_jwt: null, refresh_token: null } });
-  assert.match(text, /Delivery authentication: not signed in; run \$skillmeter:signin/);
+  assert.match(text, /Delivery authentication: not signed in; run \$kwork:signin/);
 });
 
 test("server rejection overrides a locally unexpired license", () => {
@@ -138,7 +138,7 @@ test("server rejection overrides a locally unexpired license", () => {
 });
 
 for (const [reason, expected] of [
-  ["reactivation_required", /Delivery authentication: the sign-in session ended; run \$skillmeter:signin/],
+  ["reactivation_required", /Delivery authentication: the sign-in session ended; run \$kwork:signin/],
   ["revoked", /Delivery authentication: the workspace no longer licenses you/],
 ]) test(`a terminal renewal (${reason}) asks for sign-in`, () => {
   assert.match(status({ terminal: reason }), expected);

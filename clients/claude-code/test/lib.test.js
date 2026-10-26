@@ -17,7 +17,7 @@ const {
 
 setTestEnv("SKILLMETER_BACKEND_URL", undefined);
 
-const io = require("../skillmeter/scripts/lib/io");
+const io = require("../kwork/scripts/lib/io");
 
 // --- io.safeReadJson -------------------------------------------------------
 
@@ -62,8 +62,8 @@ test("findGitRoot walks up to the .git marker and handles empty input", () => {
 // --- hook dispatch registry ↔ hooks.json contract --------------------------
 
 test("every command hook uses exec form with a bundled script", () => {
-  const hooks = require("../skillmeter/hooks/hooks.json").hooks;
-  const pluginRoot = path.resolve(__dirname, "..", "skillmeter");
+  const hooks = require("../kwork/hooks/hooks.json").hooks;
+  const pluginRoot = path.resolve(__dirname, "..", "kwork");
   let commandHookCount = 0;
 
   for (const [event, entries] of Object.entries(hooks)) {
@@ -97,8 +97,8 @@ test("every command hook uses exec form with a bundled script", () => {
 });
 
 test("every hook.js-dispatched event has a matching registry mapper", () => {
-  const registry = require("../skillmeter/scripts/lib/hook-registry");
-  const hooks = require("../skillmeter/hooks/hooks.json").hooks;
+  const registry = require("../kwork/scripts/lib/hook-registry");
+  const hooks = require("../kwork/hooks/hooks.json").hooks;
 
   const dispatched = [];
   for (const [event, entries] of Object.entries(hooks)) {
@@ -127,7 +127,7 @@ test("every hook.js-dispatched event has a matching registry mapper", () => {
 });
 
 test("registry mappers return an object and can use ctx", () => {
-  const registry = require("../skillmeter/scripts/lib/hook-registry");
+  const registry = require("../kwork/scripts/lib/hook-registry");
   const ctx = { getTranscriptId: (p) => (p ? require("path").basename(p) : "") };
   assert.equal(
     registry.SubagentStop({ agent_transcript_path: "/x/y-uuid.jsonl" }, ctx).agent_transcript_path,
@@ -136,8 +136,8 @@ test("registry mappers return an object and can use ctx", () => {
 });
 
 test("WorktreeCreate is not registered as an observation hook", () => {
-  const registry = require("../skillmeter/scripts/lib/hook-registry");
-  const hooks = require("../skillmeter/hooks/hooks.json").hooks;
+  const registry = require("../kwork/scripts/lib/hook-registry");
+  const hooks = require("../kwork/hooks/hooks.json").hooks;
 
   assert.equal(hooks.WorktreeCreate, undefined);
   assert.equal(registry.WorktreeCreate, undefined);
@@ -146,8 +146,8 @@ test("WorktreeCreate is not registered as an observation hook", () => {
 test("events that can block the session or stream content are not registered", () => {
   // PreModelSwitch runs synchronously and a timed-out hook blocks the switch;
   // MessageDisplay fires per streamed text delta and carries message content.
-  const registry = require("../skillmeter/scripts/lib/hook-registry");
-  const hooks = require("../skillmeter/hooks/hooks.json").hooks;
+  const registry = require("../kwork/scripts/lib/hook-registry");
+  const hooks = require("../kwork/hooks/hooks.json").hooks;
 
   for (const event of ["PreModelSwitch", "MessageDisplay"]) {
     assert.equal(hooks[event], undefined, `${event} must not be in hooks.json`);
@@ -156,7 +156,7 @@ test("events that can block the session or stream content are not registered", (
 });
 
 test("registry mappers match current official hook payload fixtures", () => {
-  const registry = require("../skillmeter/scripts/lib/hook-registry");
+  const registry = require("../kwork/scripts/lib/hook-registry");
   const { hookPayloadFixtures } = require("../testing/hook-payloads");
 
   for (const { event, input, expected } of hookPayloadFixtures) {
@@ -166,7 +166,7 @@ test("registry mappers match current official hook payload fixtures", () => {
 });
 
 test("registry mappers do not emit legacy hook field names", () => {
-  const registry = require("../skillmeter/scripts/lib/hook-registry");
+  const registry = require("../kwork/scripts/lib/hook-registry");
   const { hookPayloadFixtures } = require("../testing/hook-payloads");
   const legacyFields = new Set([
     "setup_type",

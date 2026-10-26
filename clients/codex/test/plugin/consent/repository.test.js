@@ -8,7 +8,7 @@ const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const logger = require("../../../plugins/skillmeter/scripts/logger");
+const logger = require("../../../plugins/kwork/scripts/logger");
 
 test("resolveTelemetryGate: explicit choice and ownership scope combine fail-closed", () => {
   for (const [choice, allowed, expected] of [
@@ -46,7 +46,7 @@ test("writeTelemetryConsentFallback prints the in-context commands without savin
   const output = chunks.join("");
   assert.equal(logger.getTelemetryOptIn(cwd), null);
   assert.match(output, /Telemetry is not configured/);
-  assert.match(output, /\$skillmeter:signin/);
+  assert.match(output, /\$kwork:signin/);
   assert.match(output, /telemetry\.js" status/);
 });
 
@@ -238,7 +238,7 @@ test("routing lock contention keeps the Stop hook's JSON and reports a retryable
   f.control("unrestrict");
   const routing = path.join(f.data, "logs/repository-routing");
   const id = require("node:crypto").createHmac("sha256", f.credentials.hash_salt).update(fs.realpathSync(f.repo)).digest("hex").slice(0, 12);
-  const release = require("../../../plugins/skillmeter/scripts/lib/transcript-delta").acquireLock(path.join(routing, `${id}.json.lock`));
+  const release = require("../../../plugins/kwork/scripts/lib/transcript-delta").acquireLock(path.join(routing, `${id}.json.lock`));
   assert.ok(release);
   try {
     const hook = f.script("stop.js", { input: { ...EVENT, cwd: f.repo } });

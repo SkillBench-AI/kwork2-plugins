@@ -9,8 +9,8 @@ const crypto = require("node:crypto");
 const zlib = require("node:zlib");
 const { spawnSync } = require("node:child_process");
 const { chunkQueue, transcriptLine: line, tempDir } = require("../../../test-support/plugin.cjs");
-const queue = require("../../../plugins/skillmeter/scripts/lib/transcript-delta");
-const modulePath = require.resolve("../../../plugins/skillmeter/scripts/lib/transcript-delta");
+const queue = require("../../../plugins/kwork/scripts/lib/transcript-delta");
+const modulePath = require.resolve("../../../plugins/kwork/scripts/lib/transcript-delta");
 
 const scope = { deviceId: "SYNTHETIC", owner: "fixture-owner", cwd: "/synthetic", org: "synthetic" };
 const fixture = t => chunkQueue(t, { scope });

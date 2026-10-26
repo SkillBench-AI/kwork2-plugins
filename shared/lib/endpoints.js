@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * Which services a SkillMeter client signs in against, and which hosts may
+ * Which services a Kwork client signs in against, and which hosts may
  * receive its credentials.
  *
  * The installation's channel picks the environment: `channel.json` at the
@@ -36,7 +36,7 @@ function readChannel(file = CHANNEL_FILE) {
   return { channel: "stable", env: "prod" };
 }
 
-// The public device client every SkillMeter client signs in through, with no
+// The public device client every Kwork client signs in through, with no
 // embedded secret. Each device grant starts its own refresh chain, so the
 // clients' sessions stay apart (ADR 005).
 const OAUTH_CLIENT_ID = "skillmeter-plugin";
@@ -63,7 +63,7 @@ function trustedEndpoint(value, fallback, label) {
       return value.replace(/\/+$/, "");
     }
   } catch {}
-  console.error(`[skillmeter] ${label} override rejected (untrusted endpoint), using the default`);
+  console.error(`[kwork] ${label} override rejected (untrusted endpoint), using the default`);
   return fallback;
 }
 

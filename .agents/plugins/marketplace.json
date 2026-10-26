@@ -5,10 +5,10 @@
   },
   "plugins": [
     {
-      "name": "skillmeter",
+      "name": "kwork",
       "source": {
         "source": "local",
-        "path": "./clients/codex/plugins/skillmeter"
+        "path": "./clients/codex/plugins/kwork"
       },
       "policy": {
         "installation": "AVAILABLE",

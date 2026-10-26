@@ -1,6 +1,6 @@
 "use strict";
 
-// ADR 003 decision 3: /skillmeter:signin writes a `pending` result while the
+// ADR 003 decision 3: /kwork:signin writes a `pending` result while the
 // device flow waits for browser approval, and the flow's outcome replaces it.
 // The sign-in notice ignores `pending`, and the slash command reports a sign-in
 // in progress instead of starting a new one, which would discard the waiting
@@ -16,7 +16,7 @@ const { spawnSync } = require("child_process");
 
 const { accountDir, makeJwt, makeTempDir, readJson, readSession, setTestEnv, writeCredentials, writeFile, writeJson } = require("../testing/helpers");
 
-const SCRIPTS = path.resolve(__dirname, "../skillmeter/scripts");
+const SCRIPTS = path.resolve(__dirname, "../kwork/scripts");
 const IDENTITY = { device_id: "SIGNIN-PENDING-DEVICE", hash_salt: "0123456789abcdef0123456789abcdef" };
 
 // A client with no license, so signin.js starts the device flow. The broker and
@@ -95,7 +95,7 @@ function fixture() {
       timeout: 10_000,
       cwd: root,
       env,
-      input: JSON.stringify({ command_name: "skillmeter:signin", command_source: "plugin", cwd: root }),
+      input: JSON.stringify({ command_name: "kwork:signin", command_source: "plugin", cwd: root }),
     });
     assert.equal(result.status, 0, result.stderr);
     return JSON.parse(result.stdout).hookSpecificOutput.additionalContext;
@@ -139,10 +139,10 @@ test("the device flow leaves a pending result that lasts as long as the device c
 });
 
 // The race this sentinel closes. The skill tells the user to run
-// /skillmeter:signin again after approving; run before the poll commits, the
+// /kwork:signin again after approving; run before the poll commits, the
 // slash command used to start a new intent and the poll then discarded the
 // approved sign-in.
-test("/skillmeter:signin while a first sign-in waits for approval reports it in progress and keeps it", () => {
+test("/kwork:signin while a first sign-in waits for approval reports it in progress and keeps it", () => {
   const f = fixture();
   const started = f.signin({ tty: false });
   assert.equal(started.status, 0, started.stderr);
@@ -242,7 +242,7 @@ test("a finished sign-in replaces pending with success and records a success", (
   assert.equal(typeof f.status().last_success_at, "number");
 });
 
-test("a background sign-in, the path /skillmeter:signin takes, also records a success", () => {
+test("a background sign-in, the path /kwork:signin takes, also records a success", () => {
   const f = fixture();
   assert.equal(f.signin({ tty: false }).status, 0);
   const poll = f.pollInBackground();
@@ -258,7 +258,7 @@ test("a failed sign-in replaces pending with failure", () => {
   assert.equal(result.status, 1);
   const sentinel = f.sentinel();
   assert.equal(sentinel.status, "failure");
-  assert.match(sentinel.error, /No active SkillMeter license/);
+  assert.match(sentinel.error, /No active Kwork license/);
 });
 
 test("the sign-in notice ignores pending and still reports an outcome", () => {
@@ -288,7 +288,7 @@ test("the sign-in notice ignores pending and still reports an outcome", () => {
 
 test("isSigninPending: only an unexpired marker of the current sign-in attempt", () => {
   setTestEnv("SKILLMETER_STATE_DIR", makeTempDir("skm-signin-pending-state-"));
-  const credstore = require("../skillmeter/scripts/credstore");
+  const credstore = require("../kwork/scripts/credstore");
   const deviceId = credstore.getDeviceId();
   const attempt = () => ({ generation: credstore.markEngaged(), deviceId });
 

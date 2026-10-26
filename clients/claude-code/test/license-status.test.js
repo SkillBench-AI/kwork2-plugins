@@ -15,7 +15,7 @@ const stateDir = makeTempDir("skm-license-status-");
 setTestEnv("SKILLMETER_STATE_DIR", stateDir);
 setTestEnv("SKILLMETER_RETRY_BASE_MS", "120000");
 
-const ls = require("../skillmeter/scripts/lib/license-status");
+const ls = require("../kwork/scripts/lib/license-status");
 
 const MIN = 60_000;
 const BASE = 2 * MIN;

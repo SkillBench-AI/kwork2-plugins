@@ -8,7 +8,7 @@ const path = require("node:path");
 const zlib = require("node:zlib");
 const { spawnSync } = require("node:child_process");
 const { chunkQueue, transcriptLine: line, tempDir, gunzipRecords } = require("../../../test-support/plugin.cjs");
-const queue = require("../../../plugins/skillmeter/scripts/lib/transcript-delta");
+const queue = require("../../../plugins/kwork/scripts/lib/transcript-delta");
 
 const scope = { deviceId: "SYNTHETIC", owner: "fixture-owner", consentStamp: "synthetic-consent", cwd: "/synthetic", org: "synthetic" };
 const fixture = t => chunkQueue(t, { scope });
@@ -124,7 +124,7 @@ test("Work identity and opaque outer tool pairs survive isolated staging and a p
   const resumed = spawnSync(process.execPath, ["-e", `
     const queue = require(process.argv[1]);
     queue.stage(process.argv[2], process.argv[3], JSON.parse(process.argv[4]), "synthetic-salt");
-  `, require.resolve("../../../plugins/skillmeter/scripts/lib/transcript-delta"), chunks, source, JSON.stringify(workScope)], { encoding: "utf8" });
+  `, require.resolve("../../../plugins/kwork/scripts/lib/transcript-delta"), chunks, source, JSON.stringify(workScope)], { encoding: "utf8" });
   assert.equal(resumed.status, 0, resumed.stderr);
   const [dir] = queue.queueDirectories(chunks);
   const files = queue.pendingFiles(dir);

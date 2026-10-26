@@ -12,10 +12,10 @@ const path = require("node:path");
 const http = require("node:http");
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
-const jwt = require("../../../plugins/skillmeter/scripts/lib/jwt");
-const credstore = require("../../../plugins/skillmeter/scripts/credstore");
-const logger = require("../../../plugins/skillmeter/scripts/logger");
-const config = require("../../../plugins/skillmeter/scripts/lib/config");
+const jwt = require("../../../plugins/kwork/scripts/lib/jwt");
+const credstore = require("../../../plugins/kwork/scripts/credstore");
+const logger = require("../../../plugins/kwork/scripts/logger");
+const config = require("../../../plugins/kwork/scripts/lib/config");
 
 const FUTURE = Math.floor(Date.now() / 1000) + 3600;
 const PAST = Math.floor(Date.now() / 1000) - 3600;
@@ -411,7 +411,7 @@ test("legacy transcript snapshots remain queued without an unsequenced upload", 
 // The first run of this version (ADR 005, full cutover): nothing from a GitHub
 // sign-in is carried over, and event batches recorded under it are dropped.
 test("the first run starts signed out and drops queued event batches, once", () => {
-  const sessionStart = require("../../../plugins/skillmeter/scripts/session_start");
+  const sessionStart = require("../../../plugins/kwork/scripts/session_start");
   const saved = fs.readFileSync(sessionFile);
   fs.rmSync(sessionFile);
   fs.mkdirSync(logger.LOG_DIR, { recursive: true });
@@ -432,7 +432,7 @@ test("the first run starts signed out and drops queued event batches, once", () 
 });
 
 test("prepareSession makes no network request", () => {
-  const sessionStart = require("../../../plugins/skillmeter/scripts/session_start");
+  const sessionStart = require("../../../plugins/kwork/scripts/session_start");
   setToken(makeJwt({ exp: PAST }));
   const realFetch = global.fetch;
   global.fetch = async () => assert.fail("SessionStart must not renew; the drains do");

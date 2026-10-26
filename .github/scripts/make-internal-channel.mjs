@@ -23,7 +23,7 @@ const root = resolve(args[0] || join(dirname(fileURLToPath(import.meta.url)), ".
 const clients = [
   {
     marketplace: ".claude-plugin/marketplace.json",
-    plugin: "clients/claude-code/skillmeter",
+    plugin: "clients/claude-code/kwork",
     pluginManifest: ".claude-plugin/plugin.json",
     // Claude Code shows the marketplace description; it has no display name.
     rename: (marketplace) => {
@@ -32,7 +32,7 @@ const clients = [
   },
   {
     marketplace: ".agents/plugins/marketplace.json",
-    plugin: "clients/codex/plugins/skillmeter",
+    plugin: "clients/codex/plugins/kwork",
     pluginManifest: ".codex-plugin/plugin.json",
     rename: (marketplace) => {
       marketplace.interface = { ...marketplace.interface, displayName: "SkillBench (internal)" };

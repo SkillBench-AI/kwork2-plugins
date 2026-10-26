@@ -4,7 +4,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
-const { writeDurable } = require("../../../plugins/skillmeter/scripts/lib/transcript-delta");
+const { writeDurable } = require("../../../plugins/kwork/scripts/lib/transcript-delta");
 
 function setup(t, platform) {
   const original = Object.getOwnPropertyDescriptor(process, "platform");

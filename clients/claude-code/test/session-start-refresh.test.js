@@ -13,7 +13,7 @@ const { spawn } = require("child_process");
 
 const { makeTempDir, writeCredentials, readSession, makeJwt } = require("../testing/helpers");
 
-const SCRIPT = path.resolve(__dirname, "../skillmeter/scripts/session_start.js");
+const SCRIPT = path.resolve(__dirname, "../kwork/scripts/session_start.js");
 const DEVICE_ID = "SESSION-START-REFRESH-DEVICE";
 
 function jwt(expiresInSec) {

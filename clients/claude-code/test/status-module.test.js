@@ -18,9 +18,9 @@ const SCRATCH = fs.mkdtempSync(path.join(os.tmpdir(), "skm-status-module-"));
 process.env.CLAUDE_PLUGIN_DATA = path.join(SCRATCH, "data");
 process.env.SKILLMETER_STATE_DIR = path.join(SCRATCH, "state");
 
-const PLUGIN = path.resolve(__dirname, "../skillmeter");
+const PLUGIN = path.resolve(__dirname, "../kwork");
 const MODULE = fs.readFileSync(path.join(PLUGIN, "hooks/status.tsx"), "utf8");
-const { STATES, GROUPS, stateGroup } = require("../skillmeter/scripts/lib/collection-state");
+const { STATES, GROUPS, stateGroup } = require("../kwork/scripts/lib/collection-state");
 
 // The keys of `const NAME: Record<string, string> = { ... }` in the module.
 function tableKeys(name) {
@@ -50,7 +50,7 @@ test("the module is loaded from hooks.json and typed by the manifest", () => {
 });
 
 test("the module reads the directory the writer writes", () => {
-  const { SESSION_STATUS_DIR } = require("../skillmeter/scripts/lib/session-status");
+  const { SESSION_STATUS_DIR } = require("../kwork/scripts/lib/session-status");
   assert.equal(path.basename(SESSION_STATUS_DIR), "session-status");
   assert.match(MODULE, /session-status\$\{sep\}\$\{id\}\.json/);
 });

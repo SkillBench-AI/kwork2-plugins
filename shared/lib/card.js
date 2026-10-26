@@ -1,7 +1,7 @@
 "use strict";
 
 /**
- * The status card both SkillMeter clients print: a content-sized box in plain
+ * The status card both Kwork clients print: a content-sized box in plain
  * Unicode, titled with the plugin version and any non-stable channel. Plain
  * Unicode because Claude Code's systemMessage displays ANSI escape codes
  * literally. Each client decides the card's lines; a caller that writes the
@@ -9,7 +9,7 @@
  */
 
 function cardTitle({ version, channel, env } = {}) {
-  const name = version ? `SkillMeter v${version}` : "SkillMeter";
+  const name = version ? `Kwork v${version}` : "Kwork";
   return channel && channel !== "stable" ? `${name} · ${channel} (${env})` : name;
 }
 

@@ -70,7 +70,7 @@ function copyToClipboard(text) {
 async function exchangeForLicense(idToken, deviceId) {
   const result = await exchangeIdToken(idToken, deviceId);
   if (result.outcome === "issued") return result.token;
-  if (result.status === 402) throw new Error("No active SkillMeter license found for your workspaces.");
+  if (result.status === 402) throw new Error("No active Kwork license found for your workspaces.");
   throw new Error(`Activation failed (${result.status ? `HTTP ${result.status}` : result.message})`);
 }
 
@@ -146,7 +146,7 @@ async function signin(client, { restart = false } = {}) {
   // Re-running sign-in, from shell history or by repetition, must not cancel
   // a code that is waiting for approval in the browser.
   if (!restart && client.pending.isPending()) {
-    say("SkillMeter sign-in in progress: a sign-in code is waiting for approval in the browser.");
+    say("Kwork sign-in in progress: a sign-in code is waiting for approval in the browser.");
     say(`Approve it there, then run ${client.signinCommand} to confirm.`);
     say(`To cancel it and start over: ${client.restartCommand}`);
     return;

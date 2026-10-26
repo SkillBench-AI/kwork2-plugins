@@ -76,7 +76,7 @@ user signs in again.
 - **Signed in** means this client's session holds a license and is not signed
   out. A session the broker ended keeps its license until the next sign-in, so
   recording continues (ADR 001 decision 3) while transmission waits; the
-  SessionStart banner asks for sign-in, and `/skillmeter:signin` runs the
+  SessionStart banner asks for sign-in, and `/kwork:signin` runs the
   device flow even while that license is still valid.
 - **Sign-in** stores the device grant's refresh token and the license from
   `/activate` in one atomic write.
@@ -189,7 +189,7 @@ directory with token values hashed in the record:
 | Renewal `/activate` is pinned to the tenant slug; no `/refresh` call | ✅ | ✅ |
 | A spent token presented once more within 30 s is accepted and the session continues | ✅ | ✅ |
 | A second reuse gets `invalid_grant` and revokes the chain; the plugin reports sign-in required | ✅ | ✅ |
-| After the session ended, `/skillmeter:signin` runs the device flow although the license is valid | ✅ | ✅ |
+| After the session ended, `/kwork:signin` runs the device flow although the license is valid | ✅ | ✅ |
 | Sign-out revokes the refresh token; the old token then gets `invalid_grant` | ✅ | ✅ |
 
 Not verified end to end: removal from a workspace (402, or 404 for the pinned

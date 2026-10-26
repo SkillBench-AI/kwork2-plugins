@@ -9,7 +9,7 @@ parts of decisions 5 and 8 that assume a shared record.
 ## Context
 
 ADR 004 made `~/.skillbench/telemetry-policy.json` the one consent record for
-every SkillMeter client on a machine. In practice that coupled the Codex
+every Kwork client on a machine. In practice that coupled the Codex
 plugin to this plugin's settings:
 
 - Only this plugin could authorize an organization, so Codex capture depended

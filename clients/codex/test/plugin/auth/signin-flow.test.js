@@ -1,5 +1,5 @@
 "use strict";
-// The sign-in flow shared with SkillMeter for Claude Code (lib/signin-flow.js),
+// The sign-in flow shared with Kwork for Claude Code (lib/signin-flow.js),
 // run as the Codex signin script without a TTY: the device code is shown and
 // the poll goes to a background process, which these tests only record.
 const test = require("node:test");
@@ -41,7 +41,7 @@ test("a device code without a lifetime shows the default, and polls in the backg
   assert.equal(run.status, 0, run.stderr);
   assert.match(run.stdout, /ABCD-EFGH/);
   assert.match(run.stdout, /Code expires in 15 minutes\./, "not NaN when the broker omits expires_in");
-  assert.match(run.stdout, /run \$skillmeter:signin again to confirm and choose telemetry/);
+  assert.match(run.stdout, /run \$kwork:signin again to confirm and choose telemetry/);
   assert.equal(spawns(box), 1);
 });
 
@@ -68,7 +68,7 @@ test("a failed background poll stops reporting the sign-in as waiting", t => {
   // The poll the first run spawned, failing at the broker.
   const poll = box.script("signin.js", { args: ["--background-poll", "SYNTHETIC", "synthetic-device-code", "1", session.auth_generation], timeout: 20_000 });
   assert.equal(poll.status, 1);
-  assert.match(poll.stderr, /The code expired\. Run \$skillmeter:signin again\./);
+  assert.match(poll.stderr, /The code expired\. Run \$kwork:signin again\./);
   const again = box.script("signin.js");
   assert.doesNotMatch(again.stdout, /sign-in in progress/);
   assert.match(again.stdout, /ABCD-EFGH/);

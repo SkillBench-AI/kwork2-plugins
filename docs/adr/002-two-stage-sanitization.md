@@ -69,7 +69,7 @@ merge.
    the shared corpus.
 3. The key-name heuristic fires on free text. Claude Code stores
    `AskUserQuestion` answers keyed by the question text, and on 2026-09-10 a
-   production record carried the answer to "Keep SkillMeter telemetry
+   production record carried the answer to "Keep Kwork telemetry
    authorized for @skillbench-ai?" as `[REDACTED_SECRET]` because
    "authorized" matches `\bauth(?:\b|oriz)`. A heuristic designed for `env`
    blocks and tool parameters destroys legitimate content when applied to
@@ -530,7 +530,7 @@ wholesale-hashed directory keys, next to `cwd`, `old_cwd` and `new_cwd`.
 `register_repo_root`). `worktree_path` was already captured by `WorktreeRemove`
 and only had its home prefix hashed, leaving repository and worktree names in
 clear. `scratchpad_dir` is a common hook input field since Claude Code
-v2.1.257; SkillMeter does not record it, and the key is listed so that a
+v2.1.257; Kwork does not record it, and the key is listed so that a
 future mapper cannot ship it raw. Values are hashed the same way as `cwd`, and
 each counts under `counts.path`. Sibling sanitizers pin this policy by
 upstream commit; refresh the pin to the merged commit.

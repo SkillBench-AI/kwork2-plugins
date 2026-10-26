@@ -10,9 +10,9 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const { execFileSync } = require("node:child_process");
-const credstore = require("../../../plugins/skillmeter/scripts/credstore");
-const logger = require("../../../plugins/skillmeter/scripts/logger");
-const { normalizeOrgList, resolveOrgScope } = require("../../../plugins/skillmeter/scripts/lib/org-scope");
+const credstore = require("../../../plugins/kwork/scripts/credstore");
+const logger = require("../../../plugins/kwork/scripts/logger");
+const { normalizeOrgList, resolveOrgScope } = require("../../../plugins/kwork/scripts/lib/org-scope");
 
 function signInWithOrgs(orgs) {
   const generation = credstore.markEngaged();

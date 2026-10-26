@@ -3,7 +3,7 @@
 // Representative payloads based on the official Claude Code hooks reference:
 // https://code.claude.com/docs/en/hooks
 // Verified 2026-09-26. Keep the input shape aligned with the documented event
-// schemas; expected contains only the fields SkillMeter intentionally records.
+// schemas; expected contains only the fields Kwork intentionally records.
 
 const common = {
   session_id: "abc123",

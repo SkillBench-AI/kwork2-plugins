@@ -7,8 +7,8 @@ isolateHome({ device_id: "TEST-DEVICE", hash_salt: "deadbeefsalt" });
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const { SALT, HEX } = require("../../../test-support/sanitizer.cjs");
-const s = require("../../../plugins/skillmeter/scripts/lib/sanitize");
-const logger = require("../../../plugins/skillmeter/scripts/logger");
+const s = require("../../../plugins/kwork/scripts/lib/sanitize");
+const logger = require("../../../plugins/kwork/scripts/logger");
 
 const re = source => new RegExp(`^${source}$`);
 

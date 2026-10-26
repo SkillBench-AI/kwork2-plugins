@@ -10,7 +10,7 @@ const {
   telemetryConsentRequiredBanner,
   telemetryRepositoryRequiredBanner,
   telemetryActiveBanner,
-} = require("../skillmeter/scripts/lib/banner");
+} = require("../kwork/scripts/lib/banner");
 
 function assertCard(value) {
   // The card opens with a newline so the renderer's "… says: " prefix cannot
@@ -18,7 +18,7 @@ function assertCard(value) {
   assert.match(value, /^\n╭/);
   const lines = value.slice(1).split("\n");
   assert.ok(lines.length >= 3);
-  assert.match(lines[0], /^╭─ SkillMeter v/);
+  assert.match(lines[0], /^╭─ Kwork v/);
   assert.match(lines.at(-1), /^╰─+╯$/);
   assert.equal(new Set(lines.map((line) => [...line].length)).size, 1);
   assert.doesNotMatch(value, /\u001b/);
@@ -30,7 +30,7 @@ test("sign-in card makes the privacy default and next action explicit", () => {
   assertCard(value);
   assert.match(value, /\[ ACTION REQUIRED \]/);
   assert.match(value, /\bOFF\b/);
-  assert.match(value, /→ \/skillmeter:signin/);
+  assert.match(value, /→ \/kwork:signin/);
 });
 
 test("consent card identifies the organization and remains off by default", () => {
@@ -40,7 +40,7 @@ test("consent card identifies the organization and remains off by default", () =
   assert.match(value, /\[ TELEMETRY SETUP \]/);
   assert.match(value, /Organization\s+@skillbench-ai/);
   assert.match(value, /\bOFF\b/);
-  assert.match(value, /→ \/skillmeter:signin to review/);
+  assert.match(value, /→ \/kwork:signin to review/);
 });
 
 test("active card shows scope and the native picker entrypoint", () => {
@@ -48,7 +48,7 @@ test("active card shows scope and the native picker entrypoint", () => {
 
   assertCard(value);
   assert.match(value, /\[ TELEMETRY ON \]/);
-  assert.match(value, /Manage\s+\/skillmeter:telemetry list/);
+  assert.match(value, /Manage\s+\/kwork:telemetry list/);
 });
 
 test("unselected repository card stays off and names only the remote identity", () => {
@@ -62,7 +62,7 @@ test("unselected repository card stays off and names only the remote identity", 
   assert.match(value, /Repository\s+@skillbench-ai\/example/);
   assert.match(value, /\bOFF\b/);
   assert.match(value, /HMAC cwd/);
-  assert.match(value, /→ \/skillmeter:telemetry list/);
+  assert.match(value, /→ \/kwork:telemetry list/);
 });
 
 test("sign-in inventory lists every repository and its current effective state", () => {

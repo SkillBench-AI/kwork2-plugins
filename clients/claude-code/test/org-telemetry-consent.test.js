@@ -17,8 +17,8 @@ const {
   writeCredentials,
   accountDir,
 } = require("../testing/helpers");
-const credstore = require("../skillmeter/scripts/credstore");
-const { resolveTelemetryGate } = require("../skillmeter/scripts/lib/telemetry-policy");
+const credstore = require("../kwork/scripts/credstore");
+const { resolveTelemetryGate } = require("../kwork/scripts/lib/telemetry-policy");
 
 function licenseJwt(org = "SkillBench-AI") {
   return makeJwt({
@@ -29,7 +29,7 @@ function licenseJwt(org = "SkillBench-AI") {
 }
 
 const SIGNIN_SKILL = fs.readFileSync(
-  path.resolve(__dirname, "../skillmeter/skills/signin/SKILL.md"),
+  path.resolve(__dirname, "../kwork/skills/signin/SKILL.md"),
   "utf8"
 );
 
@@ -87,7 +87,7 @@ test("first sign-in offers one combined organization and repository choice", () 
   assert.doesNotMatch(SIGNIN_SKILL, /Header: `Repositories`/);
   assert.doesNotMatch(
     SIGNIN_SKILL,
-    /Allow SkillMeter telemetry for repositories owned by/
+    /Allow Kwork telemetry for repositories owned by/
   );
   assert.match(
     SIGNIN_SKILL,
@@ -199,7 +199,7 @@ test("org consent CLI validates the JWT org and persists the explicit choice", (
     license_jwt: licenseJwt(),
   });
 
-  const script = path.resolve(__dirname, "../skillmeter/scripts/org_telemetry_consent.js");
+  const script = path.resolve(__dirname, "../kwork/scripts/org_telemetry_consent.js");
   const env = isolatedEnv({ SKILLMETER_STATE_DIR: stateDir });
 
   const initial = runNode(script, ["status"], { env });
@@ -243,7 +243,7 @@ test("signin expansion emits an explicit pending-consent state for a new sign-in
 
   const script = path.resolve(
     __dirname,
-    "../skillmeter/scripts/user_prompt_expansion_signin.js"
+    "../kwork/scripts/user_prompt_expansion_signin.js"
   );
   // A synthetic checkout and an isolated HOME: the listing must not depend on
   // this checkout's remote or read the developer's real ~/.claude.json.
@@ -255,7 +255,7 @@ test("signin expansion emits an explicit pending-consent state for a new sign-in
       SKILLMETER_STATE_DIR: stateDir,
     }),
     input: JSON.stringify({
-      command_name: "skillmeter:signin",
+      command_name: "kwork:signin",
       command_source: "plugin",
       cwd: repo,
       session_id: "11111111-1111-4111-8111-111111111111",
@@ -265,8 +265,8 @@ test("signin expansion emits an explicit pending-consent state for a new sign-in
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
   const context = output.hookSpecificOutput.additionalContext;
-  assert.match(context, /SkillMeter sign-in state JSON:/);
-  const state = JSON.parse(context.split("SkillMeter sign-in state JSON:\n")[1]);
+  assert.match(context, /Kwork sign-in state JSON:/);
+  const state = JSON.parse(context.split("Kwork sign-in state JSON:\n")[1]);
   assert.deepEqual(state.orgs, [{ org: "skillbench-ai", consent: null }]);
   assert.deepEqual(state.backfill, {
     eligible: true,
@@ -314,10 +314,10 @@ test("FileChanged sign-in success immediately shows every discovered repository"
   const stateFile = path.join(claudeConfigDir, "fixture-claude-state.json");
   writeJson(stateFile, { projects: { [repo]: {} } });
   const probe = `
-    const inventory = require(${JSON.stringify(path.resolve(__dirname, "../skillmeter/scripts/lib/repository-telemetry"))});
+    const inventory = require(${JSON.stringify(path.resolve(__dirname, "../kwork/scripts/lib/repository-telemetry"))});
     const load = inventory.loadRepositoryTelemetryState;
     inventory.loadRepositoryTelemetryState = () => load({ claudeStateFile: ${JSON.stringify(stateFile)} });
-    require(${JSON.stringify(path.resolve(__dirname, "../skillmeter/scripts/on_signin_result.js"))});
+    require(${JSON.stringify(path.resolve(__dirname, "../kwork/scripts/on_signin_result.js"))});
   `;
   const result = runNode(
     "-e",
@@ -340,7 +340,7 @@ test("FileChanged sign-in success immediately shows every discovered repository"
   assert.doesNotMatch(output.systemMessage, new RegExp(repo));
   assert.match(
     output.terminalSequence,
-    /Signed in to @skillbench-ai — run \/skillmeter:signin to choose telemetry/
+    /Signed in to @skillbench-ai — run \/kwork:signin to choose telemetry/
   );
 });
 
@@ -352,7 +352,7 @@ test("transmission authorization requires org consent and honors the global kill
   const env = isolatedEnv({ SKILLMETER_STATE_DIR: stateDir });
 
   const probe = [
-    "const c=require('./skillmeter/scripts/credstore');",
+    "const c=require('./kwork/scripts/credstore');",
     "process.stdout.write(String(c.isTelemetryTransmissionAllowed()));",
   ].join("");
   const runProbe = () => runNode("-e", [probe], {
@@ -362,7 +362,7 @@ test("transmission authorization requires org consent and honors the global kill
 
   assert.equal(runProbe().stdout, "false");
 
-  const consentScript = path.resolve(__dirname, "../skillmeter/scripts/org_telemetry_consent.js");
+  const consentScript = path.resolve(__dirname, "../kwork/scripts/org_telemetry_consent.js");
   const enabled = runNode(consentScript, ["set", "skillbench-ai", "enabled"], {
     env,
   });
@@ -370,7 +370,7 @@ test("transmission authorization requires org consent and honors the global kill
   assert.equal(runProbe().stdout, "true");
 
   const repositoryProbe = [
-    "const c=require('./skillmeter/scripts/credstore');",
+    "const c=require('./kwork/scripts/credstore');",
     "process.stdout.write(String(c.isTelemetryTransmissionAllowed(",
     "'github.com/skillbench-ai/example')));",
   ].join("");
@@ -380,7 +380,7 @@ test("transmission authorization requires org consent and honors the global kill
   });
   assert.equal(runRepositoryProbe().stdout, "false");
   const enableRepository = [
-    "const s=require('./skillmeter/scripts/lib/telemetry-store');",
+    "const s=require('./kwork/scripts/lib/telemetry-store');",
     "s.setRepositoryOverride('github.com/skillbench-ai/example',true);",
   ].join("");
   assert.equal(
@@ -392,7 +392,7 @@ test("transmission authorization requires org consent and honors the global kill
   );
   assert.equal(runRepositoryProbe().stdout, "true");
 
-  const telemetryScript = path.resolve(__dirname, "../skillmeter/scripts/telemetry.js");
+  const telemetryScript = path.resolve(__dirname, "../kwork/scripts/telemetry.js");
   const disabled = runNode(telemetryScript, ["disable-global"], {
     cwd: path.resolve(__dirname, ".."),
     env,
@@ -416,7 +416,7 @@ test("with several licensed organizations, a repository needs only its own organ
   });
   const env = isolatedEnv({ SKILLMETER_STATE_DIR: stateDir });
   const allowed = (repoKey) => runNode("-e", [
-    `process.stdout.write(String(require('./skillmeter/scripts/credstore').isTelemetryTransmissionAllowed(${JSON.stringify(repoKey)})));`,
+    `process.stdout.write(String(require('./kwork/scripts/credstore').isTelemetryTransmissionAllowed(${JSON.stringify(repoKey)})));`,
   ], { cwd: path.resolve(__dirname, ".."), env }).stdout;
 
   assert.equal(allowed("github.com/alpha/app"), "true", "its organization is authorized");
@@ -428,7 +428,7 @@ test("with several licensed organizations, a repository needs only its own organ
 test("SessionStart does not silently activate a token-less install", () => {
   const stateDir = makeTempDir("skm-org-consent-");
   const dataDir = makeTempDir("skm-org-consent-");
-  const script = path.resolve(__dirname, "../skillmeter/scripts/session_start.js");
+  const script = path.resolve(__dirname, "../kwork/scripts/session_start.js");
   const result = runNode(script, [], {
     cwd: path.resolve(__dirname, ".."),
     env: isolatedEnv({
@@ -471,7 +471,7 @@ test("hook capture stays off until both org and repository are enabled", () => {
   };
   writeCredentials(stateDir, baseStore, { dataDir });
 
-  const hook = path.resolve(__dirname, "../skillmeter/scripts/hook.js");
+  const hook = path.resolve(__dirname, "../kwork/scripts/hook.js");
   const env = isolatedEnv({
     SKILLMETER_STATE_DIR: stateDir,
     CLAUDE_PLUGIN_DATA: dataDir,
@@ -495,7 +495,7 @@ test("hook capture stays off until both org and repository are enabled", () => {
   assert.equal(captured(), false, "nothing captured before org consent");
 
   const consent = runNode(
-    path.resolve(__dirname, "../skillmeter/scripts/org_telemetry_consent.js"),
+    path.resolve(__dirname, "../kwork/scripts/org_telemetry_consent.js"),
     ["set", "skillbench-ai", "enabled"],
     { env }
   );
@@ -510,7 +510,7 @@ test("hook capture stays off until both org and repository are enabled", () => {
   assert.equal(captured(), false, "nothing captured before repository consent");
 
   const repositoryConsent = runNode(
-    path.resolve(__dirname, "../skillmeter/scripts/telemetry.js"),
+    path.resolve(__dirname, "../kwork/scripts/telemetry.js"),
     ["enable"],
     { cwd: repo, env }
   );
@@ -552,7 +552,7 @@ test("a skipped unselected-repository hook advances the transcript privacy curso
   });
 
   const result = runNode(
-    path.resolve(__dirname, "../skillmeter/scripts/hook.js"),
+    path.resolve(__dirname, "../kwork/scripts/hook.js"),
     ["UserPromptSubmit"],
     {
       cwd: repo,
@@ -601,20 +601,20 @@ test("organization OFF deletes its repository queue and skipped hooks do not rec
     SKILLMETER_STATE_DIR: stateDir,
     CLAUDE_PLUGIN_DATA: dataDir,
   });
-  const consentScript = path.resolve(__dirname, "../skillmeter/scripts/org_telemetry_consent.js");
+  const consentScript = path.resolve(__dirname, "../kwork/scripts/org_telemetry_consent.js");
   assert.equal(
     runNode(consentScript, ["set", "skillbench-ai", "enabled"], { env }).status,
     0
   );
   assert.equal(
     runNode(
-      path.resolve(__dirname, "../skillmeter/scripts/telemetry.js"),
+      path.resolve(__dirname, "../kwork/scripts/telemetry.js"),
       ["enable"],
       { cwd: repo, env }
     ).status,
     0
   );
-  const hook = path.resolve(__dirname, "../skillmeter/scripts/hook.js");
+  const hook = path.resolve(__dirname, "../kwork/scripts/hook.js");
   const input = JSON.stringify({
     session_id: "consent-gate-stop-test",
     cwd: repo,
@@ -643,7 +643,7 @@ test("organization OFF deletes its repository queue and skipped hooks do not rec
     false
   );
 
-  const result = runNode(path.resolve(__dirname, "../skillmeter/scripts/stop.js"), [], {
+  const result = runNode(path.resolve(__dirname, "../kwork/scripts/stop.js"), [], {
     cwd: repo,
     env,
     input: JSON.stringify({

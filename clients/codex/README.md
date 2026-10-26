@@ -1,7 +1,7 @@
-# SkillMeter for Codex
+# Kwork for Codex
 
 Connect Codex sessions to [SkillBench](https://skillbench.com) for
-organization-level developer skill analytics. SkillMeter collects
+organization-level developer skill analytics. Kwork collects
 repository-scoped workflow and conversation telemetry, sanitizes it locally,
 and uploads it in the background.
 
@@ -9,35 +9,35 @@ and uploads it in the background.
 
 Collected data can include prompts, assistant messages, tool inputs and outputs,
 transcripts, and custom skill content. Sanitization reduces exposure; it does
-not make arbitrary content anonymous. Read the [data and scope guide](plugins/skillmeter/README.md#data-and-privacy)
+not make arbitrary content anonymous. Read the [data and scope guide](plugins/kwork/README.md#data-and-privacy)
 before enabling collection.
 
 New capture requires explicit organization and repository choices in Codex as
 well as an allowed GitHub owner. Installation and sign-in alone do not enable
-capture, and choices made in SkillMeter for Claude Code do not apply here. See
-[collection scope](plugins/skillmeter/README.md#collection-scope) for controls.
+capture, and choices made in Kwork for Claude Code do not apply here. See
+[collection scope](plugins/kwork/README.md#collection-scope) for controls.
 
 ## Install
 
-Requires Codex with plugin support, Node.js 22 or later, and a SkillMeter license.
+Requires Codex with plugin support, Node.js 22 or later, and a Kwork license.
 
 ```sh
-codex plugin marketplace add SkillBench-AI/skillmeter-plugins --ref main
-codex plugin add skillmeter@skillbench
+codex plugin marketplace add SkillBench-AI/kwork2-plugins --ref main
+codex plugin add kwork@skillbench
 ```
 
 Restart Codex and start a new session. Review and enable the plugin's hooks if
 Codex prompts you. Then run:
 
-> $skillmeter:signin
+> $kwork:signin
 
 After sign-in it asks which of your organization's repositories send
-telemetry. Change them later with `$skillmeter:telemetry`; see the
-[project controls](plugins/skillmeter/README.md#sign-in-and-controls).
+telemetry. Change them later with `$kwork:telemetry`; see the
+[project controls](plugins/kwork/README.md#sign-in-and-controls).
 
 Sign-in opens the SkillBench sign-in service, where you pick your workspace.
-This plugin keeps its own session, separate from SkillMeter for Claude Code. See
-[sign-in and collection controls](plugins/skillmeter/README.md#sign-in-and-controls).
+This plugin keeps its own session, separate from Kwork for Claude Code. See
+[sign-in and collection controls](plugins/kwork/README.md#sign-in-and-controls).
 
 ## Update
 
@@ -45,27 +45,27 @@ For the Git marketplace installed above:
 
 ```sh
 codex plugin marketplace upgrade skillbench
-codex plugin add skillmeter@skillbench
+codex plugin add kwork@skillbench
 ```
 
 Restart Codex and start a new session. Run `codex plugin list --json` to check
-the installed SkillMeter version.
+the installed Kwork version.
 
 **Installed from `SkillBench-AI/skillmeter-codex-marketplace`?** That repository is archived and
-receives no updates; SkillMeter for Codex now ships from `SkillBench-AI/skillmeter-plugins`.
+receives no updates; Kwork for Codex now ships from `SkillBench-AI/kwork2-plugins`.
 Both use the marketplace name `skillbench`, so remove the old one first:
 
 ```sh
 codex plugin marketplace remove skillbench
-codex plugin marketplace add SkillBench-AI/skillmeter-plugins --ref main
-codex plugin add skillmeter@skillbench
+codex plugin marketplace add SkillBench-AI/kwork2-plugins --ref main
+codex plugin add kwork@skillbench
 ```
 
 Your sign-in, repository choices and queued data are kept: they live in
 `~/.skillbench`, not in the marketplace.
 
 **Installed from a local checkout?** Update that checkout first, then run
-`codex plugin add skillmeter@skillbench`. `marketplace upgrade` only refreshes
+`codex plugin add kwork@skillbench`. `marketplace upgrade` only refreshes
 Git marketplaces; it does not pull a locally registered repository.
 
 ## Internal channel
@@ -80,24 +80,24 @@ service, license server and `~/.skillbench-dev` state, and is published as the
 the stable one.
 
 ```sh
-codex plugin marketplace add SkillBench-AI/skillmeter-plugins --ref internal
-codex plugin add skillmeter@skillbench-internal
+codex plugin marketplace add SkillBench-AI/kwork2-plugins --ref internal
+codex plugin add kwork@skillbench-internal
 ```
 
 Sign in with a dev workspace account. Remove the stable plugin first
-(`codex plugin remove skillmeter@skillbench`), or both would record the same
+(`codex plugin remove kwork@skillbench`), or both would record the same
 sessions. Status cards show `internal (dev)` in the title. To update, run
 `codex plugin marketplace upgrade skillbench-internal` and add the plugin again.
 If `skillbench-internal` was added from `SkillBench-AI/skillmeter-codex-marketplace`, run
 `codex plugin marketplace remove skillbench-internal` before adding it from
-`SkillBench-AI/skillmeter-plugins`.
+`SkillBench-AI/kwork2-plugins`.
 
-## Using SkillMeter
+## Using Kwork
 
-- [Sign in, pause collection, or sign out](plugins/skillmeter/README.md#sign-in-and-controls)
-- [Understand collection scope and privacy](plugins/skillmeter/README.md#data-and-privacy)
-- [Review releases and known limitations](https://github.com/SkillBench-AI/skillmeter-plugins/releases); releases up to 0.13.0 are in the [archived repository](https://github.com/SkillBench-AI/skillmeter-codex-marketplace/releases)
-- [Report an issue](https://github.com/SkillBench-AI/skillmeter-plugins/issues)
+- [Sign in, pause collection, or sign out](plugins/kwork/README.md#sign-in-and-controls)
+- [Understand collection scope and privacy](plugins/kwork/README.md#data-and-privacy)
+- [Review releases and known limitations](https://github.com/SkillBench-AI/kwork2-plugins/releases); releases up to 0.13.0 are in the [archived repository](https://github.com/SkillBench-AI/skillmeter-codex-marketplace/releases)
+- [Report an issue](https://github.com/SkillBench-AI/kwork2-plugins/issues)
 
 ## Development
 

@@ -28,15 +28,15 @@ setTestEnv("HOME", home);
 setTestEnv("GIT_CONFIG_GLOBAL", "/dev/null");
 setTestEnv("XDG_CONFIG_HOME", path.join(home, ".config"));
 
-const credstore = require("../skillmeter/scripts/credstore");
-const licenseStatus = require("../skillmeter/scripts/lib/license-status");
+const credstore = require("../kwork/scripts/credstore");
+const licenseStatus = require("../kwork/scripts/lib/license-status");
 const {
   GROUPS,
   STATES,
   readCollectionState,
   resolveCollectionState,
   stateGroup,
-} = require("../skillmeter/scripts/lib/collection-state");
+} = require("../kwork/scripts/lib/collection-state");
 
 const ORG = "acme";
 const REPO_KEY = `github.com/${ORG}/widgets`;
@@ -183,7 +183,7 @@ test("files: sign-out, then a sign-in that is started and abandoned", () => {
   signIn();
   credstore.signOut();
   assert.equal(readCollectionState().state, STATES.SIGNED_OUT);
-  // /skillmeter:signin starts a new intent and clears the record before the
+  // /kwork:signin starts a new intent and clears the record before the
   // browser flow. The sign-out stays until a sign-in commits, so an abandoned
   // sign-in leaves the user signed out, as they chose.
   credstore.markEngaged();
@@ -242,7 +242,7 @@ function signinAnswered(activateStatus) {
       return { ok: status === 200, status, json: async () => payload, text: async () => JSON.stringify(payload) };
     };
   `);
-  return spawnSync(process.execPath, ["-r", preload, path.join(__dirname, "../skillmeter/scripts/signin.js")], {
+  return spawnSync(process.execPath, ["-r", preload, path.join(__dirname, "../kwork/scripts/signin.js")], {
     encoding: "utf8",
     timeout: 10_000,
     cwd: home,
@@ -260,7 +260,7 @@ test("files: a revoked client whose new sign-in is refused again stays revoked",
   // answers 402 again.
   const retry = signinAnswered(402);
   assert.equal(retry.status, 1, retry.stderr);
-  assert.match(retry.stdout, /No active SkillMeter license/);
+  assert.match(retry.stdout, /No active Kwork license/);
   assert.equal(readCollectionState().state, STATES.REVOKED);
 });
 

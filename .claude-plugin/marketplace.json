@@ -6,8 +6,8 @@
   "description": "SkillBench plugins for Claude Code.",
   "plugins": [
     {
-      "name": "skillmeter",
-      "source": "./clients/claude-code/skillmeter",
+      "name": "kwork",
+      "source": "./clients/claude-code/kwork",
       "description": "Sends opt-in, sanitized Claude Code workflow and conversation telemetry to SkillBench for organization-level developer skill analytics.",
       "category": "development",
       "homepage": "https://skillbench.com"

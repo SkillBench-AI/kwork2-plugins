@@ -5,13 +5,13 @@ const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs"), os = require("node:os"), path = require("node:path");
 const { spawnSync } = require("node:child_process");
-const plugin = path.resolve(__dirname, "..", "..", "..", "plugins", "skillmeter");
+const plugin = path.resolve(__dirname, "..", "..", "..", "plugins", "kwork");
 
 function fixture(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "codex-install-"));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
-  const data = path.join(root, "plugins/data/skillmeter-fixture");
-  const install = version => path.join(root, "plugins/cache/fixture/skillmeter", version);
+  const data = path.join(root, "plugins/data/kwork-fixture");
+  const install = version => path.join(root, "plugins/cache/fixture/kwork", version);
   return { root, data, install };
 }
 function readRoot(f, install, extra = {}) {
@@ -49,7 +49,7 @@ test("skill commands use the data directory a hook was given for the same instal
 
 test("a recorded directory from another install is ignored", t => {
   const f = fixture(t), hookData = path.join(f.root, "internal-data");
-  const other = path.join(f.root, "plugins/cache/fixture-internal/skillmeter/new");
+  const other = path.join(f.root, "plugins/cache/fixture-internal/kwork/new");
   fs.mkdirSync(other, { recursive: true }); fs.mkdirSync(hookData);
   assert.equal(readRoot(f, other, { PLUGIN_DATA: hookData }).status, 0);
   const install = f.install("new"); fs.mkdirSync(install, { recursive: true });
@@ -70,7 +70,7 @@ test("a clean install without plugins/data creates its private data directory", 
 });
 
 test("a cache-shaped path outside a plugins directory is not treated as an installation", t => {
-  const f = fixture(t), install = path.join(f.root, "elsewhere/cache/fixture/skillmeter/new");
+  const f = fixture(t), install = path.join(f.root, "elsewhere/cache/fixture/kwork/new");
   fs.mkdirSync(install, { recursive: true });
   const result = readRoot(f, install);
   assert.notEqual(result.status, 0);

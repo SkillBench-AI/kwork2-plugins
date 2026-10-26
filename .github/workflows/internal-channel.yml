@@ -1,7 +1,7 @@
 name: Internal channel
 
 # Rebuilds the `internal` branch from each green push to `next`. Both clients
-# install from it: Claude Code as `skillmeter@skillbench-internal` via
+# install from it: Claude Code as `kwork@skillbench-internal` via
 # `.claude-plugin/`, Codex via `.agents/plugins/`.
 
 on:

@@ -60,7 +60,7 @@ jobs:
       # Reads the manifest, hooks.json and the module the way that release's
       # loader would, and fails on anything it would refuse.
       - name: claude plugin validate
-        run: npx -y "@anthropic-ai/claude-code@${{ matrix.claude-code }}" plugin validate clients/claude-code/skillmeter
+        run: npx -y "@anthropic-ai/claude-code@${{ matrix.claude-code }}" plugin validate clients/claude-code/kwork
       # The marketplace Claude Code reads, at the repository root.
       - name: claude marketplace validate
         run: npx -y "@anthropic-ai/claude-code@${{ matrix.claude-code }}" plugin validate .

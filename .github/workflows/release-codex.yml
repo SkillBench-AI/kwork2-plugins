@@ -2,7 +2,7 @@ name: Release (Codex)
 
 # Tag strategy: Codex releases are cut by pushing an annotated tag
 # "codex-vMAJOR.MINOR.PATCH" that matches the plugin version in
-# clients/codex/plugins/skillmeter/.codex-plugin/plugin.json. The client prefix
+# clients/codex/plugins/kwork/.codex-plugin/plugin.json. The client prefix
 # keeps these tags apart from the Claude Code plugin's "v*" tags, which share
 # this repository and overlap in version numbers.
 # Pushing such a tag runs the full gate (version match + manifests + tests) and,
@@ -49,8 +49,8 @@ jobs:
         run: |
           mkdir -p dist
           git archive --format=tar.gz \
-            --prefix="skillmeter-${GITHUB_REF_NAME}/" \
-            -o "dist/skillmeter-${GITHUB_REF_NAME}.tar.gz" \
+            --prefix="kwork-${GITHUB_REF_NAME}/" \
+            -o "dist/kwork-${GITHUB_REF_NAME}.tar.gz" \
             "${GITHUB_REF_NAME}" -- .agents clients/codex
       # Not marked Latest: the repository's Latest release is always the
       # Claude Code plugin's, which /releases/latest links rely on.
@@ -60,8 +60,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${GITHUB_REF_NAME}" \
-            --title "SkillMeter for Codex ${GITHUB_REF_NAME#codex-v}" \
+            --title "Kwork for Codex ${GITHUB_REF_NAME#codex-v}" \
             --generate-notes \
             --latest=false \
             --verify-tag \
-            "dist/skillmeter-${GITHUB_REF_NAME}.tar.gz"
+            "dist/kwork-${GITHUB_REF_NAME}.tar.gz"

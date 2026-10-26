@@ -7,10 +7,10 @@ const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 const { test, beforeEach, after } = require("node:test");
 const assert = require("node:assert/strict");
-const store = require("../../../plugins/skillmeter/scripts/credstore");
-const logger = require("../../../plugins/skillmeter/scripts/logger");
-const queue = require("../../../plugins/skillmeter/scripts/lib/transcript-delta");
-const { prepareSession } = require("../../../plugins/skillmeter/scripts/session_start");
+const store = require("../../../plugins/kwork/scripts/credstore");
+const logger = require("../../../plugins/kwork/scripts/logger");
+const queue = require("../../../plugins/kwork/scripts/lib/transcript-delta");
+const { prepareSession } = require("../../../plugins/kwork/scripts/session_start");
 const session = sessionFileIn(path.join(home, ".skillbench"));
 const batch = path.join(logger.LOG_DIR, `events.jsonl.${Date.now()}`);
 const bytes = '{"event":"synthetic-legacy-event","session_id":"old-tenant"}\n';
@@ -92,7 +92,7 @@ test("crash after purge but before marker commit is recoverable", () => {
 test("sign-in cannot interleave with purge under the session lock", () => {
   const result = store.completeEventCutover(() => {
     const child = spawnSync(process.execPath, ["-e", `
-      const s = require(${JSON.stringify(require.resolve("../../../plugins/skillmeter/scripts/credstore"))});
+      const s = require(${JSON.stringify(require.resolve("../../../plugins/kwork/scripts/credstore"))});
       try { s.markEngaged(); process.exit(2); }
       catch (e) { process.exit(e.message === 'credential-store-busy' ? 0 : 3); }
     `], { env: process.env, encoding: "utf8", timeout: 5000 });
@@ -115,7 +115,7 @@ test("signin CLI reports an ambiguous cutover hold before contacting the broker"
   fs.writeFileSync(session, JSON.stringify({ license_jwt: license(), refresh_token: "r" }));
   const child = spawnSync(process.execPath, ["-e", `
     global.fetch = () => { throw new Error('unexpected-network'); };
-    require(${JSON.stringify(require.resolve("../../../plugins/skillmeter/scripts/signin"))});
+    require(${JSON.stringify(require.resolve("../../../plugins/kwork/scripts/signin"))});
   `], { env: process.env, encoding: "utf8", timeout: 5000 });
   assert.notEqual(child.status, 0);
   assert.match(child.stdout + child.stderr, /event queue cutover is incomplete/);
@@ -133,7 +133,7 @@ test("malformed session state holds the queue instead of treating it as a fresh 
 });
 
 test("a busy session lock leaves the queue untouched and can be retried", () => {
-  const { acquireLock } = require("../../../plugins/skillmeter/scripts/lib/credential-lock");
+  const { acquireLock } = require("../../../plugins/kwork/scripts/lib/credential-lock");
   const release = acquireLock(`${session}.lock`);
   assert.ok(release);
   try {

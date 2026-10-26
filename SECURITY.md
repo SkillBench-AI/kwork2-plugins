@@ -2,27 +2,27 @@
 
 ## Supported version
 
-This policy covers both SkillMeter clients in this repository: SkillMeter for
-Claude Code and SkillMeter for Codex. Security fixes are applied to the latest
+This policy covers both Kwork clients in this repository: Kwork for
+Claude Code and Kwork for Codex. Security fixes are applied to the latest
 released version of each client. Update to it before reporting an issue that
 may already be resolved.
 
 ## Report a vulnerability
 
 Send security and privacy reports to `privacy@skillbench.com` with the subject
-`[SkillMeter Security]`. Do not open a public issue for a suspected
+`[Kwork Security]`. Do not open a public issue for a suspected
 vulnerability.
 
 Include:
 
-- the affected client (Claude Code or Codex), its SkillMeter version, and the
+- the affected client (Claude Code or Codex), its Kwork version, and the
   Claude Code or Codex version;
 - the operating system;
 - a minimal reproduction using synthetic data;
 - expected and observed behavior; and
 - the potential privacy or security impact.
 
-Do not send GitHub access tokens, SkillMeter license JWTs, raw transcripts,
+Do not send GitHub access tokens, Kwork license JWTs, raw transcripts,
 customer source code, generated telemetry logs, or other production secrets.
 If sensitive evidence is necessary, first ask for a secure transfer method.
 

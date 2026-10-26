@@ -19,7 +19,7 @@ after(() => {
   }
 });
 
-function makeTempDir(prefix = "skillmeter-test-") {
+function makeTempDir(prefix = "kwork-test-") {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
   tempDirs.add(dir);
   return dir;
@@ -96,7 +96,7 @@ function setTestEnv(name, value) {
  * ~/.claude.json, ~/.gitconfig insteadOf rules or ~/.ssh/config.
  */
 function isolatedEnv(overrides = {}) {
-  const home = makeTempDir("skillmeter-home-");
+  const home = makeTempDir("kwork-home-");
   return {
     ...process.env,
     HOME: home,

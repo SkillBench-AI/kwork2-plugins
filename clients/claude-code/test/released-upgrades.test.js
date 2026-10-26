@@ -5,8 +5,8 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs"), os = require("node:os"), path = require("node:path");
 const { releasedCode } = require("./compatibility/released-code.cjs");
 const releases = require("./compatibility/releases.json");
-const candidate = require("../skillmeter/scripts/lib/transcript-delta");
-const resolver = require("../skillmeter/scripts/lib/plugin-data-root");
+const candidate = require("../kwork/scripts/lib/transcript-delta");
+const resolver = require("../kwork/scripts/lib/plugin-data-root");
 const repository = path.resolve(__dirname, "..");
 const row = (uuid, text) => ({ type: "assistant", uuid, message: { content: text } });
 const messages = plan => plan.chunks.flatMap(chunk => chunk.lines.map(JSON.parse)).map(record => record.message.content);
@@ -31,8 +31,8 @@ for (const release of releases) {
     const config = fs.mkdtempSync(path.join(os.tmpdir(), "claude-upgrade-config-"));
     t.after(() => fs.rmSync(config, { recursive: true, force: true }));
     fs.mkdirSync(path.join(config, "plugins/data"), { recursive: true });
-    const oldInstall = path.join(config, "plugins/cache/fixture-market/skillmeter", release.version);
-    const newInstall = path.join(config, "plugins/cache/fixture-market/skillmeter/candidate");
+    const oldInstall = path.join(config, "plugins/cache/fixture-market/kwork", release.version);
+    const newInstall = path.join(config, "plugins/cache/fixture-market/kwork/candidate");
     // A new install must find the data directory the released version wrote to.
     const oldData = oldResolver.resolvePluginDataRoot(oldInstall, {});
     assert.ok(oldData, "released resolver found no data directory");

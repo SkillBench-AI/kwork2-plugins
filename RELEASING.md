@@ -1,6 +1,6 @@
-# Releasing SkillMeter
+# Releasing Kwork
 
-This repository releases two clients, SkillMeter for Claude Code and SkillMeter
+This repository releases two clients, Kwork for Claude Code and Kwork
 for Codex. The stable marketplaces serve `main`, which moves only at releases.
 Pull requests target `next`; the internal channel follows `next` (see below).
 Version tags publish GitHub Releases.
@@ -20,10 +20,10 @@ Version tags publish GitHub Releases.
 
 | | Claude Code | Codex |
 |---|---|---|
-| Version | [`clients/claude-code/skillmeter/.claude-plugin/plugin.json`](clients/claude-code/skillmeter/.claude-plugin/plugin.json) | [`clients/codex/plugins/skillmeter/.codex-plugin/plugin.json`](clients/codex/plugins/skillmeter/.codex-plugin/plugin.json) |
+| Version | [`clients/claude-code/kwork/.claude-plugin/plugin.json`](clients/claude-code/kwork/.claude-plugin/plugin.json) | [`clients/codex/plugins/kwork/.codex-plugin/plugin.json`](clients/codex/plugins/kwork/.codex-plugin/plugin.json) |
 | Tag | `vX.Y.Z` | `codex-vX.Y.Z` |
 | Workflow | [`release-claude-code.yml`](.github/workflows/release-claude-code.yml) | [`release-codex.yml`](.github/workflows/release-codex.yml) |
-| Release | `SkillMeter X.Y.Z`, Latest | `SkillMeter for Codex X.Y.Z`, not Latest, with a source archive |
+| Release | `Kwork X.Y.Z`, Latest | `Kwork for Codex X.Y.Z`, not Latest, with a source archive |
 
 Use `MAJOR.MINOR.PATCH` without prerelease or build suffixes: patch for fixes,
 minor for features. Before 1.0, breaking changes may use a minor bump. The
@@ -47,12 +47,12 @@ After merging the release PR, for each client whose version changed:
 2. Create and push an annotated tag matching the manifest:
 
    ```sh
-   VERSION="$(node -p "require('./clients/claude-code/skillmeter/.claude-plugin/plugin.json').version")"
-   git tag -a "v${VERSION}" -m "SkillMeter ${VERSION}"
+   VERSION="$(node -p "require('./clients/claude-code/kwork/.claude-plugin/plugin.json').version")"
+   git tag -a "v${VERSION}" -m "Kwork ${VERSION}"
    git push origin "v${VERSION}"
 
-   VERSION="$(node -p "require('./clients/codex/plugins/skillmeter/.codex-plugin/plugin.json').version")"
-   git tag -a "codex-v${VERSION}" -m "SkillMeter for Codex ${VERSION}"
+   VERSION="$(node -p "require('./clients/codex/plugins/kwork/.codex-plugin/plugin.json').version")"
+   git tag -a "codex-v${VERSION}" -m "Kwork for Codex ${VERSION}"
    git push origin "codex-v${VERSION}"
    ```
 
@@ -67,10 +67,10 @@ with generated notes, which you then replace with the approved ones. Keep
 internal coordination and rollout history in Linear.
 
 Read the latest published release before writing one;
-[SkillMeter 0.42.0](https://github.com/SkillBench-AI/skillmeter-plugins/releases/tag/v0.42.0)
+[Kwork 0.42.0](https://github.com/SkillBench-AI/kwork2-plugins/releases/tag/v0.42.0)
 is the model for length and tone. Both clients follow the same rules:
 
-- Title: `SkillMeter X.Y.Z` for Claude Code, `SkillMeter for Codex X.Y.Z` for
+- Title: `Kwork X.Y.Z` for Claude Code, `Kwork for Codex X.Y.Z` for
   Codex. Then `### What changed`, `### After updating`, `### Known
   limitations`, and a final `Details: #PR, #PR` line.
 - **What changed**: the user-visible outcome, at most three bullets, one change
@@ -81,11 +81,11 @@ is the model for length and tone. Both clients follow the same rules:
   references. A change users cannot notice stays in its PR.
 - **After updating**: numbered steps, the only part that differs by client.
   Do not add sentences about what is not needed.
-  - Claude Code: always `1. claude plugin update skillmeter@skillbench` and
+  - Claude Code: always `1. claude plugin update kwork@skillbench` and
     `2. Quit and reopen Claude Code` (hooks load per session). Add a sign-in
     step only when the release requires one.
   - Codex: command blocks for `codex plugin marketplace upgrade skillbench`
-    and `codex plugin add skillmeter@skillbench`, then restarting Codex and
+    and `codex plugin add kwork@skillbench`, then restarting Codex and
     starting a new session; distinguish Git marketplaces from local checkouts
     where needed.
 - **Known limitations**: only what this release adds or changes, under the

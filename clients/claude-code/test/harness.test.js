@@ -17,8 +17,8 @@ const {
   detectHarness,
   sizeBucket,
   HARNESS_SCHEMA_VERSION,
-} = require("../skillmeter/scripts/harness");
-const sanitizer = require("../skillmeter/scripts/lib/sanitize");
+} = require("../kwork/scripts/harness");
+const sanitizer = require("../kwork/scripts/lib/sanitize");
 
 // --- helpers ---------------------------------------------------------------
 
@@ -382,7 +382,7 @@ test("plugins/marketplaces: names raw, marketplace + public flag retained", () =
     JSON.stringify({
       version: 2,
       plugins: {
-        "skillmeter@skillbench": [{ scope: "user", version: "0.16.2", installPath: "/x" }],
+        "kwork@skillbench": [{ scope: "user", version: "0.16.2", installPath: "/x" }],
         "inhouse-tool@acme-private": [{ scope: "user", version: "1.0.0", installPath: "/y" }],
       },
     })
@@ -397,7 +397,7 @@ test("plugins/marketplaces: names raw, marketplace + public flag retained", () =
   assert.equal(h.plugins_count, 2);
   assert.equal(h.marketplaces_count, 2);
 
-  const pub = h.plugins.find((p) => p.name === "skillmeter");
+  const pub = h.plugins.find((p) => p.name === "kwork");
   assert.ok(pub, "public-marketplace plugin name kept raw");
   assert.equal(pub.version, "0.16.2");
   assert.equal(pub.marketplace, "skillbench");

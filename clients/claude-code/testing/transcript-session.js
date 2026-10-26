@@ -15,7 +15,7 @@ const { spawn } = require("child_process");
 
 const { makeJwt, makeTempDir, writeCredentials, writeFile, writeTelemetryPolicy } = require("./helpers");
 
-const SCRIPTS = path.resolve(__dirname, "../skillmeter/scripts");
+const SCRIPTS = path.resolve(__dirname, "../kwork/scripts");
 const ORG = "acme";
 const REPO_KEY = `github.com/${ORG}/widgets`;
 // A second repository of the same organization.

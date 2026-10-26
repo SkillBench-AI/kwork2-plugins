@@ -1,6 +1,6 @@
-# SkillMeter for Claude Code
+# Kwork for Claude Code
 
-SkillMeter is an opt-in Claude Code plugin that sends developer-workflow
+Kwork is an opt-in Claude Code plugin that sends developer-workflow
 telemetry to the SkillBench platform for organization-level skill analytics.
 Installation and sign-in do not authorize telemetry: the user must explicitly
 authorize the licensed GitHub organization and then enable each repository.
@@ -16,7 +16,7 @@ value.
 
 Review these documents before installing:
 
-- [Plugin documentation](skillmeter/README.md)
+- [Plugin documentation](kwork/README.md)
 - [Privacy notice](../../docs/privacy/claude-code.md)
 - [Security policy](../../SECURITY.md)
 - [Support](../../SUPPORT.md)
@@ -26,20 +26,20 @@ Review these documents before installing:
 Requires Node.js 22 or later on `PATH`; the plugin's hooks run `node`.
 
 ```bash
-claude plugin marketplace add SkillBench-AI/skillmeter-plugins
-claude plugin install skillmeter@skillbench
+claude plugin marketplace add SkillBench-AI/kwork2-plugins
+claude plugin install kwork@skillbench
 ```
 
-Inside Claude Code, run `/skillmeter:signin` to authenticate and review the
+Inside Claude Code, run `/kwork:signin` to authenticate and review the
 organization and repository telemetry choices. Use
-`/skillmeter:telemetry list` at any time to review or change repository
+`/kwork:telemetry list` at any time to review or change repository
 selection.
 
 ## Update
 
 ```sh
 claude plugin marketplace update skillbench
-claude plugin update skillmeter@skillbench
+claude plugin update kwork@skillbench
 ```
 
 Restart Claude Code or run `/reload-plugins`. See [support](../../SUPPORT.md) for
@@ -57,17 +57,17 @@ service, license server and `~/.skillbench-dev` state, and is published as the
 from the stable one.
 
 ```sh
-claude plugin uninstall skillmeter@skillbench
-claude plugin marketplace add SkillBench-AI/skillmeter-plugins#internal
-claude plugin install skillmeter@skillbench-internal
+claude plugin uninstall kwork@skillbench
+claude plugin marketplace add SkillBench-AI/kwork2-plugins#internal
+claude plugin install kwork@skillbench-internal
 ```
 
 Sign in with a dev workspace account. Uninstall the stable plugin first, or both
 would record the same sessions. Cards show `internal (dev)` in the title. To
 update, run `claude plugin marketplace update skillbench-internal` and
-`claude plugin update skillmeter@skillbench-internal`. The
+`claude plugin update kwork@skillbench-internal`. The
 workflow that rebuilds the branch is `.github/workflows/internal-channel.yml`;
-never commit `skillmeter/channel.json` to `main` (a test fails if it is present).
+never commit `kwork/channel.json` to `main` (a test fails if it is present).
 
 ## Validate and test
 

@@ -1,4 +1,4 @@
-# SkillMeter Claude Code Plugin Privacy Notice
+# Kwork Claude Code Plugin Privacy Notice
 
 Effective: July 28, 2026
 
@@ -6,7 +6,7 @@ Status: disclosure draft pending approval by the SkillBench privacy/legal
 owner. It is intended to describe the current client implementation accurately;
 the server-retention language still needs confirmation from that owner.
 
-This notice describes data processing performed by the SkillMeter Claude Code
+This notice describes data processing performed by the Kwork Claude Code
 plugin. It supplements the [SkillBench Privacy
 Policy](https://skillbench.com/privacy/) and the
 [SkillBench subprocessor list](https://skillbench.com/subprocessors/). If this
@@ -23,7 +23,7 @@ consent paths, and neither one implies the other.
 Telemetry from current sessions is sent only when all of the following are
 true:
 
-1. a valid SkillMeter license is present;
+1. a valid Kwork license is present;
 2. the user has explicitly authorized the licensed GitHub organization;
 3. the user has explicitly enabled the repository; and
 4. this plugin's global telemetry pause is not active.
@@ -41,14 +41,14 @@ processing is not uploaded as telemetry.
 A plugin installation may separately ask **once** whether to send completed
 historical transcripts. This is a distinct decision with its own conditions:
 
-1. a valid SkillMeter license is present;
+1. a valid Kwork license is present;
 2. the offered repositories belong to a GitHub organization encoded in that
    license;
 3. the user has explicitly approved the one-time historical question for the
    named set of repositories shown; and
 4. this plugin's global telemetry pause is not active — it pauses
    historical transmission just as it pauses ongoing telemetry; and
-5. the current license belongs to the same SkillMeter tenant as the license
+5. the current license belongs to the same Kwork tenant as the license
    under which the user approved. History approved under one tenant is never
    sent to another, even one whose license lists the same organization; a
    sign-in to another tenant deletes it unsent.
@@ -64,7 +64,7 @@ Approval applies only to the specific repositories and the transcript cutoff
 recorded when the question was answered; sessions modified after that point are
 excluded. Declining or cancelling does not enable historical processing, and
 the plugin does not ask again during that installation lifecycle. The user may
-still start a backfill deliberately with `/skillmeter:backfill`, which asks the
+still start a backfill deliberately with `/kwork:backfill`, which asks the
 same question again before doing anything.
 
 ## Data processed
@@ -75,13 +75,13 @@ The current plugin processes the following categories.
 
 - a randomly generated device identifier;
 - a locally generated hashing salt;
-- a SkillMeter license JWT and the workspace encoded in it;
+- a Kwork license JWT and the workspace encoded in it;
 - an OpenID Connect ID token issued by SkillBench's own identity service at
   `id.skillbench.ai` when you sign in, transmitted once as a bearer credential
-  to the SkillMeter activation service together with the device identifier.
+  to the Kwork activation service together with the device identifier.
 
 The ID token is used only to obtain a license and is not persisted; the plugin
-keeps it in memory for the duration of the exchange. The SkillMeter license JWT
+keeps it in memory for the duration of the exchange. The Kwork license JWT
 is stored locally for authenticated uploads and refresh.
 
 Sign-in no longer involves GitHub. Earlier versions authenticated with a GitHub
@@ -115,7 +115,7 @@ device flow, and sent that token to the activation service.
   random import identifier, whether it succeeded, partly succeeded or failed,
   session, repository and upload counts, and its cutoff and completion times.
   It contains no transcript content, paths or error text, and is sent only
-  under the same approval and SkillMeter tenant as the import;
+  under the same approval and Kwork tenant as the import;
 - repository classification and pseudonymous path/repository identifiers.
 
 ### Claude Code environment and configuration
@@ -193,7 +193,7 @@ The plugin communicates with:
 - `api.skillbench.ai`, for license activation and renewal; and
 - the tenant-specific HTTPS telemetry endpoint encoded in the license JWT.
 
-Telemetry is authenticated with a SkillMeter license JWT and sent using HTTPS
+Telemetry is authenticated with a Kwork license JWT and sent using HTTPS
 with gzip compression. SkillBench's published subprocessor list identifies
 Amazon Web Services as infrastructure used to host and process platform data.
 
@@ -265,7 +265,7 @@ the feature is introduced.
 - uninstalling the plugin may not remove `~/.skillbench/`.
 
 To remove the retained local identity and policy files, sign out first, close
-Claude Code sessions, and then remove the SkillMeter
+Claude Code sessions, and then remove the Kwork
 state directory. Removing local files does not delete data already received by
 SkillBench.
 
@@ -281,10 +281,10 @@ may be directed to that organization as the data controller.
 
 ## User controls
 
-- `/skillmeter:signin` authenticates and presents organization/repository
+- `/kwork:signin` authenticates and presents organization/repository
   choices.
-- `/skillmeter:telemetry list` reviews and changes repository selection.
-- `/skillmeter:signout` removes the local license and stops authenticated
+- `/kwork:telemetry list` reviews and changes repository selection.
+- `/kwork:signout` removes the local license and stops authenticated
   transmission.
 - This plugin's global pause stops all of its transmission.
 

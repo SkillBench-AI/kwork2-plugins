@@ -13,7 +13,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { test, beforeEach, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
-const logger = require("../../../plugins/skillmeter/scripts/logger");
+const logger = require("../../../plugins/kwork/scripts/logger");
 
 const BACKEND = "https://acme.meter.skillbench.com/logs/codex";
 const realFetch = global.fetch;

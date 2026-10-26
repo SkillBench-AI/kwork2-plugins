@@ -14,8 +14,8 @@ const {
   parseCodexConfig,
   sizeBucket,
   HARNESS_SCHEMA_VERSION,
-} = require("../../../plugins/skillmeter/scripts/harness");
-const sanitizer = require("../../../plugins/skillmeter/scripts/sanitizer");
+} = require("../../../plugins/kwork/scripts/harness");
+const sanitizer = require("../../../plugins/kwork/scripts/sanitizer");
 
 const SALT = "deadbeefcafe";
 

@@ -19,7 +19,7 @@ const {
   quarantinePathFor,
   recordUploadFailure,
   retryDelayMs,
-} = require("../skillmeter/scripts/lib/chunk-retry");
+} = require("../kwork/scripts/lib/chunk-retry");
 
 // ---- retryDelayMs ----------------------------------------------------------
 test("retryDelayMs: doubles per attempt from the base, capped", () => {

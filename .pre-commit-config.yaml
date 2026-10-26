@@ -19,13 +19,13 @@ repos:
         name: plugin version is clean SemVer
         entry: node clients/codex/.github/scripts/check-version.mjs
         language: system
-        files: ^clients/codex/plugins/skillmeter/\.codex-plugin/plugin\.json$
+        files: ^clients/codex/plugins/kwork/\.codex-plugin/plugin\.json$
         pass_filenames: false
       - id: validate-manifests
         name: validate marketplace & plugin manifests
         entry: node clients/codex/.github/scripts/validate-manifests.mjs
         language: system
-        files: ^(clients/codex/plugins/skillmeter/\.codex-plugin/plugin\.json|\.agents/plugins/marketplace\.json)$
+        files: ^(clients/codex/plugins/kwork/\.codex-plugin/plugin\.json|\.agents/plugins/marketplace\.json)$
         pass_filenames: false
       - id: shared-modules
         name: shared/lib copies are in sync

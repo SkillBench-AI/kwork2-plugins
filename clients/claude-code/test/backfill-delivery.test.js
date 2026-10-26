@@ -19,7 +19,7 @@ const {
 const DATA_DIR = makeTempDir("skm-backfill-delivery-");
 setTestEnv("CLAUDE_PLUGIN_DATA", DATA_DIR);
 
-const backfillState = require("../skillmeter/scripts/lib/backfill-state");
+const backfillState = require("../kwork/scripts/lib/backfill-state");
 const {
   BACKFILL_RESULT_FILE,
   announceBackfillFailure,
@@ -29,7 +29,7 @@ const {
   formatBackfillNotice,
   settleBackfillDelivery,
   takeBackfillNotice,
-} = require("../skillmeter/scripts/lib/backfill-delivery");
+} = require("../kwork/scripts/lib/backfill-delivery");
 
 const OFFER = "offer-current";
 const CHUNKS = path.join(
@@ -198,7 +198,7 @@ test("a failure is announced only when nothing was queued, and only once", () =>
 
   const notice = takeBackfillNotice({ audiences: [] });
   assert.match(notice.message, /history import failed/);
-  assert.match(notice.message, /\/skillmeter:backfill\b/);
+  assert.match(notice.message, /\/kwork:backfill\b/);
   assert.doesNotMatch(notice.message, /Users|EACCES/, "stored error text is never shown");
   assert.match(notice.desktop, /import failed/i);
 });
@@ -231,7 +231,7 @@ test("notice wording covers full delivery, set-aside chunks and the dashboard li
   );
   assert.match(partial.message, /\b5 sessions processed\b/);
   assert.match(partial.message, /\b2 upload chunks could not be sent\b/);
-  assert.match(partial.message, /\/skillmeter:backfill status\b/);
+  assert.match(partial.message, /\/kwork:backfill status\b/);
   assert.equal(formatBackfillNotice({ status: "none" }, null), null);
 
   // Counted results: unsent chunks decide, whatever the set-aside count says.
@@ -298,7 +298,7 @@ test("FileChanged hook announces a finished import once, with a desktop notifica
     setAsideChunks: 0,
     ts: Date.now(),
   });
-  const script = path.resolve(__dirname, "../skillmeter/scripts/on_backfill_result.js");
+  const script = path.resolve(__dirname, "../kwork/scripts/on_backfill_result.js");
 
   const first = runNode(script, [], { env });
   assert.equal(first.status, 0, first.stderr);
@@ -307,7 +307,7 @@ test("FileChanged hook announces a finished import once, with a desktop notifica
   // The dashboard link is derived from the license's tenant meter audience.
   assert.match(output.systemMessage, /https:\/\/acme\.skillbench\.example\b/);
   // OSC 777 framing is protocol, so the prefix and terminator stay exact.
-  assert.ok(output.terminalSequence.startsWith("\u001b]777;notify;SkillMeter;"));
+  assert.ok(output.terminalSequence.startsWith("\u001b]777;notify;Kwork;"));
   assert.ok(output.terminalSequence.endsWith("\u0007"));
   assert.match(output.terminalSequence, /\b2 sessions sent\b/);
 
@@ -332,7 +332,7 @@ test("SessionStart watches the sentinel and announces an import that finished of
   });
   logSent(path.join(dataDir, "logs"), 4);
   const cwd = makeTempDir("skm-backfill-hook-cwd-");
-  const script = path.resolve(__dirname, "../skillmeter/scripts/session_start.js");
+  const script = path.resolve(__dirname, "../kwork/scripts/session_start.js");
   const start = () => runNode(script, [], {
     cwd,
     env,
@@ -349,7 +349,7 @@ test("SessionStart watches the sentinel and announces an import that finished of
   );
   assert.match(
     output.systemMessage,
-    /history import complete: 4 sessions sent\. Open SkillMeter: https:\/\/acme\.skillbench\.example/
+    /history import complete: 4 sessions sent\. Open Kwork: https:\/\/acme\.skillbench\.example/
   );
   assert.ok(readJson(path.join(dataDir, "backfill-state.json")).delivered_at);
 

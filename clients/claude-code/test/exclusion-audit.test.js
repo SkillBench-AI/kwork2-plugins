@@ -18,10 +18,10 @@ const {
   sessionPath,
 } = require("../testing/helpers");
 
-const HOOK = path.resolve(__dirname, "../skillmeter/scripts/hook.js");
+const HOOK = path.resolve(__dirname, "../kwork/scripts/hook.js");
 const ORG_CONSENT = path.resolve(
   __dirname,
-  "../skillmeter/scripts/org_telemetry_consent.js"
+  "../kwork/scripts/org_telemetry_consent.js"
 );
 const SALT = "0123456789abcdef0123456789abcdef";
 
@@ -246,7 +246,7 @@ test("organization OFF and sign-out delete exclusion audit payloads", () => {
   runPrompt(signout.env, external);
   assert.equal(organizationAuditFiles(signout.dataDir).length, 1);
   const result = runNode(
-    path.resolve(__dirname, "../skillmeter/scripts/signout.js"),
+    path.resolve(__dirname, "../kwork/scripts/signout.js"),
     [],
     { env: signout.env }
   );
@@ -266,7 +266,7 @@ test("global OFF pauses an existing audit queue and tenant mismatch deletes it",
   pausedPolicy.global.enabled = false;
   writeJson(path.join(paused.stateDir, "telemetry-policy.json"), pausedPolicy);
   const purgeProbe = [
-    "require('./skillmeter/scripts/lib/organization-audit-queue')",
+    "require('./kwork/scripts/lib/organization-audit-queue')",
     ".purgeDisallowedOrganizationAuditQueues();",
   ].join("");
   const cwd = path.resolve(__dirname, "..");
@@ -298,7 +298,7 @@ test("organization audit transfer uses the existing endpoint with tenant idempot
   runPrompt(fixture.env, external);
   const cwd = path.resolve(__dirname, "..");
   const sealProbe = [
-    "const t=require('./skillmeter/scripts/lib/transfer');",
+    "const t=require('./kwork/scripts/lib/transfer');",
     "t.sealOrganizationAuditEventLog();",
   ].join("");
   assert.equal(
@@ -308,7 +308,7 @@ test("organization audit transfer uses the existing endpoint with tenant idempot
 
   const drainProbe = [
     "const z=require('node:zlib');",
-    "const t=require('./skillmeter/scripts/lib/transfer');",
+    "const t=require('./kwork/scripts/lib/transfer');",
     "let sent=null;",
     "global.fetch=async (url,options)=>{",
     "sent={url,headers:options.headers,body:z.gunzipSync(options.body).toString('utf8')};",
@@ -340,13 +340,13 @@ test("organization audit retries preserve the idempotency key", () => {
   runPrompt(fixture.env, external);
   const cwd = path.resolve(__dirname, "..");
   const sealProbe = [
-    "const t=require('./skillmeter/scripts/lib/transfer');",
+    "const t=require('./kwork/scripts/lib/transfer');",
     "t.sealOrganizationAuditEventLog();",
   ].join("");
   runNode("-e", [sealProbe], { cwd, env: fixture.env });
 
   const retryProbe = [
-    "const t=require('./skillmeter/scripts/lib/transfer');",
+    "const t=require('./kwork/scripts/lib/transfer');",
     "const keys=[];",
     "let calls=0;",
     "global.fetch=async (url,options)=>{",
@@ -415,7 +415,7 @@ test("session cwd context detects cwd and repository transitions without raw pat
   fs.mkdirSync(nested);
   const dataDir = makeTempDir("skm-cwd-context-data-");
   const probe = [
-    "const c=require('./skillmeter/scripts/lib/cwd-context');",
+    "const c=require('./kwork/scripts/lib/cwd-context');",
     "const salt=process.env.TEST_SALT;",
     "const a=c.observeSessionCwd({sessionId:'s',cwd:process.env.CWD_A,repoKey:'github.com/o/a',classification:'github_org_match',hashSalt:salt});",
     "const b=c.observeSessionCwd({sessionId:'s',cwd:process.env.CWD_B,repoKey:'github.com/o/a',classification:'github_org_match',hashSalt:salt});",
@@ -454,7 +454,7 @@ test("SessionEnd removes cwd context and stale cleanup removes old state", () =>
   assert.equal(fs.readdirSync(sessions).length, 1);
   const pluginRoot = makeTempDir("skm-session-end-plugin-root-");
   const ended = runNode(
-    path.resolve(__dirname, "../skillmeter/scripts/session_end.js"),
+    path.resolve(__dirname, "../kwork/scripts/session_end.js"),
     [],
     {
       cwd: external,
@@ -476,7 +476,7 @@ test("SessionEnd removes cwd context and stale cleanup removes old state", () =>
 
   const staleProbe = [
     "const fs=require('node:fs');",
-    "const c=require('./skillmeter/scripts/lib/cwd-context');",
+    "const c=require('./kwork/scripts/lib/cwd-context');",
     `const salt='${SALT}';`,
     "const state=c.observeSessionCwd({sessionId:'stale',cwd:'/tmp',classification:'no_repository',hashSalt:salt});",
     "const file=c.contextPath('stale',salt);",

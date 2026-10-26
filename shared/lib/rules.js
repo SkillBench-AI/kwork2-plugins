@@ -171,7 +171,7 @@ function validIpv6(candidate) {
 // (case-insensitive), or an all-mask string like "xxxxxxxx"/"********", is left
 // in place so doc/example/fixture text isn't needlessly redacted. Anything
 // ambiguous errs toward redaction. Sourced from the Gitleaks stopword allowlist
-// plus SkillMeter's own placeholder set.
+// plus Kwork's own placeholder set.
 const STOPWORDS = new Set([
   "example", "examples", "dummy", "test", "tests", "testing", "test-token",
   "testtoken", "placeholder", "redacted", "changeme", "your-token",

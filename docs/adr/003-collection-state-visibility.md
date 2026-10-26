@@ -39,10 +39,10 @@ What the user can see:
   by the result timestamp. This is the only mid-session channel that reaches
   the user today, and it fires only for sign-in.
 - **Skip reasons.** Every capture hook logs
-  `[skillmeter] <Hook>: skipped (not signed in)` to stderr. Claude Code shows
+  `[kwork] <Hook>: skipped (not signed in)` to stderr. Claude Code shows
   hook stderr only in the debug log, so the user never sees it.
 - **Monitor panel.** `monitors/monitors.json` declares one monitor,
-  `skillmeter-retry-daemon` ("SkillMeter telemetry sync"); the backfill
+  `kwork-retry-daemon` ("Kwork telemetry sync"); the backfill
   monitor was removed in 0.37.0. The task panel shows it as running for as
   long as the process lives. The description is static; there is no way to
   attach a status text. "Running" therefore means "the sync loop is alive",
@@ -59,8 +59,8 @@ What the plugin records:
 - The retry daemon (`scripts/monitors/retry_daemon.js`) checks the token every
   sweep. When no token is stored, `refreshLicense` returns before recording
   anything ("must never create a brand-new sign-in before the user invokes
-  `/skillmeter:signin`"). The record therefore freezes at the last success and
-  `/skillmeter:telemetry status` has nothing newer to show. On the
+  `/kwork:signin`"). The record therefore freezes at the last success and
+  `/kwork:telemetry status` has nothing newer to show. On the
   maintainer's device the record still said "rotated, 0 failures" three days
   after the token was gone.
 - Since 0.37.0 the Stop hook asks the detached drain worker to refresh when
@@ -68,7 +68,7 @@ What the plugin records:
   Stop-recovery amendment). That covers a session without a running monitor.
   It does not create a sign-in, so a missing token still stops everything.
 - `credentials.json` carries `signed_out: true` only when the user ran
-  `/skillmeter:signout`. A token that disappears without that flag is the
+  `/kwork:signout`. A token that disappears without that flag is the
   signature of an external removal.
 
 What Claude Code allows (documented behaviour, v2.1.x):
@@ -111,7 +111,7 @@ the notice handler, the status command and the daemon all use:
 | State | Meaning | Source |
 | --- | --- | --- |
 | `paused` | global kill-switch on | `telemetry-policy.json` |
-| `signed_out` | `signed_out: true` (user ran `/skillmeter:signout`) | `credentials.json` |
+| `signed_out` | `signed_out: true` (user ran `/kwork:signout`) | `credentials.json` |
 | `never_signed_in` | no `license_jwt`, no `signed_out`, and no evidence of a prior sign-in on this device | `credentials.json`, `license-status.json` |
 | `token_missing` | no `license_jwt`, no `signed_out`, and evidence of a prior sign-in | `credentials.json`, `license-status.json` |
 | `revoked` | `terminal.reason = revoked` in the status record (402: the organization license is inactive) | `license-status.json` |
@@ -167,10 +167,10 @@ uses, only when the state enters or leaves the capture-stopped group or
 repository), so the lines say so and never claim that this repository was
 recording:
 
-- into `signed_out`, `token_missing` or `revoked`: `✗ SkillMeter · <reason> · telemetry cannot be collected on this device · run /skillmeter:signin`
-- into `delivery_paused`: `✗ SkillMeter · <reason> · uploads paused on this device · run /skillmeter:signin`
+- into `signed_out`, `token_missing` or `revoked`: `✗ Kwork · <reason> · telemetry cannot be collected on this device · run /kwork:signin`
+- into `delivery_paused`: `✗ Kwork · <reason> · uploads paused on this device · run /kwork:signin`
 - leaving those states, whatever the destination (`recording` and
-  `unconfigured` alike): `✓ SkillMeter · signed in · telemetry can be collected on this device`
+  `unconfigured` alike): `✓ Kwork · signed in · telemetry can be collected on this device`
 
 The return line fires on leaving the group, not on reaching `recording`, so a
 user who was told that collection stopped is always told when the device is
@@ -182,7 +182,7 @@ state and no next command, because there is none.
 
 There are no periodic reminders. A stopped state stays visible through the
 SessionStart card of the next session (decision 4) and
-`/skillmeter:telemetry status` (decision 6). Neither reaches the session
+`/kwork:telemetry status` (decision 6). Neither reaches the session
 where the line has scrolled away, so observed problem 1 is only partly closed
 here: the in-session persistent indicator is B4, and this ADR treats it as
 the other half of the fix, not a deferral (see Consequences). The monitor's exit (decision 3) is a moment signal, not a
@@ -198,7 +198,7 @@ capture-stopped group or `delivery_paused`. The daemon's routine rewrite of `cre
 resolves to the same state and produces nothing; `token_missing →
 unconfigured → token_missing` is two transitions and two lines.
 `signed_out` counts as a stop for every open session; the session that ran
-`/skillmeter:signout` sees the command's own output and the line, which is
+`/kwork:signout` sees the command's own output and the line, which is
 acceptable.
 
 Rationale: the requirement is that a user who is present notices, and that
@@ -215,7 +215,7 @@ on `signed_out` and `token_missing`. Both are read from `credentials.json`,
 which any client's sign-in rewrites, so a later restore is seen by the
 FileChanged handler and by the next daemon without this process. Before
 exiting it writes the status record and prints one stdout line naming the
-state and `/skillmeter:signin`, so the task panel stops showing "running"
+state and `/kwork:signin`, so the task panel stops showing "running"
 and Claude receives the reason as a monitor notification.
 
 It does not exit on `revoked` or `delivery_paused`. Those are read from
@@ -227,7 +227,7 @@ once, keeps sweeping at the 30-minute backoff cap, and clears the state when
 a refresh succeeds again. Silent re-activation is retired with ADR 001
 decision 4, so `token_missing` leads straight to the stopped state.
 
-Two guards keep that exit from racing a sign-in. `/skillmeter:signin` writes
+Two guards keep that exit from racing a sign-in. `/kwork:signin` writes
 a `pending` result to `signin-result.json` when it starts the device flow,
 and the daemon does not exit on `token_missing` while a pending result
 younger than the device-code lifetime (15 minutes) exists; the poller's final
@@ -238,7 +238,7 @@ sign-in skill outlives the broker approval even if the sentinel is missing.
 
 Restart is bound to the user's action: `monitors/monitors.json` gains a
 second entry for the same daemon with `"when": "on-skill-invoke:signin"`, so
-`/skillmeter:signin` brings the sync loop back in the session where it was
+`/kwork:signin` brings the sync loop back in the session where it was
 run. The dispatch happens when the sign-in starts, before a token exists,
 which is why the guards above are part of this decision; the token the
 poller writes is picked up on the daemon's next sweep. New sessions start
@@ -255,7 +255,7 @@ monitor, and its exit is the one moment signal the task panel can give. The
 panel is still not a collection indicator: the daemon stays alive through the
 kill-switch, `unconfigured`, `revoked` and `delivery_paused`, so "running"
 reads as "the sync loop is alive" and nothing more. The monitor's description
-therefore becomes "SkillMeter sync loop" unconditionally, and the indicator
+therefore becomes "Kwork sync loop" unconditionally, and the indicator
 that says whether this repository records is B4. Draining a queue that was
 filled before the stop resumes with the next live daemon or with the
 Stop-triggered worker.
@@ -284,16 +284,16 @@ client. The reasons known today:
 | `reactivation_required` | `sign-in expired` |
 | `backoff_exhausted` | `license refresh failed repeatedly` |
 
-The next command is `/skillmeter:signin` in every case; `revoked` adds
+The next command is `/kwork:signin` in every case; `revoked` adds
 "contact your administrator". This table is the B2 deliverable;
 new terminal reasons must add a row here.
 
-### 6. `/skillmeter:telemetry status` is the on-demand view of the same state
+### 6. `/kwork:telemetry status` is the on-demand view of the same state
 
 The existing status command reads the resolver and the status record and adds
 recency (last upload, unsent counts). Its content is specified in B3 and not
 repeated here; this ADR only fixes that it shows the same state names and
-reasons as decisions 1 and 5. There is no separate `/skillmeter:status`.
+reasons as decisions 1 and 5. There is no separate `/kwork:status`.
 
 ## Consequences
 
@@ -308,7 +308,7 @@ reasons as decisions 1 and 5. There is no separate `/skillmeter:status`.
   in the healthy state.
 - When the daemon has exited, queued events and transcript chunks wait until
   a daemon is alive again or the Stop hook's detached worker runs: after
-  `/skillmeter:signin` in that session, in any other open session, or at the
+  `/kwork:signin` in that session, in any other open session, or at the
   next session start. Nothing is lost; the 7-day age bound of ADR 001 still
   applies.
 - Observed problem 1 is closed in-session only for a user who sees the
@@ -337,14 +337,14 @@ reasons as decisions 1 and 5. There is no separate `/skillmeter:status`.
 - Two Claude Code behaviours are documented only in outline and are verified
   in the B1 pull request before merge: how the task panel renders a monitor
   that exited, and whether `on-skill-invoke:signin` resolves to the plugin's
-  `skillmeter:signin` skill. The "sync loop" rename does not depend on the
+  `kwork:signin` skill. The "sync loop" rename does not depend on the
   answer.
 - The `pending` sign-in sentinel does not exist yet; B1 adds it to
   `signin.js`.
 - Whether the idle sweep on `revoked` and `delivery_paused` should slow beyond
   the 30-minute cap; the cost today is one refresh call per sweep.
 - Whether `recording resumed` should also be shown when the token was restored
-  by another client or session rather than by `/skillmeter:signin` in this
+  by another client or session rather than by `/kwork:signin` in this
   one. The current answer is yes, since the resolver only sees the file.
 - The shared-credential ownership rule (which client may delete the token, and
   under which server responses) is decided with the shared-credential and client-parity work, not here.
@@ -384,7 +384,7 @@ clears `terminal`, when a sign-in starts and when the session otherwise
 changes, and only a completed sign-in or a successful renewal clears it.
 Refresh is still blocked by `terminal` alone, and capture never reads the kept
 reason. The sign-in path does: while it says the session ended
-(`reactivation_required`) and a license is stored, `/skillmeter:signin` asks
+(`reactivation_required`) and a license is stored, `/kwork:signin` asks
 for sign-in without starting a new intent, `bin/signin` runs the device flow
 although the license is valid, and the SessionStart card says the sign-in
 expired and uploads are paused, in every session until a sign-in completes or
@@ -392,7 +392,7 @@ a renewal succeeds. That card does not say telemetry is off, because hooks keep
 recording on the stored license.
 
 Decision 3 is retired, but its `pending` sign-in result exists for another
-reader. While a sign-in waits for browser approval, `/skillmeter:signin`
+reader. While a sign-in waits for browser approval, `/kwork:signin`
 reports it in progress instead of starting a new intent, which would discard
 the approval, and so does `bin/signin` run again, unless it is run with
 `--restart`. The result carries `expires_at`, the device code's lifetime capped
@@ -460,7 +460,7 @@ already resolved:
 
 | State | Card |
 | --- | --- |
-| `paused` | its own card: telemetry off, paused for every repository; next command `/skillmeter:telemetry enable-global` |
+| `paused` | its own card: telemetry off, paused for every repository; next command `/kwork:telemetry enable-global` |
 | `signed_out`, `never_signed_in`, `token_missing`, `revoked` | the sign-in card, with the reason line from decision 5; `revoked` adds "Contact your administrator." |
 | `delivery_paused` | the sign-in-expired card of the earlier amendment |
 | `unconfigured` | the existing setup card while an organization or repository choice is pending; nothing for a repository outside the licensed organizations, organization or repository telemetry the user turned off, or no working directory. A license that names no organization puts every repository outside them, so that client never records and is never told at session start |
@@ -469,8 +469,8 @@ already resolved:
 The pause comes first because it silences every other reading (decision 1).
 A paused client with an ended session or no license is not asked to sign in,
 since signing in would not start capture. Decision 5 gains a row: `paused`,
-`paused for every repository`, with `/skillmeter:telemetry enable-global` as
-its next command rather than `/skillmeter:signin`. A card that says telemetry
+`paused for every repository`, with `/kwork:telemetry enable-global` as
+its next command rather than `/kwork:signin`. A card that says telemetry
 is off appears only in states where hooks record no repository telemetry; where
 excluded hooks still send the exclusion audit, the repository setup card says
 so itself.
@@ -548,7 +548,7 @@ Three cases decision 2 did not rule on:
   same rule fires on a second path, with the right result: a stop stored as
   `token_missing` stays stored through a sign-in whose license names no
   organization, and a 402 that then arrives shows the revoked line, once.
-- **A sign-out with no license.** `/skillmeter:signout` marks a client signed
+- **A sign-out with no license.** `/kwork:signout` marks a client signed
   out even if it never signed in. Every open session shows the `signed out`
   line once, as decision 2 accepts for the session that ran the command, and
   nothing else follows.
@@ -566,7 +566,7 @@ of the id before the next change. Nothing bounds it by age but the
 session-start cleanup, which removes any file in `collection-state/` older than
 30 days.
 
-Decision 6 is implemented. `/skillmeter:telemetry status` resolves the state
+Decision 6 is implemented. `/kwork:telemetry status` resolves the state
 for the current directory and prints the state, its reason and the next
 command, then the repository lines it printed before: global, organization,
 this project and effective. Its licence line is gone. It merged
@@ -589,7 +589,7 @@ from a marketplace, so B4 can be built.
 ### 7. The state stays visible beside the prompt while the session runs
 
 The notices of decision 2 are lines in the transcript: they scroll away, and a
-user who missed one has to run `/skillmeter:telemetry status` to learn the
+user who missed one has to run `/kwork:telemetry status` to learn the
 state again. A Claude Code mod (2.1.280 and later; the plugin's hooks module)
 can draw in the prompt's own area, so the plugin keeps the state there:
 
@@ -599,20 +599,20 @@ can draw in the prompt's own area, so the plugin keeps the state there:
 
   | State | Label |
   |---|---|
-  | `recording` | `● SkillMeter` |
-  | `unconfigured` | `◌ SkillMeter · off here` |
-  | `paused` | `◌ SkillMeter · paused` |
-  | `never_signed_in`, `signed_out`, `token_missing` | `○ SkillMeter · signed out` |
-  | `revoked` | `○ SkillMeter · no license` |
-  | `delivery_paused` | `◐ SkillMeter · uploads paused` |
+  | `recording` | `● Kwork` |
+  | `unconfigured` | `◌ Kwork · off here` |
+  | `paused` | `◌ Kwork · paused` |
+  | `never_signed_in`, `signed_out`, `token_missing` | `○ Kwork · signed out` |
+  | `revoked` | `○ Kwork · no license` |
+  | `delivery_paused` | `◐ Kwork · uploads paused` |
 
   The icon carries the meaning: filled is collecting, dotted is off by
   choice, empty is stopped, half is recording without uploading.
 - **A band, only while the user has to act.** One warning-coloured line above
   the prompt for the states decision 2 announces as a stop:
-  `⚠ SkillMeter stopped · /skillmeter:signin` (`signed_out`, `token_missing`),
-  `⚠ SkillMeter stopped · license revoked`, and
-  `⚠ SkillMeter uploads paused · /skillmeter:signin`. It leaves when the
+  `⚠ Kwork stopped · /kwork:signin` (`signed_out`, `token_missing`),
+  `⚠ Kwork stopped · license revoked`, and
+  `⚠ Kwork uploads paused · /kwork:signin`. It leaves when the
   state does. `never_signed_in` has none: the SessionStart card already asks.
 - **No new notice.** Stops and returns are still announced once, by decision
   2's notices. The indicator only keeps the current state in view.

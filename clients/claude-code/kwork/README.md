@@ -1,0 +1,217 @@
+# Kwork for Claude Code
+
+Kwork sends opt-in, repository-scoped workflow and conversation telemetry
+to [SkillBench](https://skillbench.com). See the [installation guide](../README.md)
+and [privacy notice](../../../docs/privacy/claude-code.md) before enabling collection.
+
+## Sign in and controls
+
+| Command | Purpose |
+| --- | --- |
+| `/kwork:signin` | Sign in through the SkillBench identity service and review consent |
+| `/kwork:signout` | Sign this plugin out and stop its authenticated uploads (other Kwork clients stay signed in) |
+| `/kwork:telemetry list` | Review and toggle known repositories |
+| `/kwork:telemetry status` | Show the collection state here, its reason and the command to run when there is one, with the global, organization and repository settings |
+| `/kwork:telemetry disable-global` | Pause live and historical uploads |
+| `/kwork:telemetry enable-global` | Resume transmission subject to sign-in and consent |
+| `/kwork:backfill` | Request historical collection with separate consent |
+| `/kwork:backfill status` | Show queued and backend-confirmed transcript chunks |
+
+Sign-in uses a browser-approved device code from `id.skillbench.ai`. The broker
+ID token is exchanged for a Kwork license; it is not stored. The license
+is this plugin's own; signing out does not affect other Kwork clients.
+Device identity and telemetry policy remain on disk.
+
+When a sign-in problem stops this plugin collecting or uploading while a
+session is open, each open session shows one line that says why and what to
+run, with a desktop notification where the terminal supports it. That happens
+when you sign out, when the license is lost or no longer active, or when the
+sign-in expires and uploads wait. While telemetry is paused, the line appears
+when the pause is lifted. Each session shows one more line when the plugin can
+collect again. Every open session shows a sign-in's result once, and after a
+completed sign-in that result replaces this line, or both appear if the result
+takes more than two seconds. No line is shown while collection works, and
+there are no reminders. Turning a repository or organization off, or changing
+directory, shows no line: `/kwork:telemetry status` reports it.
+
+On Claude Code 2.1.280 and later, the state also stays in view beside the
+prompt. The footer shows one dim label for the current directory —
+`● Kwork` while collecting, `◌ Kwork · off here` where this
+repository or its organization is not enabled, `○ Kwork · signed out`,
+`◐ Kwork · uploads paused` — and, only while you have to act, one line
+above the prompt says what to run, such as
+`⚠ Kwork stopped · /kwork:signin`. The footer label appears in the
+terminal and the desktop app.
+
+## Collection scope
+
+Live collection requires a valid license, an eligible GitHub repository,
+organization authorization, repository enablement and an enabled global switch.
+Installation and sign-in alone do not authorize collection. New repositories
+remain off until explicitly selected.
+
+Repository choices use canonical `github.com/org/repo` identity, so clones and
+worktrees share policy. Discovery uses local repositories, transcript paths and
+Claude's project registry as hints, then verifies each repository's remote.
+A matching origin is preferred; ambiguous matching remotes are excluded.
+
+Organization authorization alone permits a minimal `TelemetryCaptureExcluded`
+audit for excluded hooks: source hook type, gate reason and HMAC-hashed cwd,
+with the event envelope. It does not copy the original prompt, tool payload,
+raw path, repository name or transcript into that audit.
+
+Turning an organization or repository OFF deletes its queued live payloads.
+Privacy cursors track observed disabled and signed-out transcript intervals so
+enabling a repository or signing in later does not upload those intervals.
+When a session moves between repositories, each turn is sent only for the
+last repository it was recorded in, by the working directory Claude Code
+records. It is not sent if one of its hooks ran while signed out or in a
+repository that was not collecting at that moment; recording turned on
+part-way through a turn starts with the next turn.
+Global OFF pauses capture and transmission while retaining queued data.
+
+## Historical sessions
+
+Historical collection has separate consent. Sign-in can offer completed
+sessions once per installation; `/kwork:backfill` requests the offer
+explicitly. The question names the repositories being authorized. Declining or
+cancelling does not start a backfill.
+
+An accepted offer records repository scope and a transcript cutoff. It excludes
+the active sign-in session and files modified after the cutoff. Snapshotting
+removes tool-result and image blocks before the shared sanitizer runs.
+
+Historical consent neither requires nor enables ongoing organization/repository
+telemetry. An accepted historical offer can upload while live telemetry is OFF;
+the global switch still pauses both. Queue cleanup preserves only historical
+chunks belonging to the accepted offer and its scope. Those chunks upload only
+to the tenant whose license accepted the offer; after a sign-in to another
+tenant they are deleted unsent.
+
+The upload runs in the background. When no historical chunk is left to send,
+Kwork announces the import once, with a desktop notification where the
+terminal supports it. The notice says complete only when the backend
+acknowledged every chunk; otherwise it gives the number that could not be sent.
+If no session is open at that moment, the notice appears at the next session
+start.
+An import that fails before queuing anything is announced the same way; one
+that queued chunks reports through the completion notice.
+
+Each accepted import also sends the backend one `BackfillCompleted` event when
+it ends, with `outcome` set to `success` (every chunk acknowledged, or nothing
+to import), `partial_success` (some chunks or sessions did not make it) or
+`failed` (nothing acknowledged). It carries counts and the import's identifier
+only, and is sent under the same consent and tenant as the import's chunks.
+
+`/kwork:backfill status` distinguishes queued chunks from chunks acknowledged
+by the backend. A queued snapshot alone does not prove delivery.
+
+## Data and privacy
+
+Collected content can include prompts, assistant messages, tool inputs/results,
+transcript deltas, session metadata, configuration names/counts, permission rules
+and bounded descriptions/bodies of custom project or user skills. Instruction
+file bodies and MCP command/args/env are excluded from dedicated harness fields,
+but sensitive values can still appear in conversation content.
+
+Policy 3.1.2 applies before queueing:
+
+- Recognized secrets and rule-detectable personal information receive typed
+  placeholders. Names in general prose and other contextual identifiers can remain.
+- The home-directory prefix is HMAC-hashed in text. Structured file-path fields
+  retain hierarchy, technical vocabulary and extensions; other segments are hashed.
+- Working-directory and generic path fields are hashed whole. Commands and
+  ordinary text retain content after redaction and home-prefix hashing.
+- Enabled repositories include their `org/repo` name in clear.
+- `_sanitization` records policy version, counts and detector IDs, without the
+  matched values. Content placeholders remain stable; paths are hashed again
+  on another pass.
+
+HMAC uses a local salt and 12 hexadecimal characters. Sanitization reduces
+exposure; it does not guarantee anonymity or remove every sensitive detail.
+See [ADR002](../../../docs/adr/002-two-stage-sanitization.md) for the policy and
+[PRIVACY.md](../../../docs/privacy/claude-code.md) for the full disclosure, retention and data requests.
+
+## Uploads and recovery
+
+Hooks append sanitized events to repository-bound queues. Stop and SessionEnd
+seal events and stage transcript chunks, then start a detached drain. What a
+drain cannot send is retried by the next turn's drain or the next session start. Network requests use
+gzip and the license's tenant endpoint, with consent checked again before sending.
+
+Successful event batches become `.sent`; acknowledged transcript chunks are
+deleted. A transcript's chunks are sent in order, and one that is not
+delivered holds back the rest of that transcript. Chunks are split so each
+request stays under the collector's size limit; a single record too large for
+any request is left out. Waits after a failure double from one minute to a
+30-minute cap. No network, HTTP 402, 403, 408, 429, 502, 503 or 504 only back
+off; other failures spend a per-chunk retry budget, and the eighth such
+failure quarantines the body and metadata. Quarantined files and delivered event logs
+are eligible for cleanup after 30 days. Pending event logs and chunks are
+retained for retry unless an applicable policy change, sign-out or a revoked
+license removes them, and are deleted once they are older than 7 days.
+
+Recording does not wait for the license: while you are signed in, hooks record
+even if the license has expired, and the data is sent after the next refresh.
+The license is refreshed in one place, by the upload drain just before it sends,
+and once more if the server rejects the token (HTTP 401). Sign-in keeps the
+sign-in service's refresh token, which renews the license for this workspace
+only; sign-out revokes it. Transient failures back off up to a 30-minute
+interval and keep retrying. A session the sign-in service ended, or a license
+that was revoked because the workspace no longer licenses you (402), requires
+`/kwork:signin` and browser approval. See
+[ADR001](../../../docs/adr/001-license-token-lifecycle.md) and
+[ADR005](../../../docs/adr/005-per-client-session.md).
+
+## Local state and diagnostics
+
+| Location | Contents |
+| --- | --- |
+| `~/.skillbench/credentials.json` | Device ID and hash salt, shared with other Kwork clients |
+| `~/.skillbench/telemetry-policy.json` | This plugin's global, organization and repository choices; other clients keep their own |
+| `${CLAUDE_PLUGIN_DATA}/account/<id>/session.json` | This plugin's license and sign-in state, not shared with other clients |
+| `${CLAUDE_PLUGIN_DATA}/account/<id>/license-status.json` | Refresh timestamps, failures and terminal reason |
+| `${CLAUDE_PLUGIN_DATA}/session-status/<session>.json` | Each open session's collection state and reason for its directory, shown beside the prompt |
+| `${CLAUDE_PLUGIN_DATA}/logs/repositories/` | Repository event and transcript queues |
+| `${CLAUDE_PLUGIN_DATA}/logs/backfill.ndjson` | Local backfill progress and upload outcomes |
+
+Persistent plugin data also stores the installation's backfill decision.
+Backfill diagnostics omit transcript text, local paths, JWTs, device IDs and
+backend endpoints, but include repository/session identifiers. Review them
+before sharing; never post real telemetry or credentials in a public issue.
+
+For problems, see [SUPPORT.md](../../../SUPPORT.md). Report security
+or privacy issues through [SECURITY.md](../../../SECURITY.md).
+
+## Development
+
+Use CommonJS and run `node --test` from the repository root. Tests isolate plugin
+state through the repository's `testing/bootstrap.js` and `testing/helpers.js`,
+which stay outside the shipped plugin directory. See
+[AGENTS.md](../AGENTS.md) for contribution conventions and the
+[ADRs](../../../docs/adr/README.md) for shared policy decisions.
+
+The environment is fixed by the installation: the internal channel uses dev
+(`~/.skillbench-dev`), the stable channel prod. No environment variable switches
+it; the variables below point one endpoint or directory elsewhere.
+
+| Environment variable | Purpose |
+| --- | --- |
+| `CLAUDE_PLUGIN_DATA` | Persistent plugin state; use a temporary directory for direct test runs |
+| `SKILLMETER_STATE_DIR` | Override credential and policy state for isolated runs |
+| `SKILLMETER_ACTIVATE_URL` | Activation URL; renewal exchanges a broker ID token there |
+| `SKILLMETER_BROKER_URL` | Identity service URL |
+| `SKILLMETER_OAUTH_CLIENT_ID` | Public device-flow client ID; default `skillmeter-plugin` |
+| `SKILLMETER_BACKEND_URL` | Telemetry base URL override; authentication is still required |
+| `SKILLMETER_TIMEOUT` | Event upload timeout in seconds; default 10 |
+| `SKILLMETER_RETRY_BASE_MS` | Base license-refresh backoff in milliseconds; default 120000 |
+
+Configuration precedence is environment, development bundle, then production
+default. Project files such as `.claude/settings.local.json` cannot override an
+endpoint or the OAuth client, because any repository could ship one. The
+activation, broker and backend URLs must use HTTPS (loopback `http` is allowed
+for a local backend). A rejected activation or broker override falls back to
+production, and a rejected backend override falls back to the license's `aud`,
+each with a stderr note.
+Normal tenant routing comes from the license's `aud` claim and needs no endpoint
+override.

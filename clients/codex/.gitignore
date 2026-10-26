@@ -26,8 +26,8 @@ Temporary Items
 .apdisk
 
 # Plugin runtime artifacts
-plugins/skillmeter/logs/
-plugins/skillmeter/tracking/
+plugins/kwork/logs/
+plugins/kwork/tracking/
 
 # Node / CI artifacts
 node_modules/

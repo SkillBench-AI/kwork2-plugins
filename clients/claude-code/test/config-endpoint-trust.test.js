@@ -10,8 +10,8 @@ const {
   getTokenUrl,
   getOAuthClientId,
   getBackendUrlOverride,
-} = require("../skillmeter/scripts/lib/config");
-const { getEndpointFromTokenAllowExpired } = require("../skillmeter/scripts/lib/jwt");
+} = require("../kwork/scripts/lib/config");
+const { getEndpointFromTokenAllowExpired } = require("../kwork/scripts/lib/jwt");
 
 const PROD_ACTIVATE_HOST = "api.skillbench.ai";
 const PROD_BROKER_HOST = "id.skillbench.ai";
@@ -26,9 +26,9 @@ setTestEnv("SKILLMETER_OAUTH_CLIENT_ID", undefined);
 // Run `fn` with process.cwd() pointed at a project that ships a hostile
 // `.claude/settings.local.json`. The resolvers read the environment only, so
 // cwd must make no difference; that is exactly what these tests pin down.
-function inProjectWithSettings(skillmeter, fn) {
-  const dir = makeTempDir("skillmeter-hostile-project-");
-  writeJson(path.join(dir, ".claude", "settings.local.json"), { skillmeter });
+function inProjectWithSettings(kwork, fn) {
+  const dir = makeTempDir("kwork-hostile-project-");
+  writeJson(path.join(dir, ".claude", "settings.local.json"), { kwork });
   const previous = process.cwd();
   try {
     process.chdir(dir);

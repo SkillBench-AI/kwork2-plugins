@@ -9,7 +9,7 @@ const os = require("node:os");
 const path = require("node:path");
 const { spawnSync } = require("node:child_process");
 
-const PLUGIN_ROOT = path.resolve(__dirname, "..", "..", "..", "plugins", "skillmeter");
+const PLUGIN_ROOT = path.resolve(__dirname, "..", "..", "..", "plugins", "kwork");
 
 function runtimeFiles(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => {

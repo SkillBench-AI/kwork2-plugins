@@ -14,7 +14,7 @@ const { makeTempDir, setTestEnv } = require("../testing/helpers");
 const stateDir = makeTempDir("skm-cred-integrity-");
 setTestEnv("SKILLMETER_STATE_DIR", stateDir);
 
-const credstore = require("../skillmeter/scripts/credstore");
+const credstore = require("../kwork/scripts/credstore");
 
 const CRED_FILE = path.join(stateDir, "credentials.json");
 
@@ -49,7 +49,7 @@ test("a truncated store is kept aside, reported, and then reset", () => {
   assert.ok(deviceId, "a new identity is created");
   assert.notEqual(deviceId, "ORIG-DEVICE");
   assert.match(stderr, /Credential store was unreadable/);
-  assert.match(stderr, /\/skillmeter:signin/);
+  assert.match(stderr, /\/kwork:signin/);
   const aside = asideFiles();
   assert.equal(aside.length, 1, "the original bytes are kept");
   assert.equal(fs.readFileSync(path.join(stateDir, aside[0]), "utf8"), original);

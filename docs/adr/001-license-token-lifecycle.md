@@ -18,7 +18,7 @@ of the "authentication intent across shared clients" amendment.
 
 ## Context
 
-SkillMeter clients authenticate telemetry uploads with a license JWT minted
+Kwork clients authenticate telemetry uploads with a license JWT minted
 by the activation Lambda. The token carries the tenant meter URL in `aud`;
 the tenant's API Gateway JWT authorizer validates signature, issuer,
 audience, and expiry before the collector Lambda sees a request. There is no
@@ -53,7 +53,7 @@ Claude Code plugin (this repository):
   hook records nothing and writes `skipped (not signed in)` to stderr.
 - `refreshLicense` returns without a network call when no token is stored or
   when `signed_out` is set. A brand-new sign-in is created only by
-  `/skillmeter:signin`.
+  `/kwork:signin`.
 - On 410 or any other refresh failure the client falls back to a silent
   `gh auth token` → `/activate` re-activation (`trySilentGhActivate`).
 - Single-flight is a lock file (`.license-refresh.lock`) with a 60-second
@@ -131,7 +131,7 @@ Failure handling:
 - A 402, a gh identity mismatch (decision 4), gh not authenticated, or the
   backoff cap being reached is a terminal state for the session: the daemon
   stops retrying, writes the outcome to the local status record, and B1 shows
-  the user what to do. A later SessionStart or `/skillmeter:signin` clears
+  the user what to do. A later SessionStart or `/kwork:signin` clears
   the state.
 
 Rationale: the monitor already exists for the life of the session, and the
@@ -271,13 +271,13 @@ credential the client could turn into a licence without a browser — `gh auth
 token`. The device grant has no such credential: approving it *is* opening a
 browser. So the two calls that used to attempt silent re-activation are gone:
 
-- the `/skillmeter:signin` prompt expansion no longer tries `gh` before telling
+- the `/kwork:signin` prompt expansion no longer tries `gh` before telling
   the user how to sign in; and
 - the refresh orchestrator no longer falls back to `/activate` on 410 or 401.
 
 **410 and 401 are now terminal.** A licence that can no longer be rotated ends
 the retry loop with `reactivation_required`, replacing the `gh_unauthenticated`
-terminal reason, and the person runs `/skillmeter:signin`. Decisions 1, 2, 3
+terminal reason, and the person runs `/kwork:signin`. Decisions 1, 2, 3
 and 5 are unaffected: the TTL, the seven-day sliding window, the background
 refresh cadence, and the record-while-signed-in rule all stand.
 

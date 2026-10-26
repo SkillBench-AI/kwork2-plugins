@@ -25,9 +25,9 @@ setTestEnv("CLAUDE_CONFIG_DIR", CLAUDE_CONFIG_DIR);
 // An exported endpoint would make the spawned worker really upload.
 setTestEnv("SKILLMETER_BACKEND_URL", undefined);
 
-const backfillState = require("../skillmeter/scripts/lib/backfill-state");
-const { prepareHistoricalRecords } = require("../skillmeter/scripts/lib/backfill-snapshot");
-const transfer = require("../skillmeter/scripts/lib/transfer");
+const backfillState = require("../kwork/scripts/lib/backfill-state");
+const { prepareHistoricalRecords } = require("../kwork/scripts/lib/backfill-snapshot");
+const transfer = require("../kwork/scripts/lib/transfer");
 
 const REPOSITORY = {
   repoKey: "github.com/skillbench-ai/backfill",
@@ -270,7 +270,7 @@ test("accept queues historical data without changing telemetry policy", async ()
     SKILLMETER_STATE_DIR: STATE_DIR,
   };
   const claim = runNode(
-    path.resolve(__dirname, "../skillmeter/scripts/backfill.js"),
+    path.resolve(__dirname, "../kwork/scripts/backfill.js"),
     [
       "claim",
       "44444444-4444-4444-8444-444444444444",
@@ -283,7 +283,7 @@ test("accept queues historical data without changing telemetry policy", async ()
   assert.equal(offer.claimed, true);
 
   const inventory = runNode(
-    path.resolve(__dirname, "../skillmeter/scripts/repository_telemetry.js"),
+    path.resolve(__dirname, "../kwork/scripts/repository_telemetry.js"),
     ["list"],
     { cwd: repo, env }
   );
@@ -295,7 +295,7 @@ test("accept queues historical data without changing telemetry policy", async ()
   assert.ok(target);
 
   const accepted = runNode(
-    path.resolve(__dirname, "../skillmeter/scripts/backfill.js"),
+    path.resolve(__dirname, "../kwork/scripts/backfill.js"),
     [
       "accept",
       "44444444-4444-4444-8444-444444444444",
@@ -380,7 +380,7 @@ test("accept queues historical data without changing telemetry policy", async ()
   assert.equal(events.has("delivery_completed"), false);
   assert.equal(readJson(backfillState.BACKFILL_STATE_FILE).delivered_at, undefined);
   const status = runNode(
-    path.resolve(__dirname, "../skillmeter/scripts/backfill.js"),
+    path.resolve(__dirname, "../kwork/scripts/backfill.js"),
     ["status", "44444444-4444-4444-8444-444444444444"],
     { cwd: repo, env }
   );

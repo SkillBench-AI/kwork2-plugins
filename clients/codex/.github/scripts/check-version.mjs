@@ -11,7 +11,7 @@ import { dirname, resolve } from "node:path";
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const manifestPath = resolve(
   repoRoot,
-  "plugins/skillmeter/.codex-plugin/plugin.json"
+  "plugins/kwork/.codex-plugin/plugin.json"
 );
 
 // Clean SemVer only: no pre-release ("-rc.1") and no build metadata ("+sha").

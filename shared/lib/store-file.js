@@ -60,7 +60,7 @@ function preserveCorrupt(file) {
   const aside = `${file}.corrupt-${Date.now()}-${process.pid}-${crypto.randomBytes(4).toString("hex")}`;
   fs.writeFileSync(aside, bytes, { mode: 0o600, flag: "wx" });
   console.error(
-    `[skillmeter] Credential store was unreadable and has been reset; the original is kept at ${aside}. Run ${SIGNIN_COMMAND} to sign in again.`
+    `[kwork] Credential store was unreadable and has been reset; the original is kept at ${aside}. Run ${SIGNIN_COMMAND} to sign in again.`
   );
 }
 

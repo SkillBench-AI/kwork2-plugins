@@ -4,7 +4,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const { performance } = require("node:perf_hooks");
-const queue = require("../plugins/skillmeter/scripts/lib/transcript-delta");
+const queue = require("../plugins/kwork/scripts/lib/transcript-delta");
 
 const root = fs.mkdtempSync(path.join(os.tmpdir(), "codex-capture-cost-"));
 const source = path.join(root, "synthetic.jsonl");

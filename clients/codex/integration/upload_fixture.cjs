@@ -52,7 +52,7 @@ function initializeFixture() {
 
 if (!appendMode) initializeFixture();
 // Load after setting the isolated home and synthetic credentials.
-const logger = require("../plugins/skillmeter/scripts/logger");
+const logger = require("../plugins/kwork/scripts/logger");
 const stage = () => logger.stageTranscriptForUpload(source, { cwd: repo });
 const upload = file => logger.processPendingTranscript(file, "SYNTHETIC-DEVICE", url, 2000);
 const realFetch = global.fetch;

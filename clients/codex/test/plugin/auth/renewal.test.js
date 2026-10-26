@@ -26,10 +26,10 @@ const expiring = license({ exp: now() + 60, jti: "expiring" });
 const renewed = license({ jti: "renewed" });
 const credentials = { device_id: "TEST-DEVICE", hash_salt: "test", license_jwt: expiring, refresh_token: "refresh-1" };
 
-const credstore = require("../../../plugins/skillmeter/scripts/credstore");
-const logger = require("../../../plugins/skillmeter/scripts/logger");
-const activation = require("../../../plugins/skillmeter/scripts/lib/license-activation");
-const { acquireLock } = require("../../../plugins/skillmeter/scripts/lib/credential-lock");
+const credstore = require("../../../plugins/kwork/scripts/credstore");
+const logger = require("../../../plugins/kwork/scripts/logger");
+const activation = require("../../../plugins/kwork/scripts/lib/license-activation");
+const { acquireLock } = require("../../../plugins/kwork/scripts/lib/credential-lock");
 const realFetch = global.fetch;
 const realError = console.error;
 
@@ -37,7 +37,7 @@ const readSession = () => JSON.parse(fs.readFileSync(sessionFile, "utf8"));
 const renewLock = () => path.join(path.dirname(sessionFile), ".renew.lock");
 function otherProcess(code) {
   childProcess.execFileSync(process.execPath, ["-e", `
-    const store = require(${JSON.stringify(require.resolve("../../../plugins/skillmeter/scripts/credstore"))});
+    const store = require(${JSON.stringify(require.resolve("../../../plugins/kwork/scripts/credstore"))});
     ${code}
   `], { env: process.env });
 }
@@ -181,7 +181,7 @@ test("overlapping renewals in one process make one grant", async () => {
 
 test("a renewal held by another process is not repeated", async () => {
   childProcess.execFileSync(process.execPath, ["-e", `
-    const { acquireLock } = require(${JSON.stringify(require.resolve("../../../plugins/skillmeter/scripts/lib/credential-lock"))});
+    const { acquireLock } = require(${JSON.stringify(require.resolve("../../../plugins/kwork/scripts/lib/credential-lock"))});
     acquireLock(${JSON.stringify(renewLock())});
   `]);
   // The holder exited, so its lock is reclaimed at once; a live holder is not.
@@ -249,7 +249,7 @@ test("another client's fields in the shared file never reach this session", () =
 test("writers read current state after waiting for the lock", async () => {
   const release = acquireLock(`${sessionFile}.lock`);
   const child = childProcess.spawn(process.execPath, ["-e", `
-    const store = require(${JSON.stringify(require.resolve("../../../plugins/skillmeter/scripts/credstore"))});
+    const store = require(${JSON.stringify(require.resolve("../../../plugins/kwork/scripts/credstore"))});
     process.send("ready");
     store.signOut();
     process.disconnect();

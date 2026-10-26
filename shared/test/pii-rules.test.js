@@ -119,7 +119,7 @@ test("sanitizeLine: content is a fixed point across passes, path keys are hashed
 // --- Key-name heuristic -----------------------------------------------------
 
 test("free-text keys are not force-redacted even when they contain auth/token words", () => {
-  const question = "Keep SkillMeter telemetry authorized for @skillbench-ai?";
+  const question = "Keep Kwork telemetry authorized for @skillbench-ai?";
   const { value, redactions } = s.sanitizeEventData(
     {
       answers: {

@@ -5,7 +5,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const { fixture } = require("../../../test-support/consent-record.cjs");
-const { statusBanner, consentSavedBanner } = require("../../../plugins/skillmeter/scripts/lib/banner");
+const { statusBanner, consentSavedBanner } = require("../../../plugins/kwork/scripts/lib/banner");
 
 const widths = text => new Set(text.split("\n").filter(Boolean).map(line => [...line].length));
 
@@ -15,7 +15,7 @@ test("cards are boxes of one width", () => {
   const saved = consentSavedBanner({ kind: "organization", target: "@acme", enabled: true, revision: 1 });
   for (const text of [status, saved]) assert.equal(widths(text).size, 1, text);
   assert.match(status, /\[ CONSENT REQUIRED \][\s\S]*Reason +disabled; consent required/);
-  assert.match(saved, /\[ ORGANIZATION ON \][\s\S]*→ Next: \$skillmeter:telemetry enable in the repository/);
+  assert.match(saved, /\[ ORGANIZATION ON \][\s\S]*→ Next: \$kwork:telemetry enable in the repository/);
 });
 
 test("status prints a short card and keeps diagnostics behind --details", t => {
@@ -35,12 +35,12 @@ test("status without consent names the reason and the next step", t => {
   const card = f.cli(["status"]).stderr;
   assert.match(card, /\[ CONSENT REQUIRED \]/);
   assert.match(card, /Reason +disabled; organization and repository consent required/);
-  assert.match(card, /→ Run \$skillmeter:signin to choose telemetry/);
+  assert.match(card, /→ Run \$kwork:signin to choose telemetry/);
 });
 
 // Cards printed right after sign-in: one status card per organization, then
 // its repository review card.
-const { signinBanner } = require("../../../plugins/skillmeter/scripts/lib/banner");
+const { signinBanner } = require("../../../plugins/kwork/scripts/lib/banner");
 const repo = (name, effective, extra = {}) => ({ key: `github.com/acme/${name}`, org: "acme",
   displayName: `@acme/${name}`, effective, localRestriction: false, ...extra });
 const signin = (consent, repositories, { currentKey = "github.com/acme/widgets", globalPaused = false } = {}) =>
@@ -49,12 +49,12 @@ const cards = text => text.split(/\n(?=╭)/).map(part => part.trim()).filter(Bo
 
 for (const [name, text, title, status, next] of [
   ["no choice yet", signin(null, [repo("widgets", "off")]), "TELEMETRY SETUP", "OFF — nothing is being sent", "Choose below"],
-  ["this repository ON", signin(true, [repo("widgets", "on")]), "TELEMETRY ON", "ON — sanitized telemetry is active here", "$skillmeter:telemetry list"],
-  ["this repository OFF", signin(true, [repo("widgets", "off")]), "REPOSITORY OFF", "OFF — this repository is not on", "$skillmeter:telemetry enable"],
-  ["local restriction", signin(true, [repo("widgets", "off", { localRestriction: true })]), "REPOSITORY OFF", "OFF — turned off in this checkout's local settings", "$skillmeter:telemetry unrestrict"],
-  ["outside the organization's repositories", signin(true, [repo("gears", "on"), repo("widgets", "off")], { currentKey: null }), "ORGANIZATION ON", "ON for 1 of 2 local repositories", "$skillmeter:telemetry list"],
-  ["organization OFF", signin(false, [repo("widgets", "off")]), "TELEMETRY OFF", "OFF — @acme is turned off", "$skillmeter:signin to turn it on"],
-  ["paused", signin(true, [repo("widgets", "on")], { globalPaused: true }), "PAUSED", "OFF — Codex telemetry is paused on this machine", "$skillmeter:telemetry enable-global"],
+  ["this repository ON", signin(true, [repo("widgets", "on")]), "TELEMETRY ON", "ON — sanitized telemetry is active here", "$kwork:telemetry list"],
+  ["this repository OFF", signin(true, [repo("widgets", "off")]), "REPOSITORY OFF", "OFF — this repository is not on", "$kwork:telemetry enable"],
+  ["local restriction", signin(true, [repo("widgets", "off", { localRestriction: true })]), "REPOSITORY OFF", "OFF — turned off in this checkout's local settings", "$kwork:telemetry unrestrict"],
+  ["outside the organization's repositories", signin(true, [repo("gears", "on"), repo("widgets", "off")], { currentKey: null }), "ORGANIZATION ON", "ON for 1 of 2 local repositories", "$kwork:telemetry list"],
+  ["organization OFF", signin(false, [repo("widgets", "off")]), "TELEMETRY OFF", "OFF — @acme is turned off", "$kwork:signin to turn it on"],
+  ["paused", signin(true, [repo("widgets", "on")], { globalPaused: true }), "PAUSED", "OFF — Codex telemetry is paused on this machine", "$kwork:telemetry enable-global"],
 ]) {
   test(`sign-in status card: ${name}`, () => {
     const [statusCard, review] = cards(text);

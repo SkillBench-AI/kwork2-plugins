@@ -15,9 +15,9 @@ const { ORG, REPO_KEY, SCRIPTS, collectionClient, license } = require("../testin
 const { makeJwt } = require("../testing/helpers");
 
 const signedIn = `signIn(${JSON.stringify(license())});`;
-const STOPPED = (reason) => `✗ SkillMeter · ${reason} · telemetry cannot be collected on this device · run /skillmeter:signin`;
-const PAUSED = (reason) => `✗ SkillMeter · ${reason} · uploads paused on this device · run /skillmeter:signin`;
-const RESUMED = "✓ SkillMeter · signed in · telemetry can be collected on this device";
+const STOPPED = (reason) => `✗ Kwork · ${reason} · telemetry cannot be collected on this device · run /kwork:signin`;
+const PAUSED = (reason) => `✗ Kwork · ${reason} · uploads paused on this device · run /kwork:signin`;
+const RESUMED = "✓ Kwork · signed in · telemetry can be collected on this device";
 const REVOKED = `${STOPPED("organization license inactive")} · contact your administrator`;
 
 // The lines a session shows after a change, from either watched file: every
@@ -46,7 +46,7 @@ test("signing out shows the stop line once, with a desktop notification", () => 
   const out = f.notice("s");
   assert.equal(out.systemMessage, STOPPED("signed out"));
   assert.equal(out.terminalSequence,
-    "\u001b]777;notify;SkillMeter;signed out · telemetry cannot be collected on this device · run /skillmeter:signin\u0007");
+    "\u001b]777;notify;Kwork;signed out · telemetry cannot be collected on this device · run /kwork:signin\u0007");
   assert.deepEqual(lines(f, "s"), [], "a second fire with no change says nothing");
 });
 
@@ -56,9 +56,9 @@ test("a revoked license shows the stop line, naming the administrator", () => {
   f.write("revoke();");
   const out = f.notice("s");
   assert.equal(out.systemMessage,
-    "✗ SkillMeter · organization license inactive · telemetry cannot be collected on this device · run /skillmeter:signin · contact your administrator");
+    "✗ Kwork · organization license inactive · telemetry cannot be collected on this device · run /kwork:signin · contact your administrator");
   assert.equal(out.terminalSequence,
-    "\u001b]777;notify;SkillMeter;organization license inactive · telemetry cannot be collected on this device · run /skillmeter:signin · contact your administrator\u0007");
+    "\u001b]777;notify;Kwork;organization license inactive · telemetry cannot be collected on this device · run /kwork:signin · contact your administrator\u0007");
   assert.deepEqual(lines(f, "s"), []);
 });
 
@@ -359,9 +359,9 @@ test("a failed sign-in shows in every open session, once", () => {
   const f = collectionClient();
   f.sessionStart("s-a");
   f.sessionStart("s-b");
-  f.write("cs.writeSigninResult({ status: 'failure', error: 'No active SkillMeter license found' });");
+  f.write("cs.writeSigninResult({ status: 'failure', error: 'No active Kwork license found' });");
   for (const id of ["s-a", "s-b"]) {
-    assert.match(f.signinNotice(id).systemMessage, /sign-in failed — No active SkillMeter license found/, id);
+    assert.match(f.signinNotice(id).systemMessage, /sign-in failed — No active Kwork license found/, id);
     assert.equal(f.signinNotice(id), null, `${id}: once`);
   }
 });
@@ -369,10 +369,10 @@ test("a failed sign-in shows in every open session, once", () => {
 test("a failed sign-in's line ends in one full stop", () => {
   const f = collectionClient();
   f.sessionStart("s");
-  f.write("cs.writeSigninResult({ status: 'failure', error: 'No active SkillMeter license found for your workspaces.' });");
+  f.write("cs.writeSigninResult({ status: 'failure', error: 'No active Kwork license found for your workspaces.' });");
   assert.equal(
     f.signinNotice("s").systemMessage,
-    "SkillMeter: sign-in failed — No active SkillMeter license found for your workspaces. Run /skillmeter:signin to retry.",
+    "Kwork: sign-in failed — No active Kwork license found for your workspaces. Run /kwork:signin to retry.",
   );
 });
 
@@ -448,7 +448,7 @@ test("a sign-in that has started is not a return, until it completes", () => {
   const signout = spawnSync(process.execPath, [path.join(SCRIPTS, "signout.js")], {
     encoding: "utf8", cwd: f.repo, env: f.env,
   });
-  assert.equal(signout.stdout, "SkillMeter: already signed out.\n");
+  assert.equal(signout.stdout, "Kwork: already signed out.\n");
   assert.deepEqual(lines(f, "s"), [STOPPED("signed out")]);
 
   // A started sign-in, then its pending result, then its failure: the
@@ -473,7 +473,7 @@ test("signing out a client that never collected says signed out, and nothing els
   const signout = spawnSync(process.execPath, [path.join(SCRIPTS, "signout.js")], {
     encoding: "utf8", cwd: f.repo, env: f.env,
   });
-  assert.equal(signout.stdout + signout.stderr, "SkillMeter: already signed out.\n");
+  assert.equal(signout.stdout + signout.stderr, "Kwork: already signed out.\n");
   for (const id of ["s", "other"]) assert.deepEqual(lines(f, id), [STOPPED("signed out")]);
   const card = f.sessionStart("next");
   assert.match(card, /Reason {8}signed out/);

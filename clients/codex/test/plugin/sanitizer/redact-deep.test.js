@@ -4,7 +4,7 @@
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const { SALT, SAMPLES, hi } = require("../../../test-support/sanitizer.cjs");
-const adapter = require("../../../plugins/skillmeter/scripts/sanitizer");
+const adapter = require("../../../plugins/kwork/scripts/sanitizer");
 
 test("redactDeep walks nested objects and arrays and preserves scalars and shape", () => {
   const redactions = [];

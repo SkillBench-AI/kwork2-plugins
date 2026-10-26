@@ -10,10 +10,10 @@ const path = require("node:path");
 const { execFile } = require("node:child_process");
 const { test, afterEach } = require("node:test");
 const assert = require("node:assert/strict");
-const logger = require("../../../plugins/skillmeter/scripts/logger");
-const credstore = require("../../../plugins/skillmeter/scripts/credstore");
-const daemon = require("../../../plugins/skillmeter/scripts/monitors/retry_daemon");
-const licenseActivation = require("../../../plugins/skillmeter/scripts/lib/license-activation");
+const logger = require("../../../plugins/kwork/scripts/logger");
+const credstore = require("../../../plugins/kwork/scripts/credstore");
+const daemon = require("../../../plugins/kwork/scripts/monitors/retry_daemon");
+const licenseActivation = require("../../../plugins/kwork/scripts/lib/license-activation");
 
 const DAEMON_PATH = path.join(SCRIPTS, "monitors", "retry_daemon.js");
 

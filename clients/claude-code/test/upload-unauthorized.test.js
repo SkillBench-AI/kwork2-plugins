@@ -39,11 +39,11 @@ function license() {
   });
 }
 
-const store = require("../skillmeter/scripts/lib/telemetry-store");
-const transfer = require("../skillmeter/scripts/lib/transfer");
-const credstore = require("../skillmeter/scripts/credstore");
-const licenseStatus = require("../skillmeter/scripts/lib/license-status");
-const { REPOSITORIES_LOG_DIR, LOG_DIR } = require("../skillmeter/scripts/lib/paths");
+const store = require("../kwork/scripts/lib/telemetry-store");
+const transfer = require("../kwork/scripts/lib/transfer");
+const credstore = require("../kwork/scripts/credstore");
+const licenseStatus = require("../kwork/scripts/lib/license-status");
+const { REPOSITORIES_LOG_DIR, LOG_DIR } = require("../kwork/scripts/lib/paths");
 
 const realFetch = global.fetch;
 process.on("exit", () => { global.fetch = realFetch; });

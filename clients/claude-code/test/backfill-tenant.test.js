@@ -32,7 +32,7 @@ writeJson(path.join(STATE_DIR, "credentials.json"), {
 });
 writeTelemetryPolicy(STATE_DIR, { orgs: { [ORG]: true } });
 
-const { SESSION_FILE } = require("../skillmeter/scripts/credstore");
+const { SESSION_FILE } = require("../kwork/scripts/credstore");
 
 // The license lives in this client's session (ADR 005), so a sign-in to
 // another tenant replaces it there.
@@ -53,10 +53,10 @@ function signOut() {
 
 signIn("https://dev.meter.skillbench.example");
 
-const backfillState = require("../skillmeter/scripts/lib/backfill-state");
-const transfer = require("../skillmeter/scripts/lib/transfer");
-const { currentTenantFingerprint } = require("../skillmeter/scripts/lib/tenant");
-const { REPOSITORIES_LOG_DIR } = require("../skillmeter/scripts/lib/paths");
+const backfillState = require("../kwork/scripts/lib/backfill-state");
+const transfer = require("../kwork/scripts/lib/transfer");
+const { currentTenantFingerprint } = require("../kwork/scripts/lib/tenant");
+const { REPOSITORIES_LOG_DIR } = require("../kwork/scripts/lib/paths");
 
 const realFetch = global.fetch;
 process.on("exit", () => { global.fetch = realFetch; });

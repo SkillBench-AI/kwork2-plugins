@@ -36,14 +36,14 @@ writeCredentials(STATE_DIR, {
   }),
 });
 
-const backfillState = require("../skillmeter/scripts/lib/backfill-state");
-const { prepareHistoricalRecords } = require("../skillmeter/scripts/lib/backfill-snapshot");
+const backfillState = require("../kwork/scripts/lib/backfill-state");
+const { prepareHistoricalRecords } = require("../kwork/scripts/lib/backfill-snapshot");
 const {
   BACKFILL_RESULT_FILE,
   settleBackfillDelivery,
-} = require("../skillmeter/scripts/lib/backfill-delivery");
-const transfer = require("../skillmeter/scripts/lib/transfer");
-const { currentTenantFingerprint } = require("../skillmeter/scripts/lib/tenant");
+} = require("../kwork/scripts/lib/backfill-delivery");
+const transfer = require("../kwork/scripts/lib/transfer");
+const { currentTenantFingerprint } = require("../kwork/scripts/lib/tenant");
 
 const REPOSITORY = {
   repoKey: "github.com/skillbench-ai/drain",

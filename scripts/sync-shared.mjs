@@ -15,8 +15,8 @@ import { fileURLToPath } from "node:url";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "shared/lib");
 const targets = [
-  "clients/claude-code/skillmeter/scripts/lib",
-  "clients/codex/plugins/skillmeter/scripts/lib",
+  "clients/claude-code/kwork/scripts/lib",
+  "clients/codex/plugins/kwork/scripts/lib",
 ];
 const check = process.argv.includes("--check");
 

@@ -21,7 +21,7 @@ const {
   writeTelemetryPolicy,
 } = require("../testing/helpers");
 
-const SCRIPTS = path.resolve(__dirname, "../skillmeter/scripts");
+const SCRIPTS = path.resolve(__dirname, "../kwork/scripts");
 const ORG = "acme";
 const REPO_KEY = `github.com/${ORG}/widgets`;
 

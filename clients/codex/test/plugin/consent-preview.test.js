@@ -64,7 +64,7 @@ test("a descendant OFF is shown separately from the root ON", t => {
   fixture(t).run(`
     const child = path.join(repo,'src'); fs.mkdirSync(path.join(child,'.codex'),{recursive:true});
     fs.writeFileSync(path.join(child,'.codex/settings.local.json'),'{"skillmeter":{"telemetry":false}}');
-    const { buildConsentPreview } = require(${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/lib/consent-preview.js"))});
+    const { buildConsentPreview } = require(${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/lib/consent-preview.js"))});
     const result = buildConsentPreview({cwd:child,scope:logger.getRepoScopeDecision(child),policy:null});
     assert.deepEqual(result.localChoices.map(x=>x.choice),['on','off']);
     assert.equal(result.localChoices[1].path,'src/.codex/settings.local.json');
@@ -118,7 +118,7 @@ test("human output distinguishes the preview from a saved choice", t => {
   assert.match(result.stdout, /No consent settings changed/);
   assert.match(result.stdout, /Local OFF settings remain in effect/);
   assert.match(result.stdout, /Revision: absent/);
-  assert.match(result.stdout, /does not change SkillMeter for Claude Code/);
+  assert.match(result.stdout, /does not change Kwork for Claude Code/);
   assert.doesNotMatch(result.stdout, /capture enabled|uploads enabled|migration complete/i);
 });
 
@@ -126,7 +126,7 @@ test("the documented CLI wrapper forwards the preview and JSON option", t => {
   const f = fixture(t);
   const result = f.run(`
     process.argv=['node','sk-telemetry','consent-preview','--json'];
-    require(${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/bin/sk-telemetry"))});
+    require(${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/bin/sk-telemetry"))});
   `);
   assert.equal(JSON.parse(result.stdout).changesApplied, false);
   assert.equal(fs.existsSync(f.policyFile), false);
@@ -137,7 +137,7 @@ test("a nested repository does not inherit its parent's local opt-out", t => {
     fs.writeFileSync(path.join(repo,'.codex/settings.local.json'),'{"skillmeter":{"telemetry":false}}');
     const nested=path.join(repo,'nested'); fs.mkdirSync(path.join(nested,'.git'),{recursive:true});
     fs.writeFileSync(path.join(nested,'.git/config'),'[remote "origin"]\\nurl = https://github.com/acme/other.git\\n');
-    const { buildConsentPreview } = require(${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/lib/consent-preview.js"))});
+    const { buildConsentPreview } = require(${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/lib/consent-preview.js"))});
     const result=buildConsentPreview({cwd:nested,scope:logger.getRepoScopeDecision(nested),policy:null});
     assert.equal(result.repository,'github.com/acme/other');
     assert.deepEqual(result.localChoices.map(x=>x.choice),['unset']);
@@ -156,7 +156,7 @@ for (const kind of ["clone", "worktree"]) {
         fs.writeFileSync(path.join(gitdir,'commondir'),'../..');
         fs.writeFileSync(path.join(second,'.git'),'gitdir: '+gitdir+'\\n');
       }
-      const { buildConsentPreview } = require(${JSON.stringify(path.resolve(__dirname, "../../plugins/skillmeter/scripts/lib/consent-preview.js"))});
+      const { buildConsentPreview } = require(${JSON.stringify(path.resolve(__dirname, "../../plugins/kwork/scripts/lib/consent-preview.js"))});
       const result=buildConsentPreview({cwd:second,scope:logger.getRepoScopeDecision(second),policy});
       assert.equal(result.repository,'github.com/acme/widgets');
       assert.equal(result.localChoices[0].choice,'unset');

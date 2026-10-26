@@ -11,8 +11,8 @@ const path = require("node:path");
 const { makeTempDir, setTestEnv, writeJson, writeCredentials, sessionPath } = require("../testing/helpers");
 const state = makeTempDir("credential-generation-");
 setTestEnv("SKILLMETER_STATE_DIR", state);
-const store = require("../skillmeter/scripts/credstore");
-const status = require("../skillmeter/scripts/lib/license-status");
+const store = require("../kwork/scripts/credstore");
+const status = require("../kwork/scripts/lib/license-status");
 const shared = path.join(state, "credentials.json");
 const session = sessionPath(state);
 const original = { device_id: "fixture-device", hash_salt: "fixture-salt", license_jwt: "fixture-token",
@@ -112,7 +112,7 @@ test("terminal status from a previous authentication context cannot block a new 
 });
 
 test("busy session lock fails closed without modifying the session", () => {
-  const { acquireLock } = require("../skillmeter/scripts/lib/credential-lock");
+  const { acquireLock } = require("../kwork/scripts/lib/credential-lock");
   const release = acquireLock(`${session}.lock`);
   const before = fs.readFileSync(session);
   try { assert.throws(() => store.signOut(), /credential-store-busy/); }

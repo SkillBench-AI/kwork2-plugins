@@ -8,11 +8,11 @@ import { test } from "node:test";
 // Paths are relative to the repository root and mirror the monorepo layout:
 // the client under clients/codex, the Codex marketplace at the root.
 const manifests = {
-  "clients/codex/plugins/skillmeter/.codex-plugin/plugin.json": {
+  "clients/codex/plugins/kwork/.codex-plugin/plugin.json": {
     name: "fixture", version: "1.0.0", description: "Synthetic plugin",
   },
   ".agents/plugins/marketplace.json": {
-    plugins: [{ name: "fixture", source: { source: "local", path: "./clients/codex/plugins/skillmeter" } }],
+    plugins: [{ name: "fixture", source: { source: "local", path: "./clients/codex/plugins/kwork" } }],
   },
 };
 
@@ -55,9 +55,9 @@ test("manifest validator fails when the Codex marketplace is missing", (t) => {
   const script = join(root, "clients/codex/.github/scripts/validate-manifests.mjs");
   mkdirSync(dirname(script), { recursive: true });
   copyFileSync(new URL("../.github/scripts/validate-manifests.mjs", import.meta.url), script);
-  const plugin = join(root, "clients/codex/plugins/skillmeter/.codex-plugin/plugin.json");
+  const plugin = join(root, "clients/codex/plugins/kwork/.codex-plugin/plugin.json");
   mkdirSync(dirname(plugin), { recursive: true });
-  writeFileSync(plugin, JSON.stringify(manifests["clients/codex/plugins/skillmeter/.codex-plugin/plugin.json"]));
+  writeFileSync(plugin, JSON.stringify(manifests["clients/codex/plugins/kwork/.codex-plugin/plugin.json"]));
   const result = spawnSync(process.execPath, [script], { encoding: "utf8", timeout: 10000 });
   assert.equal(result.status, 1, result.stdout + result.stderr);
   assert.match(result.stderr, /\.agents\/plugins\/marketplace\.json: invalid JSON/);

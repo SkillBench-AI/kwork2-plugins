@@ -11,7 +11,7 @@
 ## Validation
 
 - [ ] `npm run check` passes locally (version + manifests + tests)
-- [ ] Bumped `plugins/skillmeter/.codex-plugin/plugin.json` `version` if this is a release-worthy change
+- [ ] Bumped `plugins/kwork/.codex-plugin/plugin.json` `version` if this is a release-worthy change
 - [ ] Updated docs/README if behavior or config changed
 
 ## Release notes

@@ -30,11 +30,11 @@ setTestEnv("SKILLMETER_BACKEND_URL", "http://127.0.0.1:9/collector");
 const ORG = "skillbench-ai";
 const REPO = { repoKey: `github.com/${ORG}/ordered`, org: ORG };
 
-const store = require("../skillmeter/scripts/lib/telemetry-store");
-const transfer = require("../skillmeter/scripts/lib/transfer");
-const licenseStatus = require("../skillmeter/scripts/lib/license-status");
-const { MAX_UPLOAD_ATTEMPTS } = require("../skillmeter/scripts/lib/chunk-retry");
-const { REPOSITORIES_LOG_DIR, LOG_DIR } = require("../skillmeter/scripts/lib/paths");
+const store = require("../kwork/scripts/lib/telemetry-store");
+const transfer = require("../kwork/scripts/lib/transfer");
+const licenseStatus = require("../kwork/scripts/lib/license-status");
+const { MAX_UPLOAD_ATTEMPTS } = require("../kwork/scripts/lib/chunk-retry");
+const { REPOSITORIES_LOG_DIR, LOG_DIR } = require("../kwork/scripts/lib/paths");
 
 const realFetch = global.fetch;
 process.on("exit", () => { global.fetch = realFetch; });
@@ -185,7 +185,7 @@ test("drain_once runs the requested extra pass and leaves no request or lock beh
   fs.writeFileSync(path.join(LOG_DIR, ".drain-once.lock.again"), "");
   const body = seal("again.jsonl", 1);
   stubFetch([]);
-  const result = spawnSync(process.execPath, [path.join(__dirname, "../skillmeter/scripts/drain_once.js")], {
+  const result = spawnSync(process.execPath, [path.join(__dirname, "../kwork/scripts/drain_once.js")], {
     env: { ...process.env, SKILLMETER_BACKEND_URL: "http://127.0.0.1:9/collector" },
     encoding: "utf8",
   });

@@ -11,8 +11,8 @@ const clientRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DEV_ONLY = /(^|\/)(test|tests|test-support|integration|fixtures)\/|\.test\.[cm]?js$/;
 
 test("the Codex plugin directory ships no tests or development tooling", () => {
-  const files = execFileSync("git", ["ls-files", "plugins/skillmeter"], { cwd: clientRoot, encoding: "utf8" })
+  const files = execFileSync("git", ["ls-files", "plugins/kwork"], { cwd: clientRoot, encoding: "utf8" })
     .split("\n").filter(Boolean);
   assert.ok(files.length > 0, "git ls-files found the plugin");
-  assert.deepEqual(files.filter((file) => DEV_ONLY.test(file.slice("plugins/skillmeter/".length))), []);
+  assert.deepEqual(files.filter((file) => DEV_ONLY.test(file.slice("plugins/kwork/".length))), []);
 });

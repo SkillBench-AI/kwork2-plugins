@@ -2,7 +2,7 @@
 // Constants shared by the sanitizer tests. Every credential is synthetic.
 const os = require("node:os");
 const path = require("node:path");
-const { POLICY_VERSION } = require(path.join(__dirname, "..", "plugins", "skillmeter", "scripts", "lib", "sanitize.js"));
+const { POLICY_VERSION } = require(path.join(__dirname, "..", "plugins", "kwork", "scripts", "lib", "sanitize.js"));
 
 const SALT = "deadbeefcafe";
 const HEX = "[0-9a-f]{12}";

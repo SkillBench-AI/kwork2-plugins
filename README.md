@@ -1,13 +1,13 @@
-# SkillMeter plugins
+# Kwork plugins
 
-SkillMeter for Claude Code and SkillMeter for Codex, in one repository. Each
+Kwork for Claude Code and Kwork for Codex, in one repository. Each
 client has its own plugin, hooks and tests; the two marketplaces at the root
 point at them.
 
 | Client | Plugin | Marketplace (read by) | Docs |
 | --- | --- | --- | --- |
-| Claude Code | [`clients/claude-code/skillmeter`](clients/claude-code/skillmeter) | [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) (Claude Code) | [README](clients/claude-code/README.md) |
-| Codex | [`clients/codex/plugins/skillmeter`](clients/codex/plugins/skillmeter) | [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) (Codex) | [README](clients/codex/README.md) |
+| Claude Code | [`clients/claude-code/kwork`](clients/claude-code/kwork) | [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) (Claude Code) | [README](clients/claude-code/README.md) |
+| Codex | [`clients/codex/plugins/kwork`](clients/codex/plugins/kwork) | [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) (Codex) | [README](clients/codex/README.md) |
 
 Codex reads `.agents/plugins/marketplace.json` and falls back to
 `.claude-plugin/marketplace.json` only when it is missing, which would offer the
@@ -18,15 +18,15 @@ Claude Code plugin to Codex. CI fails if the Codex marketplace is missing.
 Claude Code:
 
 ```sh
-claude plugin marketplace add SkillBench-AI/skillmeter-plugins
-claude plugin install skillmeter@skillbench
+claude plugin marketplace add SkillBench-AI/kwork2-plugins
+claude plugin install kwork@skillbench
 ```
 
 Codex:
 
 ```sh
-codex plugin marketplace add SkillBench-AI/skillmeter-plugins --ref main
-codex plugin add skillmeter@skillbench
+codex plugin marketplace add SkillBench-AI/kwork2-plugins --ref main
+codex plugin add kwork@skillbench
 ```
 
 Moving from the archived `skillmeter-codex-marketplace`: see

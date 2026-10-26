@@ -1,7 +1,7 @@
 "use strict";
 
 // A session the broker ended (invalid_grant) can leave a license that is still
-// valid for up to one lifetime. /skillmeter:signin must then sign in again,
+// valid for up to one lifetime. /kwork:signin must then sign in again,
 // not report the stale license as a sign-in, until a sign-in completes: a new
 // session, or a sign-in that starts and is abandoned, does not end it. Without
 // that record, a valid license still short-circuits with no network call.
@@ -15,7 +15,7 @@ const { spawnSync } = require("child_process");
 
 const { accountDir, makeTempDir, makeJwt, writeCredentials, readSession, writeFile, writeTelemetryPolicy } = require("../testing/helpers");
 
-const SCRIPTS = path.resolve(__dirname, "../skillmeter/scripts");
+const SCRIPTS = path.resolve(__dirname, "../kwork/scripts");
 const LICENSE_STATUS = path.join(SCRIPTS, "lib/license-status.js");
 const CREDSTORE = path.join(SCRIPTS, "credstore.js");
 
@@ -80,7 +80,7 @@ function fixture() {
       timeout: 10_000,
       cwd: root,
       env,
-      input: JSON.stringify({ command_name: "skillmeter:signin", command_source: "plugin", cwd: root }),
+      input: JSON.stringify({ command_name: "kwork:signin", command_source: "plugin", cwd: root }),
     });
     assert.equal(result.status, 0, result.stderr);
     return JSON.parse(result.stdout).hookSpecificOutput.additionalContext;
@@ -195,7 +195,7 @@ test("a new session in between does not hide the ended session from sign-in", ()
 
 // The slash command runs the expansion hook first. It must not report the old
 // license as a sign-in, nor reset what the sign-in command reads.
-test("/skillmeter:signin asks for a new sign-in when the session ended, and leaves the record for the command", () => {
+test("/kwork:signin asks for a new sign-in when the session ended, and leaves the record for the command", () => {
   const f = fixture();
   f.status(END_SESSION);
   const before = fs.readFileSync(f.statusFile, "utf8");
@@ -256,7 +256,7 @@ test("the SessionStart card asks for sign-in in every session until a sign-in co
 
 // The last terminal reason survives a sign-out. Only a stored license makes it
 // "your session ended"; a signed-out user is simply asked to sign in.
-test("after a sign-out, /skillmeter:signin does not report the ended session", () => {
+test("after a sign-out, /kwork:signin does not report the ended session", () => {
   const f = fixture();
   f.status(END_SESSION + `require(${JSON.stringify(CREDSTORE)}).signOut();`);
   assert.equal(f.status("process.stdout.write(String(ls.isSessionEnded()));"), "true", "the reason is still recorded");

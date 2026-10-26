@@ -15,7 +15,7 @@ const { spawnSync } = require("child_process");
 
 const { makeJwt, makeTempDir, writeCredentials, writeFile, writeTelemetryPolicy } = require("../testing/helpers");
 
-const SCRIPTS = path.resolve(__dirname, "../skillmeter/scripts");
+const SCRIPTS = path.resolve(__dirname, "../kwork/scripts");
 const ORG = "acme";
 const REPO_KEY = `github.com/${ORG}/widgets`;
 const license = (expiresInSec = 900) =>
@@ -116,13 +116,13 @@ const CASES = [
     expect: ["delivery_paused", "ACTION REQUIRED", /Sign-in expired\. Uploads are paused/], records: false },
   { name: "paused", policy: { enabled: false, orgs: { [ORG]: true }, repositories: { [REPO_KEY]: true } },
     setup: `signIn(${JSON.stringify(license())});`,
-    expect: ["paused", "TELEMETRY PAUSED", /\/skillmeter:telemetry enable-global/], records: false },
+    expect: ["paused", "TELEMETRY PAUSED", /\/kwork:telemetry enable-global/], records: false },
   { name: "paused, with an ended session", policy: { enabled: false, orgs: { [ORG]: true }, repositories: { [REPO_KEY]: true } },
     setup: `signIn(${JSON.stringify(license())}); endSession();`,
-    expect: ["paused", "TELEMETRY PAUSED", /\/skillmeter:telemetry enable-global/], records: false },
+    expect: ["paused", "TELEMETRY PAUSED", /\/kwork:telemetry enable-global/], records: false },
   { name: "paused, signed out", policy: { enabled: false, orgs: { [ORG]: true }, repositories: { [REPO_KEY]: true } },
     setup: `signIn(${JSON.stringify(license())}); cs.signOut();`,
-    expect: ["paused", "TELEMETRY PAUSED", /\/skillmeter:telemetry enable-global/], records: false },
+    expect: ["paused", "TELEMETRY PAUSED", /\/kwork:telemetry enable-global/], records: false },
   { name: "repository choice pending", policy: { orgs: { [ORG]: true } }, setup: `signIn(${JSON.stringify(license())});`,
     expect: ["unconfigured", "REPOSITORY SETUP", /full repository telemetry not selected/], records: false },
   { name: "organization choice pending", policy: {}, setup: `signIn(${JSON.stringify(license())});`,
@@ -156,6 +156,6 @@ for (const c of CASES) {
     // anything about it; "uploads are paused" is about delivery.
     if (/OFF|PAUSED/.test(card)) assert.equal(recorded, false, "a card that says off is shown only where nothing is recorded");
     if (/TELEMETRY ON/.test(card)) assert.equal(recorded, true, "a card that says on is shown only where something is recorded");
-    if (state === "paused") assert.doesNotMatch(card, /\/skillmeter:signin/, "the pause is the reason, whatever else holds");
+    if (state === "paused") assert.doesNotMatch(card, /\/kwork:signin/, "the pause is the reason, whatever else holds");
   });
 }

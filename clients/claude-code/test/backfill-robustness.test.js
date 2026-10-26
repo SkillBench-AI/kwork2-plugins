@@ -44,11 +44,11 @@ writeCredentials(STATE_DIR, {
 });
 writeTelemetryPolicy(STATE_DIR, { orgs: { [ORG]: true } });
 
-const backfillState = require("../skillmeter/scripts/lib/backfill-state");
-const store = require("../skillmeter/scripts/lib/telemetry-store");
-const transfer = require("../skillmeter/scripts/lib/transfer");
-const { currentTenantFingerprint } = require("../skillmeter/scripts/lib/tenant");
-const { REPOSITORIES_LOG_DIR } = require("../skillmeter/scripts/lib/paths");
+const backfillState = require("../kwork/scripts/lib/backfill-state");
+const store = require("../kwork/scripts/lib/telemetry-store");
+const transfer = require("../kwork/scripts/lib/transfer");
+const { currentTenantFingerprint } = require("../kwork/scripts/lib/tenant");
+const { REPOSITORIES_LOG_DIR } = require("../kwork/scripts/lib/paths");
 
 const realFetch = global.fetch;
 process.on("exit", () => { global.fetch = realFetch; });
@@ -183,7 +183,7 @@ test("an unreadable state file is set aside and replaced", () => {
 
 test("a state file from a newer schema is left alone", () => {
   writeJson(backfillState.BACKFILL_STATE_FILE, { schema_version: 99, status: "pending" });
-  assert.throws(() => backfillState.initializeBackfillLifecycle(), /newer SkillMeter version/);
+  assert.throws(() => backfillState.initializeBackfillLifecycle(), /newer Kwork version/);
   assert.equal(
     JSON.parse(fs.readFileSync(backfillState.BACKFILL_STATE_FILE, "utf8")).schema_version,
     99

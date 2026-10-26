@@ -101,7 +101,7 @@ Codex plugin (0.7.0):
 ### 1. One consent record per machine, shared by every client
 
 `~/.skillbench/telemetry-policy.json` is the consent record for every
-SkillMeter client on the machine: this plugin, the Codex plugin, and any
+Kwork client on the machine: this plugin, the Codex plugin, and any
 client that captures later. It sits next to the shared credential file and
 follows the same rule: the client that writes it is whichever the user is
 using, and every client reads it before capture and again before
@@ -209,7 +209,7 @@ on its own.
   hold on unset and organization/repository OFF before global pause in both
   queue dispositions (decision 6), and `consent_version: 2` on new decisions
   with the acknowledgement flow for legacy ones (decisions 3 and 4).
-- `PRIVACY.md`, both READMEs and the consent skills say "for every SkillMeter
+- `PRIVACY.md`, both READMEs and the consent skills say "for every Kwork
   client on this machine" wherever they describe a choice.
 - The consent management procedure can describe one consent and withdrawal
   flow and take its screenshots from either client.

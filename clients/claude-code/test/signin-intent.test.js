@@ -38,7 +38,7 @@ for (const mode of ["background", "background-cycle", "background-missing", "bac
         const module = require(name);
         for (const key of ["get", "request", "connect", "createConnection"]) if (module[key]) module[key] = () => { throw Error("network-forbidden"); };
       }
-      const store = require(${JSON.stringify(path.resolve(__dirname, "../skillmeter/scripts/credstore.js"))});
+      const store = require(${JSON.stringify(path.resolve(__dirname, "../kwork/scripts/credstore.js"))});
       global.fetch = async (url) => {
         const target = String(url);
         let payload;
@@ -56,7 +56,7 @@ for (const mode of ["background", "background-cycle", "background-missing", "bac
         return {ok:true,status:200,json:async()=>payload,text:async()=>JSON.stringify(payload)};
       };
     `);
-    const args = ["-r", preload, path.resolve(__dirname, "../skillmeter/scripts/signin.js")];
+    const args = ["-r", preload, path.resolve(__dirname, "../kwork/scripts/signin.js")];
     if (mode.startsWith("background")) {
       args.push("--background-poll", "fixture-device", "fixture-code", "0.001");
       if (mode !== "background-missing") args.push("fixture-generation");

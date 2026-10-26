@@ -18,13 +18,13 @@ setTestEnv("CLAUDE_PLUGIN_DATA", DATA_DIR);
 setTestEnv("SKILLMETER_STATE_DIR", STATE_DIR);
 setTestEnv("SKILLMETER_TRANSCRIPT_CHUNK_MAX_BYTES", undefined);
 
-const d = require("../skillmeter/scripts/lib/transcript-delta");
-const transfer = require("../skillmeter/scripts/lib/transfer");
+const d = require("../kwork/scripts/lib/transcript-delta");
+const transfer = require("../kwork/scripts/lib/transfer");
 const {
   isChunkEligible,
   quarantinePathFor,
   recordUploadFailure,
-} = require("../skillmeter/scripts/lib/chunk-retry");
+} = require("../kwork/scripts/lib/chunk-retry");
 
 const SALT = "deadbeefcafe";
 const TEST_REPOSITORY = {
@@ -434,8 +434,8 @@ test("a signed-out mark ages out unless a cursor for its transcript remains", ()
 });
 
 // ---- boundaries that could not be written where staging reads them --------
-const credstore = require("../skillmeter/scripts/credstore");
-const { repositoryStorageId } = require("../skillmeter/scripts/lib/paths");
+const credstore = require("../kwork/scripts/credstore");
+const { repositoryStorageId } = require("../kwork/scripts/lib/paths");
 const PENDING_REPOSITORY = { repoKey: "github.com/skillbench-ai/pending", org: "skillbench-ai" };
 const OTHER_PENDING_REPOSITORY = { repoKey: "github.com/skillbench-ai/pending-other", org: "skillbench-ai" };
 

@@ -58,11 +58,11 @@ async function renewViaBroker(expected) {
   if (!credstore.isRecoveryCurrent(expected)) return { outcome: "superseded" };
   const grant = await broker.refreshGrant(expected.refreshToken);
   if (grant.outcome === "rejected") {
-    console.error(`[skillmeter] license renewal: the broker ended this session (${grant.error}), sign-in required`);
+    console.error(`[kwork] license renewal: the broker ended this session (${grant.error}), sign-in required`);
     return { outcome: "rejected", status: grant.status, expected };
   }
   if (grant.outcome !== "granted") {
-    console.error(`[skillmeter] license renewal failed at the broker: ${grant.message}`);
+    console.error(`[kwork] license renewal failed at the broker: ${grant.message}`);
     return { outcome: "transient", status: grant.status, message: grant.message, expected };
   }
 
@@ -74,14 +74,14 @@ async function renewViaBroker(expected) {
 
   const exchange = await exchangeIdToken(grant.idToken, expected.deviceId, { org: getLicenseTenantSlug(expected.token) });
   if (exchange.outcome === "revoked") {
-    console.error("[skillmeter] license renewal: this workspace no longer licenses you");
+    console.error("[kwork] license renewal: this workspace no longer licenses you");
     return { outcome: "revoked", status: exchange.status, expected: current };
   }
   if (exchange.outcome !== "issued") {
     // A 401 here refuses a broker token the broker just issued: a server
     // configuration problem, not a verdict on this session.
     const message = exchange.message || `HTTP ${exchange.status}`;
-    console.error(`[skillmeter] license renewal failed at /activate: ${message}`);
+    console.error(`[kwork] license renewal failed at /activate: ${message}`);
     return { outcome: "transient", status: exchange.status ?? null, message, expected: current };
   }
   if (credstore.isLicenseTokenExpired(exchange.token)) {

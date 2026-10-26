@@ -1,48 +1,48 @@
-# SkillMeter Support
+# Kwork Support
 
 ## Usage and installation help
 
 For non-sensitive defects and feature requests, open an issue at:
 
-<https://github.com/SkillBench-AI/skillmeter-plugins/issues>
+<https://github.com/SkillBench-AI/kwork2-plugins/issues>
 
 Name the client (Claude Code or Codex) and include the command that failed,
 its exit status, and sanitized error output, plus:
 
-### SkillMeter for Claude Code
+### Kwork for Claude Code
 
 - `claude --version`;
-- the SkillMeter version shown by `claude plugin list --json`;
+- the Kwork version shown by `claude plugin list --json`;
 - installation scope (`user`, `project`, or `local`).
 
 Before filing an installation issue, run:
 
 ```bash
 claude plugin marketplace update skillbench
-claude plugin update skillmeter@skillbench
+claude plugin update kwork@skillbench
 ```
 
 Restart Claude Code or run `/reload-plugins` after an update.
 
-### SkillMeter for Codex
+### Kwork for Codex
 
 - `codex --version`;
-- the SkillMeter version shown by `codex plugin list --json`.
+- the Kwork version shown by `codex plugin list --json`.
 
 Before filing an installation issue, run:
 
 ```bash
 codex plugin marketplace upgrade skillbench
-codex plugin add skillmeter@skillbench
+codex plugin add kwork@skillbench
 ```
 
-Restart Codex and start a new session after an update. If SkillMeter for Codex
+Restart Codex and start a new session after an update. If Kwork for Codex
 was installed from the archived `skillmeter-codex-marketplace`, move it first:
 see [Update](clients/codex/README.md#update).
 
 ## Privacy and data requests
 
-Contact `privacy@skillbench.com`. If your organization provides SkillMeter, it
+Contact `privacy@skillbench.com`. If your organization provides Kwork, it
 may be the data controller and may need to handle the request.
 
 ## Security reports
@@ -52,15 +52,15 @@ code, customer identifiers, or telemetry payloads in a public issue.
 
 ## Documentation
 
-- [Claude Code plugin guide](clients/claude-code/skillmeter/README.md)
-- [Codex plugin guide](clients/codex/plugins/skillmeter/README.md)
+- [Claude Code plugin guide](clients/claude-code/kwork/README.md)
+- [Codex plugin guide](clients/codex/plugins/kwork/README.md)
 - [Privacy](PRIVACY.md)
 - [SkillBench Privacy Policy](https://skillbench.com/privacy/)
 - [SkillBench subprocessors](https://skillbench.com/subprocessors/)
 
 ## Credential store is busy
 
-A brief `credential-store-busy` error means another SkillMeter process may be
+A brief `credential-store-busy` error means another Kwork process may be
 writing sign-in state: a process of the same client, or of the other client,
 since both share the device identity in `~/.skillbench/credentials.json`.
 Retry after that operation finishes. Neither client evicts a live writer
