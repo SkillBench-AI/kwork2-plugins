@@ -76,10 +76,10 @@ function isolateHome(credentials) {
   return home;
 }
 
-function writeSettings(root, skillmeter) {
+function writeSettings(root, kwork) {
   const dir = path.join(root, ".codex");
   fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, "settings.local.json"), JSON.stringify({ skillmeter }) + "\n");
+  fs.writeFileSync(path.join(dir, "settings.local.json"), JSON.stringify({ skillmeter: kwork }) + "\n");
 }
 
 // A checkout with a hand-written .git/config. `remote: null` gives a repository

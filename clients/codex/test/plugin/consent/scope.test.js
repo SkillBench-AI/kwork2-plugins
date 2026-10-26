@@ -19,9 +19,9 @@ function signInWithOrgs(orgs) {
   assert.notEqual(credstore.commitSignin({ jwt: license({ orgs }), refreshToken: "synthetic-refresh", generation }), false);
 }
 const repo = remote => makeRepo({ remote, prefix: "sk-scope-repo" });
-function project(skillmeter) {
+function project(kwork) {
   const root = tempDir("sk-scope-project");
-  if (skillmeter) writeSettings(root, skillmeter);
+  if (kwork) writeSettings(root, kwork);
   return root;
 }
 function withEnvFilter(value, fn) {

@@ -1620,10 +1620,10 @@ function saveTelemetryOptIn(cwd, value) {
     }
     // A local setting only restricts, so clearing the restriction removes the
     // key instead of writing an ON that would grant nothing.
-    const skillmeter = { ...content.skillmeter };
-    if (value) delete skillmeter.telemetry;
-    else skillmeter.telemetry = false;
-    content.skillmeter = skillmeter;
+    const kwork = { ...content.skillmeter };
+    if (value) delete kwork.telemetry;
+    else kwork.telemetry = false;
+    content.skillmeter = kwork;
     fs.mkdirSync(path.dirname(settingsPath), { recursive: true });
     return () => transcriptQueue.writeDurable(settingsPath, JSON.stringify(content, null, 2) + "\n");
   });
